@@ -10,12 +10,15 @@ if (
   return false;
 }
 
-use App\Config\Connection;
+use App\Config\PdoConnection;
 use App\Config\TwigEnvironment;
 use App\DependencyInjection\Container;
+use App\Repository\UserRepository;
+use App\Routing\ArgumentResolver;
 use App\Routing\RouteNotFoundException;
 use App\Routing\Router;
-use Doctrine\ORM\EntityManager;
+use App\Session\Session;
+use App\Session\SessionInterface;
 use Symfony\Component\Dotenv\Dotenv;
 use Twig\Environment;
 
@@ -24,9 +27,10 @@ use Twig\Environment;
 $dotenv = new Dotenv();
 $dotenv->loadEnv(__DIR__ . '/../.env');
 
-// BDD
-$connection = new Connection();
-$entityManager = $connection->init();
+// PDO
+$pdoConnection = new PdoConnection();
+$pdoConnection->init(); // Connexion à la BDD
+$userRepository = new UserRepository($pdoConnection->getPdoConnection());
 
 // Twig - Vue
 $twigEnvironment = new TwigEnvironment();
@@ -34,11 +38,12 @@ $twig = $twigEnvironment->init();
 
 // Service Container
 $container = new Container();
-$container->set(EntityManager::class, $entityManager);
 $container->set(Environment::class, $twig);
+$container->set(SessionInterface::class, new Session());
+$container->set(UserRepository::class, $userRepository);
 
 // Routage
-$router = new Router($container);
+$router = new Router($container, new ArgumentResolver());
 $router->registerRoutes();
 
 if (php_sapi_name() === 'cli') {

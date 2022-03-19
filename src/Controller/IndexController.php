@@ -3,14 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Routing\Attribute\Route;
 use DateTime;
-use Doctrine\ORM\EntityManager;
 
 class IndexController extends AbstractController
 {
   #[Route(path: "/")]
-  public function index(EntityManager $em)
+  public function index(UserRepository $userRepository)
   {
     $user = new User();
 
@@ -21,10 +21,7 @@ class IndexController extends AbstractController
       ->setEmail("bob@bob.com")
       ->setBirthDate(new DateTime('1981-02-16'));
 
-    // On demande au gestionnaire d'entités de persister l'objet
-    // Attention, à ce moment-là l'objet n'est pas encore enregistré en BDD
-    $em->persist($user);
-    $em->flush();
+    $userRepository->save($user);
   }
 
   #[Route(path: "/contact", name: "contact", httpMethod: "POST")]
