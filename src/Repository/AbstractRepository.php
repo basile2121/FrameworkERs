@@ -14,14 +14,41 @@ abstract class AbstractRepository
     $this->pdo = $pdo;
   }
 
-  public function find(int $id): array
-  {
-    $stmt = $this->pdo->prepare("SELECT * FROM " . static::TABLE . " WHERE id=:id");
+    /**
+     * Recuperation de toutes les données.
+     */
+    public function selectAll(string $orderBy = '', string $direction = 'ASC'): array
+    {
+        $query = 'SELECT * FROM ' . static::TABLE;
+        if ($orderBy) {
+            $query .= ' ORDER BY ' . $orderBy . ' ' . $direction;
+        }
 
-    $stmt->execute(['id' => $id]);
+        return $this->pdo->query($query)->fetchAll();
+    }
 
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    /**
+     * Recuperation d'un seul element via son id
+     */
+    public function selectOneById(int $id): array
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM " . static::TABLE . " WHERE id=:id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetch();
 
-    return ($result !== false) ? $result : [];
-  }
+        return ($results !== false) ? $results : [];
+    }
+
+    /**
+     * Suppresion d'un element via son id
+     */
+    public function delete(int $id): void
+    {
+        $statement = $this->pdo->prepare("DELETE FROM " . static::TABLE . " WHERE id=:id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+
 }
