@@ -1,24 +1,42 @@
 {
-    "name": "frameworkers/bde",
-    "description": "Projet de fin d'etude IWB3 sur le bde de l'ecole",
-    "autoload": {
-        "psr-4": {
-            "App\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Basile2121",
-            "email": "basile.regnault@gmail.com"
-        }
-    ],
-    "scripts": {
-        "start": "php -S localhost:8000 -t public/ public/index.php"
-    },
-    "config": {
-        "process-timeout": 0
-    },
-    "require": {
-        "symfony/dotenv": "^6.0"
+  "name": "ld-web/php-b3-su-mvc",
+  "description": "Small MVC App written in PHP",
+  "authors": [
+    {
+      "name": "Lucas",
+      "email": "lucas@ld-web.net"
     }
+  ],
+  "require": {
+    "doctrine/orm": "^2.10",
+    "symfony/cache": "^5.3",
+    "symfony/dotenv": "^5.3",
+    "twig/twig": "^3.0",
+    "psr/container": "^1.1",
+    "doctrine/annotations": "^1.13"
+  },
+  "scripts": {
+    "start": "php -S localhost:8000 -t public/ public/index.php",
+    "test": "phpunit tests --testdox",
+    "test:coverage": [
+      "@putenv XDEBUG_MODE=coverage",
+      "@test --coverage-html coverage"
+    ]
+  },
+  "config": {
+    "process-timeout": 0
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "../../../ESGIcours/Projet Annuel/FrameworkERs/src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "App\\Tests\\": "../../../ESGIcours/Projet Annuel/FrameworkERs/tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  }
 }
