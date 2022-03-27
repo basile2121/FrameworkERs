@@ -2,16 +2,21 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
+use App\Utils\Hydrator;
 use PDO;
+use ReflectionException;
 
 abstract class AbstractRepository
 {
   protected PDO $pdo;
+  protected Hydrator $hydrator;
   protected const TABLE = '';
 
-  public function __construct(PDO $pdo)
+  public function __construct(PDO $pdo, Hydrator $hydrator)
   {
     $this->pdo = $pdo;
+    $this->hydrator = $hydrator;
   }
 
     /**
@@ -24,7 +29,7 @@ abstract class AbstractRepository
             $query .= ' ORDER BY ' . $orderBy . ' ' . $direction;
         }
 
-        return $this->pdo->query($query)->fetchAll();
+        return $this->setHydrate($this->pdo->query($query)->fetchAll(PDO::FETCH_ASSOC));
     }
 
     /**
@@ -50,5 +55,13 @@ abstract class AbstractRepository
         $statement->execute();
     }
 
+    /**
+     * @throws ReflectionException
+     */
+    public function setHydrate(array $data): array
+    {
+        $classStrName = "App\\Entity\\" . ucfirst(static::TABLE);
+        return $this->hydrator->hydrateAll($data, $classStrName);
+    }
 
 }

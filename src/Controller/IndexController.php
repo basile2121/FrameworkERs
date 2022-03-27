@@ -2,26 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Repository\UtilisateursRepository;
 use App\Routing\Attribute\Route;
 use DateTime;
 
 class IndexController extends AbstractController
 {
   #[Route(path: "/")]
-  public function index(UserRepository $userRepository)
+  public function index(UtilisateursRepository $utilisateursRepository)
   {
-    $user = new User();
-
-    $user->setName("Bob")
-      ->setFirstName("John")
-      ->setUsername("Bobby")
-      ->setPassword("randompass")
-      ->setEmail("bob@bob.com")
-      ->setBirthDate(new DateTime('1981-02-16'));
-
-    $userRepository->save($user);
+    var_dump($utilisateursRepository->selectAll());
   }
 
   #[Route(path: "/contact", name: "contact", httpMethod: "POST")]
