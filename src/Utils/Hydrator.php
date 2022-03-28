@@ -28,12 +28,12 @@ class Hydrator
     public function hydrateAll(array $data, string $classStrName): array
     {
         $models = [];
+        $arguments = [];
         $arguments = $this->getAttributes(new $classStrName());
         foreach ($data as $d){
             $object = new $classStrName();
             array_push($models, $this->hydrate($d, $object, $arguments));
         }
-        var_dump($models);
         return $models;
     }
 
@@ -51,6 +51,7 @@ class Hydrator
                 array_push($argumentsList, $attribute->getArguments());
             }
         }
+        $this->reflector = null;
         return $argumentsList;
     }
 
@@ -66,7 +67,7 @@ class Hydrator
                     if ($argument[1] === 'DateTime') {
                         $value = $this->hydrateDate($value);
                     }
-                    $methodName = 'set' . ucfirst($argument[2]);
+                    $methodName = 'set' . ucfirst($argument[0]);
                     $model->{$methodName}($value);
                     break;
                 }

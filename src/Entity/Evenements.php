@@ -19,7 +19,7 @@ class Evenements
     #[EntityParameter('description', 'string', 'description')]
     private string $description;
 
-    #[EntityParameter('nbParticipantsMax;', 'int' , 'nb_participants_max')]
+    #[EntityParameter('nbParticipantsMax', 'int' , 'nb_participants_max')]
     private int $nbParticipantsMax;
 
     #[EntityParameter('prix', 'float', 'prix')]
@@ -28,7 +28,7 @@ class Evenements
     #[EntityParameter('date', 'DateTime', 'date')]
     private DateTime $date;
 
-    #[EntityParameter('createdAt;', 'DateTime', 'created_at')]
+    #[EntityParameter('createdAt', 'DateTime', 'created_at')]
     private DateTime $createdAt;
 
     #[EntityParameter('updatedAt', 'DateTime', 'updated_at')]
@@ -46,7 +46,7 @@ class Evenements
     #[EntityParameter('idCategorie', 'int', 'id_categorie')]
     private int $idCategorie;
 
-    #[EntityParameter('$dStatut', 'int', 'id_statut')]
+    #[EntityParameter('idStatut', 'int', 'id_statut')]
     private int $idStatut;
 
     /**

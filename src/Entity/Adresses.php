@@ -19,7 +19,7 @@ class Adresses
     #[EntityParameter('coordonneLatitude', 'float', 'coordonne_latitude')]
     private float $coordonneLatitude;
 
-    #[EntityParameter('villeLibelle;', 'string' , 'ville_libelle')]
+    #[EntityParameter('villeLibelle', 'string' , 'ville_libelle')]
     private string $villeLibelle;
 
     #[EntityParameter('cpVille', 'string', 'cp_ville')]

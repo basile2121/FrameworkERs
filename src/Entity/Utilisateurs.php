@@ -7,7 +7,7 @@ use DateTime;
 
 class Utilisateurs
 {
-    #[EntityParameter('id', 'int' , 'id_utilisateur')]
+    #[EntityParameter('idUtilisateur', 'int' , 'id_utilisateur')]
     private int $idUtilisateur;
 
     #[EntityParameter('nom', 'string', 'nom')]
@@ -19,7 +19,7 @@ class Utilisateurs
     #[EntityParameter('dateNaissance', 'DateTime', 'date_naissance')]
     private DateTime $dateNaissance;
 
-    #[EntityParameter('dateInscription;', 'DateTime' , 'date_inscription')]
+    #[EntityParameter('dateInscription', 'DateTime' , 'date_inscription')]
     private DateTime $dateInscription;
 
     #[EntityParameter('mail', 'string', 'mail')]
@@ -28,11 +28,11 @@ class Utilisateurs
     #[EntityParameter('telephone', 'string', 'telephone')]
     private string $telephone;
 
-    #[EntityParameter('password;', 'string', 'password')]
+    #[EntityParameter('password', 'string', 'password')]
     private string $password;
 
-    #[EntityParameter('idPromotion', 'string', 'id_promotion')]
-    private string $idPromotion;
+    #[EntityParameter('idPromotion', 'int', 'id_promotion')]
+    private int $idPromotion;
 
     #[EntityParameter('idRole', 'int', 'id_role')]
     private int $idRole;
@@ -166,17 +166,17 @@ class Utilisateurs
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getIdPromotion(): string
+    public function getIdPromotion(): int
     {
         return $this->idPromotion;
     }
 
     /**
-     * @param string $idPromotion
+     * @param int $idPromotion
      */
-    public function setIdPromotion(string $idPromotion): void
+    public function setIdPromotion(int $idPromotion): void
     {
         $this->idPromotion = $idPromotion;
     }

@@ -13,12 +13,23 @@ if (
 use App\Config\PdoConnection;
 use App\Config\TwigEnvironment;
 use App\DependencyInjection\Container;
-use App\Repository\UserRepository;
+use App\Repository\AdressesRepository;
+use App\Repository\AppartientRepository;
+use App\Repository\CategoriesRepository;
+use App\Repository\EcolesRepository;
+use App\Repository\EvenementsRepository;
+use App\Repository\MediasRepository;
+use App\Repository\ParticipeRepository;
+use App\Repository\PromotionsRepository;
+use App\Repository\RolesRepository;
+use App\Repository\StatutsRepository;
+use App\Repository\UtilisateursRepository;
 use App\Routing\ArgumentResolver;
 use App\Routing\RouteNotFoundException;
 use App\Routing\Router;
 use App\Session\Session;
 use App\Session\SessionInterface;
+use App\Utils\Hydrator;
 use Symfony\Component\Dotenv\Dotenv;
 use Twig\Environment;
 
@@ -29,8 +40,21 @@ $dotenv->loadEnv(__DIR__ . '/../.env');
 
 // PDO
 $pdoConnection = new PdoConnection();
+$hydrator = new Hydrator();
 $pdoConnection->init(); // Connexion à la BDD
-$userRepository = new UserRepository($pdoConnection->getPdoConnection());
+
+// Repository
+$utilisateursRepository = new UtilisateursRepository($pdoConnection->getPdoConnection(), $hydrator);
+$statutsRepository = new StatutsRepository($pdoConnection->getPdoConnection(), $hydrator);
+$rolesRepository = new RolesRepository($pdoConnection->getPdoConnection(), $hydrator);
+$promotionsRepository = new PromotionsRepository($pdoConnection->getPdoConnection(), $hydrator);
+$participeRepository = new ParticipeRepository($pdoConnection->getPdoConnection(), $hydrator);
+$mediasRepository = new MediasRepository($pdoConnection->getPdoConnection(), $hydrator);
+$evenementsRepository = new EvenementsRepository($pdoConnection->getPdoConnection(), $hydrator);
+$ecolesRepository = new EcolesRepository($pdoConnection->getPdoConnection(), $hydrator);
+$categoriesRepository = new CategoriesRepository($pdoConnection->getPdoConnection(), $hydrator);
+$appartientRepository = new AppartientRepository($pdoConnection->getPdoConnection(), $hydrator);
+$adressesRepository = new AdressesRepository($pdoConnection->getPdoConnection(), $hydrator);
 
 // Twig - Vue
 $twigEnvironment = new TwigEnvironment();
@@ -40,7 +64,17 @@ $twig = $twigEnvironment->init();
 $container = new Container();
 $container->set(Environment::class, $twig);
 $container->set(SessionInterface::class, new Session());
-$container->set(UserRepository::class, $userRepository);
+$container->set(UtilisateursRepository::class, $utilisateursRepository);
+$container->set(StatutsRepository::class, $statutsRepository);
+$container->set(RolesRepository::class, $rolesRepository);
+$container->set(ParticipeRepository::class, $participeRepository);
+$container->set(MediasRepository::class, $mediasRepository);
+$container->set(EvenementsRepository::class, $evenementsRepository);
+$container->set(EcolesRepository::class, $ecolesRepository);
+$container->set(CategoriesRepository::class, $categoriesRepository);
+$container->set(AppartientRepository::class, $appartientRepository);
+$container->set(AdressesRepository::class, $adressesRepository);
+$container->set(PromotionsRepository::class, $promotionsRepository);
 
 // Routage
 $router = new Router($container, new ArgumentResolver());

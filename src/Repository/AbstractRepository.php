@@ -28,7 +28,6 @@ abstract class AbstractRepository
         if ($orderBy) {
             $query .= ' ORDER BY ' . $orderBy . ' ' . $direction;
         }
-
         return $this->setHydrate($this->pdo->query($query)->fetchAll(PDO::FETCH_ASSOC));
     }
 
@@ -52,6 +51,15 @@ abstract class AbstractRepository
     {
         $statement = $this->pdo->prepare("DELETE FROM " . static::TABLE . " WHERE id=:id");
         $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * Suppresion d'un element via son id
+     */
+    public function deleteAll(): void
+    {
+        $statement = $this->pdo->prepare("DELETE FROM " . static::TABLE);
         $statement->execute();
     }
 
