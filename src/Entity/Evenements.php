@@ -49,6 +49,21 @@ class Evenements
     #[EntityParameter('idStatut', 'int', 'id_statut')]
     private int $idStatut;
 
+    #[EntityParameter('utilisateurs', 'Object', 'id_utilisateur', 'App\Entity\Utilisateurs', 'App\Repository\UtilisateursRepository')]
+    private Utilisateurs $utilisateurs;
+
+    #[EntityParameter('adresses', 'Object', 'id_adresse', 'App\Entity\Adresses', 'App\Repository\AdressesRepository')]
+    private Adresses $adresses;
+
+    #[EntityParameter('medias', 'Object', 'id_media', 'App\Entity\Medias', 'App\Repository\MediasRepository')]
+    private Medias $medias;
+
+    #[EntityParameter('categories', 'Object', 'id_categorie', 'App\Entity\Categories', 'App\Repository\CategoriesRepository')]
+    private Categories $categories;
+
+    #[EntityParameter('statuts', 'Object', 'id_statut', 'App\Entity\Statuts', 'App\Repository\StatutsRepository')]
+    private Statuts $statuts;
+
     /**
      * @return int
      */
@@ -271,6 +286,86 @@ class Evenements
     public function setIdStatut(int $idStatut): void
     {
         $this->idStatut = $idStatut;
+    }
+
+    /**
+     * @return Utilisateurs
+     */
+    public function getUtilisateurs(): Utilisateurs
+    {
+        return $this->utilisateurs;
+    }
+
+    /**
+     * @param Utilisateurs $utilisateurs
+     */
+    public function setUtilisateurs(Utilisateurs $utilisateurs): void
+    {
+        $this->utilisateurs = $utilisateurs;
+    }
+
+    /**
+     * @return Adresses
+     */
+    public function getAdresses(): Adresses
+    {
+        return $this->adresses;
+    }
+
+    /**
+     * @param Adresses $adresses
+     */
+    public function setAdresses(Adresses $adresses): void
+    {
+        $this->adresses = $adresses;
+    }
+
+    /**
+     * @return Medias
+     */
+    public function getMedias(): Medias
+    {
+        return $this->medias;
+    }
+
+    /**
+     * @param Medias $medias
+     */
+    public function setMedias(Medias $medias): void
+    {
+        $this->medias = $medias;
+    }
+
+    /**
+     * @return Categories
+     */
+    public function getCategories(): Categories
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param Categories $categories
+     */
+    public function setCategories(Categories $categories): void
+    {
+        $this->categories = $categories;
+    }
+
+    /**
+     * @return Statuts
+     */
+    public function getStatuts(): Statuts
+    {
+        return $this->statuts;
+    }
+
+    /**
+     * @param Statuts $statuts
+     */
+    public function setStatuts(Statuts $statuts): void
+    {
+        $this->statuts = $statuts;
     }
 
 }

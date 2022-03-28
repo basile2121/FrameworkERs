@@ -7,6 +7,7 @@ use App\Entity\Utilisateurs;
 final class UtilisateursRepository extends AbstractRepository
 {
     protected const TABLE = 'utilisateurs';
+    protected const ID = 'id_utilisateur';
 
     public function save(Utilisateurs $utilisateurs): bool
     {

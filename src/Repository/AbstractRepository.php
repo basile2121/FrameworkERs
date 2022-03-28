@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\User;
 use App\Utils\Hydrator;
 use PDO;
 use ReflectionException;
@@ -12,6 +11,7 @@ abstract class AbstractRepository
   protected PDO $pdo;
   protected Hydrator $hydrator;
   protected const TABLE = '';
+  protected const ID = '';
 
   public function __construct(PDO $pdo, Hydrator $hydrator)
   {
@@ -34,14 +34,16 @@ abstract class AbstractRepository
     /**
      * Recuperation d'un seul element via son id
      */
-    public function selectOneById(int $id): array
+    public function selectOneById(int $id): ?object
     {
-        $statement = $this->pdo->prepare("SELECT * FROM " . static::TABLE . " WHERE id=:id");
+        $statement = $this->pdo->prepare("SELECT * FROM " . static::TABLE . " WHERE ". static::ID . " = :id");
         $statement->bindValue('id', $id, \PDO::PARAM_INT);
         $statement->execute();
         $results = $statement->fetch();
-
-        return ($results !== false) ? $results : [];
+        if ($results) {
+            return $this->setHydrateOne($results);
+        }
+        return null;
     }
 
     /**
@@ -49,7 +51,7 @@ abstract class AbstractRepository
      */
     public function delete(int $id): void
     {
-        $statement = $this->pdo->prepare("DELETE FROM " . static::TABLE . " WHERE id=:id");
+        $statement = $this->pdo->prepare("DELETE FROM " . static::TABLE . " WHERE ". static::ID . " =:id");
         $statement->bindValue('id', $id, \PDO::PARAM_INT);
         $statement->execute();
     }
@@ -64,12 +66,29 @@ abstract class AbstractRepository
     }
 
     /**
+     * Hydradation pour les findAll
+     * Le tableau est un tableau contenant un tableau associatif de clef valeur ou les clef sont les attributs sql
      * @throws ReflectionException
      */
     public function setHydrate(array $data): array
     {
         $classStrName = "App\\Entity\\" . ucfirst(static::TABLE);
         return $this->hydrator->hydrateAll($data, $classStrName);
+    }
+
+    /**
+     * Hydratation pour les findOne
+     * Le tableau est un tableau associatif de clef valeur ou les clef sont les attributs sql
+     * @param array $data
+     * @return Object
+     * @throws ReflectionException
+     */
+    public function setHydrateOne(array $data): Object
+    {
+        $classStrName = "App\\Entity\\" . ucfirst(static::TABLE);
+        $model =  new $classStrName();
+        $parameters = $this->hydrator->getParameters($model);
+        return $this->hydrator->hydrate($data, $model,$parameters );
     }
 
 }

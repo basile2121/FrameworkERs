@@ -24,7 +24,6 @@ use App\Repository\ParticipeRepository;
 use App\Repository\PromotionsRepository;
 use App\Repository\RolesRepository;
 use App\Repository\StatutsRepository;
-use App\Repository\UserRepository;
 use App\Repository\UtilisateursRepository;
 use Faker\Factory;
 use Faker\Generator;
@@ -32,18 +31,17 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'app:generate-fixtures',
-    description: 'Generate fake datas.',
+    description: 'Generate fake datas',
     hidden: false,
 )]
 class GenerateFixtures extends Command
 {
-    // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'app:generate-fixtures';
     private Container $container;
     private Generator $faker;
 
@@ -70,10 +68,10 @@ class GenerateFixtures extends Command
         'Statuts' => [],
     ];
 
-    public function __construct(Container $container, string $name = null)
+    public function __construct(Container $container)
     {
         $this->container = $container;
-        parent::__construct($name);
+        parent::__construct();
     }
 
     protected function configure(): void
@@ -87,6 +85,10 @@ class GenerateFixtures extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+
+        $outputStyle = new OutputFormatterStyle('green', '#fff', ['bold', 'blink']);
+        $output->getFormatter()->setStyle('sucess', $outputStyle);
+
         $this->faker = $this->container->get(Factory::class);
         $tabRepos =  [
             AppartientRepository::class,
@@ -101,43 +103,56 @@ class GenerateFixtures extends Command
             StatutsRepository::class,
         ];
 
-        $output->writeln('Vidage des tables');
+        $output->writeln('<comment>Vidage des tables</comment>');
         $this->_deleteAll($tabRepos);
 
-        $output->writeln('Chargement des Status');
+        $output->writeln('<comment>Chargement des Status</comment>');
         $this->_loadStatuts();
-        $output->writeln('Chargement des Roles');
+        $output->writeln('<comment>Chargement des Roles</comment>');
         $this->_loadRoles();
-        $output->writeln('Chargement des Categories');
+        $output->writeln('<comment>Chargement des Categories</comment>');
         $this->_loadCategories();
-        $output->writeln('Chargement des Medias');
+        $output->writeln('<comment>Chargement des Medias</comment>');
         //$this->_loadMedias();
-        $output->writeln('Chargement des Ecoles');
+        $output->writeln('<comment>Chargement des Ecoles</comment>');
         $this->_loadEcoles();
-        $output->writeln('Chargement des Adresses');
+        $output->writeln('<comment>Chargement des Adresses</comment>');
         $this->_loadAdresses();
-        $output->writeln('Chargement des Promotions');
+        $output->writeln('<comment>Chargement des Promotions</comment>');
         $this->_loadPromotions();
-        $output->writeln('Chargement des Utilisateurs');
+        $output->writeln('<comment>Chargement des Utilisateurs</comment>');
         $this->_loadUtilisateurs();
-        $output->writeln('Chargement des Evenements');
+        $output->writeln('<comment>Chargement des Evenements</comment>');
         $this->_loadEvenements();
-        $output->writeln('Chargement Participe');
+        $output->writeln('<comment>Chargement Participe</comment>');
         $this->_loadParticipe();
-        $output->writeln('Chargement Appartient');
+        $output->writeln('<comment>Chargement Appartient</comment>');
         $this->_loadAppartient();
 
-        $output->writeln('Fin de la commande');
+        $output->writeln('<sucess>Fin de la commande</sucess>');
         return Command::SUCCESS;
     }
 
+    /**
+     * Vidages de toutes les tables
+     * @param array $tabRepos
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     private function _deleteAll(array $tabRepos){
         foreach ($tabRepos as $repo) {
             $this->container->get($repo)->deleteAll();
         }
     }
 
+    /**
+     * Chargement des utilisateurs
+     * Fake données grace au bundle faker
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     private function _loadUtilisateurs(){
+        // Creation de NB_UTILISATEURS utilisateurs
         for ($i = 0; $i < static::NB_UTILISATEURS; $i++) {
             $user = new Utilisateurs();
             $user->setNom($this->faker->firstName);
@@ -147,14 +162,19 @@ class GenerateFixtures extends Command
             $user->setMail($this->faker->email);
             $user->setTelephone('0609213456');
             $user->setPassword($this->faker->password);
+            // Generation d'un id aleatoire entre les bornes des id des tables
             $user->setIdPromotion($this->faker->numberBetween($this->idArray['Promotions'][0], $this->idArray['Promotions'][1]));
             $user->setIdRole($this->faker->numberBetween($this->idArray['Roles'][0], $this->idArray['Roles'][1]));
 
             $this->container->get(UtilisateursRepository::class)->save($user);
         }
 
-        // Ajout des id déclarés dans la bdd
+        /**
+         * Ajout des bornes des id utilisateurs qui sont déclarés dans la bdd
+         * Le but est de savoir qu'elle id est utilisable par les autres tables pour faire des liasons
+         */
         $utilisateursBDD = $this->container->get(UtilisateursRepository::class)->selectAll('id_utilisateur');
+        // Premier et dernier id utilisateurs
         array_push($this->idArray['Utilisateurs'], $utilisateursBDD[0]->getIdUtilisateur(), end($utilisateursBDD)->getIdUtilisateur());
     }
 

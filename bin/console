@@ -29,9 +29,12 @@ use App\Repository\UtilisateursRepository;
 $dotenv = new Dotenv();
 $dotenv->loadEnv(__DIR__ . '/../.env');
 
+// Container
+$container = new Container();
+
 // PDO
 $pdoConnection = new PdoConnection();
-$hydrator = new Hydrator();
+$hydrator = new Hydrator($container);
 $pdoConnection->init(); // Connexion à la BDD
 
 // Repository
@@ -51,7 +54,6 @@ $adressesRepository = new AdressesRepository($pdoConnection->getPdoConnection(),
 $faker = Factory::create('fr_FR');
 
 // Service Container
-$container = new Container();
 $container->set(UtilisateursRepository::class, $utilisateursRepository);
 $container->set(StatutsRepository::class, $statutsRepository);
 $container->set(RolesRepository::class, $rolesRepository);

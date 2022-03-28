@@ -7,6 +7,7 @@ use App\Entity\Medias;
 final class MediasRepository extends AbstractRepository
 {
     protected const TABLE = 'medias';
+    protected const ID = 'id_media';
 
     public function save(Medias $medias): bool
     {

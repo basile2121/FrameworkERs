@@ -7,6 +7,7 @@ use App\Entity\Promotions;
 final class PromotionsRepository extends AbstractRepository
 {
     protected const TABLE = 'promotions';
+    protected const ID = 'id_promotion';
 
     public function save(Promotions $promotions): bool
     {

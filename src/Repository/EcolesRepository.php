@@ -7,6 +7,7 @@ use App\Entity\Ecoles;
 final class EcolesRepository extends AbstractRepository
 {
     protected const TABLE = 'ecoles';
+    protected const ID = 'id_ecole';
 
     public function save(Ecoles $ecoles): bool
     {

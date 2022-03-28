@@ -16,6 +16,9 @@ class Promotions
     #[EntityParameter('idEcole', 'int', 'id_ecole')]
     private int $idEcole;
 
+    #[EntityParameter('ecoles', 'Object', 'id_ecole', 'App\Entity\Ecoles', 'App\Repository\EcolesRepository')]
+    private Ecoles $ecoles;
+
     /**
      * @return int
      */
@@ -62,6 +65,22 @@ class Promotions
     public function setIdEcole(int $idEcole): void
     {
         $this->idEcole = $idEcole;
+    }
+
+    /**
+     * @return Ecoles
+     */
+    public function getEcoles(): Ecoles
+    {
+        return $this->ecoles;
+    }
+
+    /**
+     * @param Ecoles $ecoles
+     */
+    public function setEcoles(Ecoles $ecoles): void
+    {
+        $this->ecoles = $ecoles;
     }
 }
 

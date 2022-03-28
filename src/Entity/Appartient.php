@@ -16,6 +16,12 @@ class Appartient
     #[EntityParameter('idCategorie', 'int', 'id_categorie')]
     private int $idCategorie;
 
+    #[EntityParameter('evenements', 'Object', 'id_evenement', 'App\Entity\Evenements', 'App\Repository\EvenementsRepository')]
+    private Evenements $evenements;
+
+    #[EntityParameter('categories', 'Object', 'id_categorie', 'App\Entity\Categories', 'App\Repository\CategoriesRepository')]
+    private Categories $categories;
+
     /**
      * @return int
      */
@@ -63,4 +69,37 @@ class Appartient
     {
         $this->idCategorie = $idCategorie;
     }
+
+    /**
+     * @return Evenements
+     */
+    public function getEvenements(): Evenements
+    {
+        return $this->evenements;
+    }
+
+    /**
+     * @param Evenements $evenements
+     */
+    public function setEvenements(Evenements $evenements): void
+    {
+        $this->evenements = $evenements;
+    }
+
+    /**
+     * @return Categories
+     */
+    public function getCategories(): Categories
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param Categories $categories
+     */
+    public function setCategories(Categories $categories): void
+    {
+        $this->categories = $categories;
+    }
+
 }

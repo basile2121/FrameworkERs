@@ -7,6 +7,7 @@ use App\Entity\Adresses;
 final class AdressesRepository extends AbstractRepository
 {
     protected const TABLE = 'adresses';
+    protected const ID = 'id_adresse';
 
     public function save(Adresses $adresses): bool
     {

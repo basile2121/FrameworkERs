@@ -7,6 +7,7 @@ use App\Entity\Statuts;
 final class StatutsRepository extends AbstractRepository
 {
     protected const TABLE = 'statuts';
+    protected const ID = 'id_statut';
 
     public function save(Statuts $statuts): bool
     {

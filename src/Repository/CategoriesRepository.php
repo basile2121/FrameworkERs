@@ -7,6 +7,7 @@ use App\Entity\Categories;
 final class CategoriesRepository extends AbstractRepository
 {
     protected const TABLE = 'categories';
+    protected const ID = 'id_categorie';
 
     public function save(Categories $categories): bool
     {

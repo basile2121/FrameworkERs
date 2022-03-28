@@ -37,6 +37,12 @@ class Utilisateurs
     #[EntityParameter('idRole', 'int', 'id_role')]
     private int $idRole;
 
+    #[EntityParameter('promotions', 'Object', 'id_promotion', 'App\Entity\Promotions', 'App\\Repository\\PromotionsRepository')]
+    private Promotions $promotions;
+
+    #[EntityParameter('roles', 'Object', 'id_role', 'App\Entity\Roles', 'App\\Repository\\RolesRepository')]
+    private Roles $roles;
+
     /**
      * @return int
      */
@@ -195,6 +201,38 @@ class Utilisateurs
     public function setIdRole(int $idRole): void
     {
         $this->idRole = $idRole;
+    }
+
+    /**
+     * @return Promotions
+     */
+    public function getPromotions(): Promotions
+    {
+        return $this->promotions;
+    }
+
+    /**
+     * @param Promotions $promotions
+     */
+    public function setPromotions(Promotions $promotions): void
+    {
+        $this->promotions = $promotions;
+    }
+
+    /**
+     * @return Roles
+     */
+    public function getRoles(): Roles
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param Roles $roles
+     */
+    public function setRoles(Roles $roles): void
+    {
+        $this->roles = $roles;
     }
 
 }

@@ -7,6 +7,7 @@ use App\Entity\Appartient;
 final class AppartientRepository extends AbstractRepository
 {
     protected const TABLE = 'appartient';
+    protected const ID = 'id';
 
     public function save(Appartient $appartient): bool
     {

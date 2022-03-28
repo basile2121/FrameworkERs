@@ -7,6 +7,7 @@ use App\Entity\Roles;
 final class RolesRepository extends AbstractRepository
 {
     protected const TABLE = 'roles';
+    protected const ID = 'id_role';
 
     public function save(Roles $roles): bool
     {

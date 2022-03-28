@@ -38,9 +38,12 @@ use Twig\Environment;
 $dotenv = new Dotenv();
 $dotenv->loadEnv(__DIR__ . '/../.env');
 
+// Container
+$container = new Container();
 // PDO
 $pdoConnection = new PdoConnection();
-$hydrator = new Hydrator();
+// Hydrator
+$hydrator = new Hydrator($container);
 $pdoConnection->init(); // Connexion à la BDD
 
 // Repository
@@ -61,7 +64,6 @@ $twigEnvironment = new TwigEnvironment();
 $twig = $twigEnvironment->init();
 
 // Service Container
-$container = new Container();
 $container->set(Environment::class, $twig);
 $container->set(SessionInterface::class, new Session());
 $container->set(UtilisateursRepository::class, $utilisateursRepository);

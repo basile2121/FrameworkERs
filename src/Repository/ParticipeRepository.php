@@ -7,6 +7,7 @@ use App\Entity\Participe;
 final class ParticipeRepository extends AbstractRepository
 {
     protected const TABLE = 'participe';
+    protected const ID = 'id';
 
     public function save(Participe $participe): bool
     {

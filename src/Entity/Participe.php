@@ -16,6 +16,12 @@ class Participe
     #[EntityParameter('idEvenement', 'int', 'id_evenement')]
     private int $idEvenement;
 
+    #[EntityParameter('utilisateurs', 'Object', 'id_utilisateur', 'App\Entity\Utilisateurs', 'App\Repository\UtilisateursRepository')]
+    private Utilisateurs $utilisateurs;
+
+    #[EntityParameter('evenements', 'Object', 'id_evenement', 'App\Entity\Evenements', 'App\Repository\EvenementsRepository')]
+    private Evenements $evenements;
+
     /**
      * @return int
      */
@@ -62,5 +68,37 @@ class Participe
     public function setIdEvenement(int $idEvenement): void
     {
         $this->idEvenement = $idEvenement;
+    }
+
+    /**
+     * @return Utilisateurs
+     */
+    public function getUtilisateurs(): Utilisateurs
+    {
+        return $this->utilisateurs;
+    }
+
+    /**
+     * @param Utilisateurs $utilisateurs
+     */
+    public function setUtilisateurs(Utilisateurs $utilisateurs): void
+    {
+        $this->utilisateurs = $utilisateurs;
+    }
+
+    /**
+     * @return Evenements
+     */
+    public function getEvenements(): Evenements
+    {
+        return $this->evenements;
+    }
+
+    /**
+     * @param Evenements $evenements
+     */
+    public function setEvenements(Evenements $evenements): void
+    {
+        $this->evenements = $evenements;
     }
 }
