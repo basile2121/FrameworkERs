@@ -106,6 +106,7 @@ class GenerateFixtures extends Command
         $output->writeln('<comment>Vidage des tables</comment>');
         $this->_deleteAll($tabRepos);
 
+        // Chargement des données dans un ordre logique
         $output->writeln('<comment>Chargement des Status</comment>');
         $this->_loadStatuts();
         $output->writeln('<comment>Chargement des Roles</comment>');

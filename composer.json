@@ -29,12 +29,12 @@
   },
   "autoload": {
     "psr-4": {
-      "App\\": "../../../ESGIcours/Projet Annuel/FrameworkERs/src/"
+      "App\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "App\\Tests\\": "../../../ESGIcours/Projet Annuel/FrameworkERs/tests/"
+      "App\\Tests\\": "tests/"
     }
   },
   "require-dev": {

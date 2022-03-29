@@ -67,6 +67,8 @@ $container->set(AdressesRepository::class, $adressesRepository);
 $container->set(PromotionsRepository::class, $promotionsRepository);
 $container->set(Factory::class, $faker);
 
+
+// Declaration de la commande
 $application = new Application();
 $application->add(new GenerateFixtures($container));
 $application->run();
