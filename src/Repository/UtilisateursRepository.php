@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Utilisateurs;
+use ReflectionException;
 
 final class UtilisateursRepository extends AbstractRepository
 {
@@ -25,5 +26,44 @@ final class UtilisateursRepository extends AbstractRepository
             'idPromotion' => $utilisateurs->getIdPromotion(),
             'idRole' => $utilisateurs->getIdRole(),
         ]);
+    }
+
+    public function update(Utilisateurs $utilisateurs): bool
+    {
+        $stmt = $this->pdo->prepare("UPDATE utilisateurs SET 
+                        `nom` = :nom,
+                        `prenom` = :prenom,
+                        `date_naissance` = :dateNaissance,
+                        `mail` = :mail,
+                        `telephone` = :telephone,
+                        `id_promotion` = :idPromotion,
+                        `id_role` = :idRole 
+                        WHERE `id_utilisateur` = :idUtilisateur" );
+
+        return $stmt->execute([
+            'nom' => $utilisateurs->getNom(),
+            'prenom' => $utilisateurs->getPrenom(),
+            'dateNaissance' => $utilisateurs->getDateNaissance()->format('Y-m-d'),
+            'mail' => $utilisateurs->getMail(),
+            'telephone' => $utilisateurs->getTelephone(),
+            'idPromotion' => $utilisateurs->getIdPromotion(),
+            'idRole' => $utilisateurs->getIdRole(),
+            'idUtilisateur' => $utilisateurs->getIdUtilisateur()
+        ]);
+    }
+
+    /**
+     * Recuperation de toutes les données.
+     * @throws ReflectionException
+     */
+    public function filterUtilisateur(array $conditions, array $parameters): array
+    {
+        $query = 'SELECT * FROM ' . static::TABLE;
+        $query .= " WHERE ".implode(" AND ", $conditions);
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($parameters);
+        $data = $stmt->fetchAll();
+        return $this->setHydrate($data);
     }
 }

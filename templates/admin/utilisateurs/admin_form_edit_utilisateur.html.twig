@@ -1,0 +1,50 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Modifier l'utilisateur{% endblock %}
+
+
+{% block content %}
+    <h1 class="display-1 text-center mt-5">Modifier l'utilisateur</h1>
+    <main>
+        <form class="form-admin" method="POST" action="/admin/update/utilisateurs">
+            <div class="form-group">
+                <label for="userName">Nom</label>
+                <input type="text" name="nom" class="form-control" id="userName" value="{{ utilisateur.nom }}" placeholder="Nom">
+            </div>
+            <div class="form-group">
+                <label for="userFirstName">Prenom</label>
+                <input type="text" name="prenom" class="form-control" id="userFirstName" value="{{ utilisateur.prenom }}" placeholder="Prénom">
+            </div>
+            <div class="form-group">
+                <label for="userBirthDate">Date de naissance</label>
+                <input type="date" name="dateNaissance" class="form-control" id="userBirthDate" value="{{ utilisateur.dateNaissance | date('Y-m-d') }}" placeholder="Date de naissance">
+            </div>
+            <div class="form-group">
+                <label for="userMail">Mail</label>
+                <input type="email" name="mail" class="form-control" id="userMail" value="{{ utilisateur.mail }}" placeholder="Adresse mail">
+            </div>
+            <div class="form-group">
+                <label for="userPhoneNumber">Téléphone</label>
+                <input type="text" name="telephone" class="form-control" id="userPhoneNumber" value="{{ utilisateur.telephone }}" placeholder="Numéro de téléphone">
+            </div>
+            <div class="form-group">
+                <label for="promotionSelect">Promotions</label>
+                <select name="promotion" id="promotionSelect">
+                    {% for promotion in promotions %}
+                        <option value="{{ promotion.idPromotion }}">{{ promotion.libellePromotion }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="rolesSelect">Roles</label>
+                <select name="role" id="rolesSelect">
+                    {% for role in roles %}
+                        <option value="{{ role.idRole }}">{{ role.libelleRole }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" name="id" class="btn btn-primary" value="{{ utilisateur.idUtilisateur }}">Sauvegarder</button>
+            <a href="/admin/utilisateurs" class="btn btn-primary">Annuler</a>
+        </form>
+    </main>
+{% endblock %}

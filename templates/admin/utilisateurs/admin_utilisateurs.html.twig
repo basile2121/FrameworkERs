@@ -1,0 +1,96 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Gestions des utilisateurs{% endblock %}
+
+
+{% block content %}
+    <h1 class="display-1 text-center mt-5">Utilisateurs</h1>
+    <main>
+        <form class="form-admin" method="POST" action="/admin/utilisateurs/filter">
+            <div class="form-group">
+                <label for="searchUserLastName">Rechercher un utilisateur par nom</label>
+                <input type="text" value="{{ filtres['filtre_lastName'] }}" name="filtre_lastName" class="form-control" id="searchUserLastName" placeholder="Nom de l'utilisateur">
+            </div>
+            <div class="form-group">
+                <label for="searchUserFirstName">Rechercher un utilisateur par son prénom</label>
+                <input type="text" value="{{ filtres['filtre_firstName'] }}" name="filtre_firstName" class="form-control" id="searchUserFirstName" placeholder="Prénom de l'utilisateur">
+            </div>
+            <div class="form-group">
+                <label for="ecoleSelect">Ecoles</label>
+                <select class="form-select" name="filtre_ecole" id="ecoleSelect">
+                    {% for ecole in ecoles %}
+                        {% if filtres['filtre_ecole'] is defined and ecole.idEcole == filtres['filtre_ecole'] %}
+                            <option selected value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
+                        {% else %}
+                            <option value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="promotionsSelect">Promotions</label>
+                <select class="form-select" name="filtre_promotion" class="form-control" id="promotionsSelect">
+                    {% for promotion in promotions %}
+                        {% if filtres['filtre_promotion'] is defined and promotion.idPromotion == filtres['filtre_promotion'] %}
+                            <option selected value="{{ promotion.idPromotion }}">{{ promotion.libellePromotion }}</option>
+                        {% else %}
+                            <option value="{{ promotion.idPromotion }}">{{ promotion.libellePromotion }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="rolesSelect">Roles</label>
+                <select class="form-select" name="filtre_role" id="rolesSelect">
+                    {% for role in promotions %}
+                        {% if filtres['filtre_role'] is defined and role.idRole == filtres['filtre_role'] %}
+                            <option selected value="{{ role.idRole }}">{{ role.libelleRole }}</option>
+                        {% else %}
+                            <option value="{{ role.idRole }}">{{ role.libelleRole }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
+            <a href="/admin/utilisateurs" class="btn btn-primary">Annuler</a>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Prénom</th>
+                    <th scope="col">Date de naissance</th>
+                    <th scope="col">Date d'inscription</th>
+                    <th scope="col">Mail</th>
+                    <th scope="col">Téléphone</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Ecole</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for utilisateur in utilisateurs %}
+                <tr>
+                    <th scope="row">{{ utilisateur.nom }}</th>
+                    <td>{{ utilisateur.prenom }}</td>
+                    <td>{{ utilisateur.dateNaissance | date('d-m-Y') }}</td>
+                    <td>{{ utilisateur.dateInscription | date('d-m-Y')}}</td>
+                    <td>{{ utilisateur.mail }}</td>
+                    <td>{{ utilisateur.telephone }}</td>
+                    <td>{{ utilisateur.roles.libelleRole }}</td>
+                    <td>{{ utilisateur.nom }}</td>
+                    <td>
+                        <form method="POST" action="/admin/edit/utilisateurs" >
+                            <button type="submit" name="id" class="btn btn-warning" value="{{ utilisateur.idUtilisateur}}">Modifier</button>
+                        </form>
+                        <form method="POST" action="/admin/delete/utilisateurs" >
+                            <button type="submit" name="id" class="btn btn-danger" value="{{ utilisateur.idUtilisateur }}">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </main>
+{% endblock %}

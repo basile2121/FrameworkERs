@@ -1,0 +1,14 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Menu d'administration{% endblock %}
+
+
+{% block content %}
+    <h1 class="display-1 text-center mt-5">Espace administrateur</h1>
+    <main>
+        <a href="/admin/evenement/create">Creer un evenement</a>
+        <a href="/admin/evenements">Gerer les evenements</a>
+        <a href="/admin/utilisateurs">Gerer les utilisateurs</a>
+        <a href="/admin/ecoles">Gerer les ecoles</a>
+    </main>
+{% endblock %}
