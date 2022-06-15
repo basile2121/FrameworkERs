@@ -42,7 +42,7 @@
             <div class="form-group">
                 <label for="rolesSelect">Roles</label>
                 <select class="form-select" name="filtre_role" id="rolesSelect">
-                    {% for role in promotions %}
+                    {% for role in roles %}
                         {% if filtres['filtre_role'] is defined and role.idRole == filtres['filtre_role'] %}
                             <option selected value="{{ role.idRole }}">{{ role.libelleRole }}</option>
                         {% else %}
