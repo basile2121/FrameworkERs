@@ -20,4 +20,15 @@ class IndexController extends AbstractController
   {
     echo $this->twig->render('index/contact.html.twig');
   }
+  #[Route(path: "/users", name: "users", httpMethod: "GET")]
+  public function users()
+  {
+    $users="walid";
+    echo $this->twig->render('user/list.html.twig', ['users'=> $users]);
+  }
+  #[Route(path: "/base", name: "base", httpMethod: "GET")]
+  public function base()
+  {
+    echo $this->twig->render('base.html.twig');
+  }
 }
