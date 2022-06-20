@@ -30,24 +30,18 @@
             <div class="form-group">
                 <label for="promotionSelect">Promotions</label>
                 <select name="promotion" id="promotionSelect">
+                    <option disabled selected>Selectioner une promotion</option>
                     {% for promotion in promotions %}
-                        {% if promotion.idPromotion == utilisateur.promotions.idPromotion %}
-                            <option selected value="{{ promotion.idPromotion }}">{{ promotion.libellePromotion }}</option>
-                        {% else %}
-                            <option value="{{ promotion.idPromotion }}">{{ promotion.libellePromotion }}</option>
-                        {% endif %}
+                        <option {% if promotion.idPromotion == utilisateur.promotions.idPromotion %} selected {% endif %} value="{{ promotion.idPromotion }}">{{ promotion.libellePromotion }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="form-group">
                 <label for="rolesSelect">Roles</label>
                 <select name="role" id="rolesSelect">
+                    <option disabled selected>Selectioner un role</option>
                     {% for role in roles %}
-                        {% if role.idRole == utilisateur.roles.idRole %}
-                            <option selected value="{{ role.idRole }}">{{ role.libelleRole }}</option>
-                        {% else %}
-                            <option value="{{ role.idRole }}">{{ role.libelleRole }}</option>
-                        {% endif %}
+                        <option  {% if role.idRole == utilisateur.roles.idRole %} selected {% endif %} value="{{ role.idRole }}">{{ role.libelleRole }}</option>
                     {% endfor %}
                 </select>
             </div>

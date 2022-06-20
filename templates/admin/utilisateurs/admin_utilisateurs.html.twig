@@ -18,36 +18,27 @@
             <div class="form-group">
                 <label for="ecoleSelect">Ecoles</label>
                 <select class="form-select" name="filtre_ecole" id="ecoleSelect">
+                    <option disabled selected>Selectioner une écoles</option>
                     {% for ecole in ecoles %}
-                        {% if filtres['filtre_ecole'] is defined and ecole.idEcole == filtres['filtre_ecole'] %}
-                            <option selected value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
-                        {% else %}
-                            <option value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
-                        {% endif %}
+                        <option  {% if filtres['filtre_ecole'] is defined and ecole.idEcole == filtres['filtre_ecole'] %} selected {% endif %} value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="form-group">
                 <label for="promotionsSelect">Promotions</label>
                 <select class="form-select" name="filtre_promotion" class="form-control" id="promotionsSelect">
+                    <option disabled selected>Selectioner une promotion</option>
                     {% for promotion in promotions %}
-                        {% if filtres['filtre_promotion'] is defined and promotion.idPromotion == filtres['filtre_promotion'] %}
-                            <option selected value="{{ promotion.idPromotion }}">{{ promotion.libellePromotion }}</option>
-                        {% else %}
-                            <option value="{{ promotion.idPromotion }}">{{ promotion.libellePromotion }}</option>
-                        {% endif %}
+                        <option {% if filtres['filtre_promotion'] is defined and promotion.idPromotion == filtres['filtre_promotion'] %} selected  {% endif %} value="{{ promotion.idPromotion }}">{{ promotion.libellePromotion }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="form-group">
                 <label for="rolesSelect">Roles</label>
                 <select class="form-select" name="filtre_role" id="rolesSelect">
+                    <option disabled selected>Selectioner un role</option>
                     {% for role in roles %}
-                        {% if filtres['filtre_role'] is defined and role.idRole == filtres['filtre_role'] %}
-                            <option selected value="{{ role.idRole }}">{{ role.libelleRole }}</option>
-                        {% else %}
-                            <option value="{{ role.idRole }}">{{ role.libelleRole }}</option>
-                        {% endif %}
+                        <option {% if filtres['filtre_role'] is defined and role.idRole == filtres['filtre_role'] %} selected {% endif %} value="{{ role.idRole }}">{{ role.libelleRole }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -55,6 +46,7 @@
             <a href="/admin/utilisateurs" class="btn btn-primary">Annuler</a>
         </form>
 
+        <h2>Liste des utilisateurs</h2>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -91,6 +83,15 @@
                 </tr>
             {% endfor %}
             </tbody>
+            <tfoot>
+                <tr>
+                    {% if utilisateurs is not empty %}
+                        <th>Total utilisateurs {{ utilisateurs | length }}</th>
+                    {% else %}
+                        <th>Aucun utilisateur</th>
+                    {% endif %}
+                </tr>
+            </tfoot>
         </table>
     </main>
 {% endblock %}

@@ -72,7 +72,7 @@ abstract class AbstractRepository
     public function filter(array $conditions, array $parameters, string $additionalQuery = '', string $orderBy = '', string $direction = 'ASC'): array
     {
         $query = 'SELECT * FROM ' . static::TABLE;
-        $query .= $additionalQuery;
+        $query .= ' ' . $additionalQuery;
         $query .= " WHERE ".implode(" AND ", $conditions);
         if ($orderBy) {
             $query .= ' ORDER BY ' . $orderBy . ' ' . $direction;

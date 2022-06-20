@@ -20,6 +20,7 @@
             <a href="/admin/adresses" class="btn btn-primary">Annuler</a>
         </form>
 
+        <h2>Liste des adresses</h2>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -50,6 +51,15 @@
                 </tr>
             {% endfor %}
             </tbody>
+            <tfoot>
+                <tr>
+                    {% if adresses is not empty %}
+                        <th>Total adresses {{ adresses | length }}</th>
+                    {% else %}
+                        <th>Aucune adresse</th>
+                    {% endif %}
+                </tr>
+            </tfoot>
         </table>
     </main>
 {% endblock %}
