@@ -10,7 +10,6 @@ use App\Repository\EvenementsRepository;
 use App\Repository\ParticipeRepository;
 use App\Repository\RolesRepository;
 use App\Repository\StatutsRepository;
-use App\Repository\UserRepository;
 use App\Repository\UtilisateursRepository;
 use App\Routing\Attribute\Route;
 use DateTime;
@@ -75,7 +74,7 @@ class EvenementsController extends AbstractController
      * @throws LoaderError
      * @throws ReflectionException
      */
-    #[Route(path: "/admin/evenements/filter", httpMethod: 'GET', name: "admin_evenements_filter",)]
+    #[Route(path: "/admin/evenements/filter", httpMethod: 'POST', name: "admin_evenements_filter",)]
     public function evenementsFilter(EvenementsRepository $evenementsRepository,
                                      CategoriesRepository $categoriesRepository,
                                      StatutsRepository $statutsRepository,
@@ -93,42 +92,42 @@ class EvenementsController extends AbstractController
         $filtres = [];
         $query = '';
 
-        if (!empty($_GET['filter_titre'])) {
-            $filtres['filter_titre'] = $_GET['filter_titre'];
+        if (!empty($_POST['filter_titre'])) {
+            $filtres['filter_titre'] = $_POST['filter_titre'];
             $conditions[] = 'titre LIKE ?';
-            $parameters[] = '%'.$_GET['filter_titre']."%";
+            $parameters[] = '%'.$_POST['filter_titre']."%";
         }
-        if (!empty($_GET['filtre_categorie'])) {
-            $filtres['filtre_categorie'] = intval($_GET['filtre_categorie']);
+        if (!empty($_POST['filtre_categorie'])) {
+            $filtres['filtre_categorie'] = intval($_POST['filtre_categorie']);
             $conditions[] = 'id_categorie = ?';
-            $parameters[] = intval($_GET['filtre_categorie']);
+            $parameters[] = intval($_POST['filtre_categorie']);
         }
 
-        if (!empty($_GET['filtre_statut'])) {
-            $filtres['filtre_statut'] = intval($_GET['filtre_statut']);
+        if (!empty($_POST['filtre_statut'])) {
+            $filtres['filtre_statut'] = intval($_POST['filtre_statut']);
             $conditions[] = 'id_statut = ?';
-            $parameters[] = intval($_GET['filtre_statut']);
+            $parameters[] = intval($_POST['filtre_statut']);
         }
 
-        if (!empty($_GET['filtre_city']) || !empty($_GET['filtre_cp'])) {
+        if (!empty($_POST['filtre_city']) || !empty($_POST['filtre_cp'])) {
             $query = 'JOIN adresses ON adresses.id_adresse = evenements.id_adresse';
         }
 
-        if (!empty($_GET['filtre_city'])) {
-            $filtres['filtre_city'] = $_GET['filtre_city'];
+        if (!empty($_POST['filtre_city'])) {
+            $filtres['filtre_city'] = $_POST['filtre_city'];
             $conditions[] = 'adresses.ville_libelle LIKE ?';
-            $parameters[] = '%'.$_GET['filtre_city']."%";
+            $parameters[] = '%'.$_POST['filtre_city']."%";
         }
 
-        if (!empty($_GET['filtre_cp'])) {
-            $filtres['filtre_cp'] = $_GET['filtre_cp'];
+        if (!empty($_POST['filtre_cp'])) {
+            $filtres['filtre_cp'] = $_POST['filtre_cp'];
             $conditions[] = 'adresses.cp_ville LIKE ?';
-            $parameters[] = '%'.$_GET['filtre_cp']."%";
+            $parameters[] = '%'.$_POST['filtre_cp']."%";
         }
 
-        if (!empty($_GET['order_date'])) {
-            $filtres['order_date'] = $_GET['order_date'];
-            $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $_GET['order_date']);
+        if (!empty($_POST['order_date'])) {
+            $filtres['order_date'] = $_POST['order_date'];
+            $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $_POST['order_date']);
         } else {
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query);
         }

@@ -21,25 +21,12 @@ final class EcolesRepository extends AbstractRepository
 
     public function update(Ecoles $ecoles): bool
     {
-        var_dump($ecoles);
         $stmt = $this->pdo->prepare("UPDATE ecoles SET 
                         `nom_ecole` = :nomEcole
                         WHERE `id_ecole` = :idEcole");
-
         return $stmt->execute([
             'idEcole' => $ecoles->getIdEcole(),
             'nomEcole' => $ecoles->getNomEcole()
         ]);
-    }
-
-    public function filterEcole(array $conditions, array $parameters): array
-    {
-        $query = 'SELECT * FROM ' . static::TABLE;
-        $query .= " WHERE ".implode(" AND ", $conditions);
-
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute($parameters);
-        $data = $stmt->fetchAll();
-        return $this->setHydrate($data);
     }
 }

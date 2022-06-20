@@ -9,10 +9,9 @@
      <a href="/admin/create/ecoles" class="btn btn-primary">Ajouter une école</a>
         <form class="form-admin" method="POST" action="/admin/ecoles/filter">
             <div class="form-group">
-                <label for="searchEcoleName">Rechercher une école par nom</label>
-                <input type="text" value="{{ filtres['filtre_Name'] }}" name="filtre_Name" class="form-control" id="searchEcoleName" placeholder="Nom de l'école">
+                <label for="filtre_name_ecole">Rechercher une école par nom</label>
+                <input type="text" value="{{ filtres['filtre_name_ecole'] }}" name="filtre_name_ecole" class="form-control" id="filtre_name_ecole" placeholder="Nom de l'école">
             </div>
-           
             <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
             <a href="/admin/ecoles" class="btn btn-primary">Annuler</a>
         </form>
@@ -30,16 +29,24 @@
                     <th scope="row">{{ ecole.nomEcole }}</th>
                     <td>
                         <form method="POST" action="/admin/edit/ecoles" >
-                            <button type="submit" name="id" class="btn btn-warning" value="{{ecole.idEcole}}">Modifier</button>
+                            <button type="submit" name="id" class="btn btn-warning" value="{{ ecole.idEcole }}">Modifier</button>
                         </form>
                         <form method="POST" action="/admin/delete/ecoles" >
-                            <button type="submit" name="id" class="btn btn-danger" value="{{ecole.idEcole}}">Supprimer</button>
+                            <button type="submit" name="id" class="btn btn-danger" value="{{ ecole.idEcole }}">Supprimer</button>
                         </form>
                     </td>
-                    
                 </tr>
             {% endfor %}
             </tbody>
+            <tfoot>
+                <tr>
+                    {% if ecoles is not empty %}
+                        <th>Total écoles : {{ ecoles | length }}</th>
+                    {% else %}
+                        <th>Aucune écoles</th>
+                    {% endif %}
+                </tr>
+            </tfoot>
         </table>
     </main>
 {% endblock %}

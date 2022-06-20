@@ -4,12 +4,9 @@ namespace App\Controller;
 
 use App\Repository\EcolesRepository;
 use App\Repository\PromotionsRepository;
-use App\Repository\RolesRepository;
-use App\Repository\UserRepository;
-use App\Repository\UtilisateursRepository;
 use App\Entity\Promotions;
 use App\Routing\Attribute\Route;
-use DateTime;
+use Exception;
 use ReflectionException;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -27,12 +24,10 @@ class PromotionController extends AbstractController
     {
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
-       
 
         echo $this->twig->render('admin/promotions/admin_promotions.html.twig', [
             'ecoles' => $ecoles,
             'promotions' => $promotions,
-            
         ]);
     }
 
@@ -47,25 +42,23 @@ class PromotionController extends AbstractController
     {
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
-        
 
         $conditions = [];
         $parameters = [];
         $filtres = [];
 
-        if (!empty($_POST['filtre_Name'])) {
-            $filtres['filtre_Name'] = $_POST['filtre_Name'];
+        if (!empty($_POST['filtre_name_promotion'])) {
+            $filtres['filtre_name_promotion'] = $_POST['filtre_name_promotion'];
             $conditions[] = 'libelle_promotion LIKE ?';
-            $parameters[] = '%'.$_POST['filtre_Name']."%";
+            $parameters[] = $_POST['filtre_name_promotion'];
         }
-        if (!empty($_POST['filtre_Ecole'])) {
-            $filtres['filtre_Ecole'] = $_POST['filtre_Ecole'];
-            $conditions[] = 'id_ecole LIKE ?';
-            $parameters[] = '%'.$_POST['filtre_Ecole']."%";
+        if (!empty($_POST['filtre_ecole'])) {
+            $filtres['filtre_ecole'] = intval($_POST['filtre_ecole']);
+            $conditions[] = 'id_ecole = ?';
+            $parameters[] = intval($_POST['filtre_ecole']);
         }
 
-
-        $promotions = $promotionsRepository->filterPromotion($conditions, $parameters);
+        $promotions = $promotionsRepository->filter($conditions, $parameters);
         echo $this->twig->render('admin/promotions/admin_promotions.html.twig', [
             'ecoles' => $ecoles,
             'promotions' => $promotions,
@@ -84,18 +77,16 @@ class PromotionController extends AbstractController
         $id = intval($_POST['id']);
         $promotion = $promotionsRepository->selectOneById($id);
         $ecoles = $ecolesRepository->selectAll();
-        
 
         echo $this->twig->render('admin/promotions/admin_form_edit_promotion.html.twig', [
             'ecoles' => $ecoles,
             'promotion' => $promotion,
-            
         ]);
     }
 
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(path: "/admin/update/promotions", httpMethod: 'POST', name: "admin_update_promotions")]
     public function updatePromotions(PromotionsRepository $promotionsRepository)
@@ -104,7 +95,6 @@ class PromotionController extends AbstractController
 
         $promotion->setLibellePromotion($_POST['libellePromotion']);
         $promotion->setIdEcole(intval($_POST['idEcole']));
-        var_dump($promotion);
         $promotionsRepository->update($promotion);
 
         header('Location: /admin/promotions');
@@ -112,7 +102,7 @@ class PromotionController extends AbstractController
 
 
     #[Route(path: "/admin/delete/promotions", httpMethod: 'POST', name: "admin_delete_promotions")]
-    public function deletePromotions(EcolesRepository $ecolesRepository, PromotionsRepository $promotionsRepository)
+    public function deletePromotions(PromotionsRepository $promotionsRepository)
     {
         $id = intval($_POST['id']);
         $promotionsRepository->delete($id);
@@ -143,9 +133,7 @@ class PromotionController extends AbstractController
     }
 
     /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError|Exception
+     * @throws Exception
      */
     #[Route(path: "/admin/add/promotions", httpMethod: 'POST', name: "admin_add_promotions",)]
     public function addEcoles(PromotionsRepository $promotionsRepository)

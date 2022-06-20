@@ -9,16 +9,16 @@
      <a href="/admin/create/promotions" class="btn btn-primary">Ajouter une promotion</a>
         <form class="form-admin" method="POST" action="/admin/promotions/filter">
             <div class="form-group">
-                <label for="searchPromotionLibelle">Rechercher une école par nom</label>
-                <input type="text" value="{{ filtres['filtre_Name'] }}" name="filtre_Name" class="form-control" id="searchPromotionLibelle" placeholder="Nom de la promotion">
+                <label for="filtre_name_promotion">Rechercher une promotion par nom</label>
+                <input type="text" value="{{ filtres['filtre_name_promotion'] }}" name="filtre_name_promotion" class="form-control" id="filtre_name_promotion" placeholder="Nom de la promotion">
             </div>
                <div class="form-group">
-                <label for="searchPromotionEcole">Rechercher une école par nom</label>
-                <select name="filtre_Ecole" id="searchPromotionEcole">
-                <option>--Choisir école--</option>
-                        {% for ecole in ecoles %}
-                            <option value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
-                        {% endfor %}
+                <label for="filtre_ecole">Rechercher une école par nom</label>
+                <select name="filtre_ecole" id="filtre_ecole">
+                    <option disabled selected>Selectionner l'école</option>
+                    {% for ecole in ecoles %}
+                        <option {% if filtres['filtre_ecole'] is defined and ecole.idEcole == filtres['filtre_ecole'] %} selected {% endif %} value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
+                    {% endfor %}
                 </select>
             </div>
            
@@ -47,10 +47,18 @@
                             <button type="submit" name="id" class="btn btn-danger" value="{{promotion.idPromotion}}">Supprimer</button>
                         </form>
                     </td>
-                    
                 </tr>
             {% endfor %}
             </tbody>
+            <tfoot>
+                <tr>
+                    {% if promotions is not empty %}
+                        <th>Total promotions {{ promotions | length }}</th>
+                    {% else %}
+                        <th>Aucune promotion</th>
+                    {% endif %}
+                </tr>
+            </tfoot>
         </table>
     </main>
 {% endblock %}

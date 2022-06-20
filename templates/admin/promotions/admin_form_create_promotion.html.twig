@@ -14,13 +14,9 @@
              <div class="form-group">
                 <label for="idEcole">Nom école</label>
                 <select name="idEcole" id="idEcole">
-                <option >--Choisir l'école--</option>
-                       {% for ecole in ecoles %}
-                            {% if filtres['filtre_Ecole'] is defined and ecole.idEcole == filtres['filtre_Ecole'] %}
-                            <option selected value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
-                        {% else %}
-                            <option value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
-                        {% endif %}
+                <option >Selectionner l'école</option>
+                    {% for ecole in ecoles %}
+                        <option {% if filtres['filtre_Ecole'] is defined and ecole.idEcole == filtres['filtre_Ecole'] %} selected {% endif %} value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
                     {% endfor %}
                 </select>
                 <p>La promotion que vous voulez créer n'a pas encore d'école ? <a href="/admin/create/ecoles" class="btn btn-success">Créer une école</a> </p>

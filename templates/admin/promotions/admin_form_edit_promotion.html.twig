@@ -15,11 +15,7 @@
                 <label for="idEcole">Nom école</label>
                 <select name="idEcole" id="idEcole">
                        {% for ecole in ecoles %}
-                        {% if promotion.idEcole == ecole.idEcole %}
-                            <option selected value="{{ promotion.idEcole }}">{{ ecole.nomEcole }}</option>
-                        {% else %}
-                            <option value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
-                        {% endif %}
+                           <option {% if promotion.idEcole == ecole.idEcole %} selected {% endif %} value="{{ promotion.idEcole }}">{{ ecole.nomEcole }}</option>
                     {% endfor %}
                 </select>
             </div>

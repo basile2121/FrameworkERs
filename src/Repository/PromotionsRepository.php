@@ -34,16 +34,4 @@ final class PromotionsRepository extends AbstractRepository
             'idEcole' => $promotions->getIdEcole()
         ]);
     }
-
-    public function filterPromotion(array $conditions, array $parameters): array
-    {
-        $query = 'SELECT * FROM ' . static::TABLE;
-        $query .= " WHERE ".implode(" AND ", $conditions);
-
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute($parameters);
-        $data = $stmt->fetchAll();
-        return $this->setHydrate($data);
-    }
-
 }

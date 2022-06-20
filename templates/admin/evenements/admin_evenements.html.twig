@@ -6,7 +6,7 @@
 {% block content %}
     <h1 class="display-1 text-center mt-5">Evenements</h1>
     <main>
-        <form class="form-admin" method="GET" action="/admin/evenements/filter">
+        <form class="form-admin" method="POST" action="/admin/evenements/filter">
             <div class="form-group">
                 <label for="filter_titre">Rechercher un evenement par son titre</label>
                 <input type="text" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control" id="filter_titre" placeholder="Titre">
