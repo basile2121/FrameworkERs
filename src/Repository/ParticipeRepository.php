@@ -19,4 +19,16 @@ final class ParticipeRepository extends AbstractRepository
             'idEvenement' => $participe->getIdEvenement(),
         ]);
     }
+
+    /**
+     * Suppresion d'un client dans un evenement
+     */
+    public function deleteUtilisateur(int $idUtilisateur, int $idEvenement): bool
+    {
+        $statement = $this->pdo->prepare("DELETE FROM " . static::TABLE . " WHERE id_utilisateur =:idUtilisateur AND id_evenement =:idEvenement");
+        return $statement->execute([
+            'idUtilisateur' => $idUtilisateur,
+            'idEvenement' => $idEvenement,
+        ]);
+    }
 }

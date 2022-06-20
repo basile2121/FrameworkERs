@@ -93,5 +93,5 @@ try {
   $router->execute($requestUri, $requestMethod);
 } catch (RouteNotFoundException $e) {
   http_response_code(404);
-  echo $twig->render('404.html.twig', ['title' => $e->getMessage()]);
+  echo $twig->render('utils/404.html.twig', ['title' => $e->getMessage()]);
 }

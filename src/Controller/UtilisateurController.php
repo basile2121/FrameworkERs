@@ -67,8 +67,7 @@ class UtilisateurController extends AbstractController
         }
 
         if (!empty($_POST['filtre_role'])) {
-            $role = $rolesRepository->selectOneById($_POST['filtre_role']);
-            $filtres['filtre_role'] = [$_POST['filtre_role'], $role->getLibelleRole()];
+            $filtres['filtre_role'] = intval($_POST['filtre_role']);
             $conditions[] = 'id_role = ?';
             $parameters[] = intval($_POST['filtre_role']);
         }
@@ -79,7 +78,7 @@ class UtilisateurController extends AbstractController
             $parameters[] = intval($_POST['filtre_promotion']);
         }
 
-        $utilisateurs = $utilisateursRepository->filterUtilisateur($conditions, $parameters);
+        $utilisateurs = $utilisateursRepository->filter($conditions, $parameters);
         echo $this->twig->render('admin/utilisateurs/admin_utilisateurs.html.twig', [
             'ecoles' => $ecoles,
             'roles' => $roles,

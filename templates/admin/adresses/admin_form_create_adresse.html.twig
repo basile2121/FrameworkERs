@@ -1,0 +1,35 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Ajouter une adresse{% endblock %}
+
+
+{% block content %}
+    <h1 class="display-1 text-center mt-5">Ajouter une adresse</h1>
+    <main>
+        <form class="form-admin" method="POST" action="/admin/add/adresses">
+            <div class="form-group">
+                <label for="ville">Ville</label>
+                <input type="text" name="ville" class="form-control" id="ville" placeholder="Nom de la ville">
+            </div>
+            <div class="form-group">
+                <label for="codePostal">Code postal</label>
+                <input type="text" name="codePostal" class="form-control" id="codePostal" placeholder="Code postal">
+            </div>
+            <div class="form-group">
+                <label for="adresse">Adresse</label>
+                <input type="text" name="adresse" class="form-control" id="adresse" placeholder="Adresse">
+            </div>
+            <div class="form-group">
+                <label for="coordonneeLongitude">Coordonnée longitude</label>
+                <input type="text" name="coordonneeLongitude" class="form-control" id="coordonneeLongitude" placeholder="Coordonnee en longitude">
+            </div>
+            <div class="form-group">
+                <label for="coordonneeLatitude">Coordonnée latitude</label>
+                <input type="text" name="coordonneeLatitude" class="form-control" id="coordonneeLatitude" placeholder="Coordonnee en latitude">
+            </div>
+            <input type="hidden" name="redirect_create_adresse_url" class="form-control" id="redirect_create_adresse_url" value="{{ urlRedirection }}">
+            <button type="submit" name="id" class="btn btn-primary">Ajouter</button>
+            <a href="/admin/adresses" class="btn btn-primary">Annuler</a>
+        </form>
+    </main>
+{% endblock %}

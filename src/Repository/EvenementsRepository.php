@@ -30,4 +30,32 @@ final class EvenementsRepository extends AbstractRepository
             'idStatut' => $evenements->getIdStatut(),
         ]);
     }
+
+    public function update(Evenements $evenements): bool
+    {
+        $stmt = $this->pdo->prepare("UPDATE evenements SET 
+                        `titre` = :titre,
+                        `sous_titre` = :sousTitre,
+                        `description` = :description,
+                        `nb_participants_max` = :nbParticipantsMax,
+                        `prix` = :prix,
+                        `date` = :date,
+                        `updated_at` = :updatedAt,
+                        `id_categorie` = :idCategorie, 
+                        `id_adresse` = :idAdresse
+                        WHERE `id_statut` = :idStatut" );
+
+        return $stmt->execute([
+            'titre' => $evenements->getTitre(),
+            'sousTitre' => $evenements->getSousTitre(),
+            'description' => $evenements->getDescription(),
+            'nbParticipantsMax' => $evenements->getNbParticipantsMax(),
+            'prix' => $evenements->getPrix(),
+            'date' => $evenements->getDate()->format('Y-m-d'),
+            'updatedAt' => $evenements->getUpdatedAt(),
+            'idCategorie' => $evenements->getIdCategorie(),
+            'idAdresse' => $evenements->getIdAdresse(),
+            'idStatut' => $evenements->getIdStatut(),
+        ]);
+    }
 }

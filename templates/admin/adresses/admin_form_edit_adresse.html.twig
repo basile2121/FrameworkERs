@@ -1,0 +1,34 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Modifier une adresse{% endblock %}
+
+
+{% block content %}
+    <h1 class="display-1 text-center mt-5">Modifier une adresse</h1>
+    <main>
+        <form class="form-admin" method="POST" action="/admin/update/adresses">
+            <div class="form-group">
+                <label for="ville">Ville</label>
+                <input type="text" name="ville" class="form-control" id="ville" value="{{ adresse.villeLibelle }}" placeholder="Nom de la ville">
+            </div>
+            <div class="form-group">
+                <label for="codePostal">Code postal</label>
+                <input type="text" name="codePostal" class="form-control" id="codePostal" value="{{ adresse.cpVille }}" placeholder="Code postal">
+            </div>
+            <div class="form-group">
+                <label for="adresse">Adresse</label>
+                <input type="text" name="adresse" class="form-control" id="adresse" value="{{ adresse.libelleAdresse }}" placeholder="Adresse">
+            </div>
+            <div class="form-group">
+                <label for="coordonneeLongitude">Coordonnée longitude</label>
+                <input type="text" name="coordonneeLongitude" class="form-control" id="coordonneeLongitude" value="{{ adresse.coordonneeLongitude }}" placeholder="Coordonnee en longitude">
+            </div>
+            <div class="form-group">
+                <label for="coordonneeLatitude">Coordonnée latitude</label>
+                <input type="text" name="coordonneeLatitude" class="form-control" id="coordonneeLatitude" value="{{ adresse.coordonneLatitude }}" placeholder="Coordonnee en latitude">
+            </div>
+            <button type="submit" name="id" class="btn btn-primary" value="{{ adresse.idAdresse }}">Sauvegarder</button>
+            <a href="/admin/adresses" class="btn btn-primary">Annuler</a>
+        </form>
+    </main>
+{% endblock %}

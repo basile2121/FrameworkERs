@@ -27,30 +27,6 @@ class AdminHomeController extends AbstractController
     {
         echo $this->twig->render('admin/admin_home.html.twig');
     }
-
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     */
-    #[Route(path: "/admin/evenement/create" , name: "admin_evenement_create",)]
-    public function createEvenement()
-    {
-        echo $this->twig->render('admin/admin_home.html.twig');
-    }
-
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     */
-    #[Route(path: "/admin/evenements" , name: "admin_evenements",)]
-    public function evenements()
-    {
-        echo $this->twig->render('admin/evenements/admin_evenements.html.twig');
-    }
-
-
     /**
      * @throws SyntaxError
      * @throws RuntimeError

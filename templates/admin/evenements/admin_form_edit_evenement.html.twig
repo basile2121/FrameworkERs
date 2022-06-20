@@ -1,0 +1,76 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Modifier un évenement{% endblock %}
+
+
+{% block content %}
+    <h1 class="display-1 text-center mt-5">Modifier un évenement</h1>
+    <main>
+        <form class="form-admin" method="POST" action="/admin/update/evenements">
+            <div class="form-group">
+                <label for="evenementTitle">Titre</label>
+                <input type="text" name="evenementTitle" class="form-control" id="evenementTitle" value="{{ evenement.titre }}" placeholder="Titre">
+            </div>
+            <div class="form-group">
+                <label for="evenementSubTitle">Sous titre</label>
+                <input type="text" name="evenementSubTitle" class="form-control" id="evenementSubTitle" value="{{ evenement.sousTitre }}" placeholder="Sous titre">
+            </div>
+            <div class="form-group">
+                <label for="evenementDate">Date de l'événement</label>
+                <input type="date" name="evenementDate" class="form-control" id="evenementDate" value="{{ evenement.date | date('Y-m-d') }}" placeholder="Date de l'événement">
+            </div>
+            <p>Nombre de participant : {{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }}</p>
+            <div class="form-group">
+                <label for="nbParticipantMax">Nombre de participant max</label>
+                <input type="text" name="nbParticipantMax" class="form-control" id="nbParticipantMax" value="{{ evenement.nbParticipantsMax }}" placeholder="Nombre de participants max">
+            </div>
+            <div class="form-group">
+                <label for="prix">Prix</label>
+                <input type="text" name="prix" class="form-control" id="prix" value="{{ evenement.prix }}" placeholder="Prix">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" name="description" class="form-control" id="description" value="{{ evenement.description }}" placeholder="Description">
+            </div>
+            <div class="form-group">
+                <label for="categorieSelect">Categorie</label>
+                <select name="categorieSelect" id="categorieSelect">
+                    {% for categorie in categories %}
+                        {% if categorie.idCategorie == evenement.categories.idCategorie %}
+                            <option selected value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
+                        {% else %}
+                            <option value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="statutSelect">Statut</label>
+                <select name="statutSelect" id="statutSelect">
+                    {% for statut in statuts %}
+                        {% if statut.idStatut == evenement.statuts.idStatut %}
+                            <option selected value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
+                        {% else %}
+                            <option value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="adresseSelect">Adresse</label>
+                <select name="adresseSelect" id="adresseSelect">
+                    {% for adresse in adresses %}
+                        {% if adresse.idAdresse == evenement.adresses.idAdresse %}
+                            <option selected value="{{ adresse.idAdresse  }}">{{ adresse.cpVille }} {{ adresse.villeLibelle }} {{ adresse.libelleAdresse }}</option>
+                        {% else %}
+                            <option value="{{ adresse.idAdresse }}">{{ adresse.cpVille }} {{ adresse.villeLibelle }} {{ adresse.libelleAdresse }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <a href="/admin/create/adresse">Ajouter une adresse</a>
+            </div>
+            <button type="submit" name="id" class="btn btn-primary" value="{{ evenement.idEvenement }}">Sauvegarder</button>
+            <a href="/admin/evenements" class="btn btn-primary">Annuler</a>
+        </form>
+    </main>
+{% endblock %}

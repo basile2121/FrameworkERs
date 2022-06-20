@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Adresses;
+use App\Entity\Evenements;
 
 final class AdressesRepository extends AbstractRepository
 {
@@ -20,6 +21,26 @@ final class AdressesRepository extends AbstractRepository
             'coordonneLatitude' => $adresses->getCoordonneLatitude(),
             'villeLibelle' => $adresses->getVilleLibelle(),
             'cpVille' => $adresses->getCpVille(),
+        ]);
+    }
+
+    public function update(Adresses $adresses): bool
+    {
+        $stmt = $this->pdo->prepare("UPDATE adresses SET 
+                        `libelle_adresse` = :libelleAdresse,
+                        `coordonnee_longitude` = :coordonneeLongitude,
+                        `coordonne_latitude` = :coordonneLatitude,
+                        `ville_libelle` = :villeLibelle,
+                        `cp_ville` = :cpVille
+                        WHERE `id_adresse` = :idAdresse" );
+
+        return $stmt->execute([
+            'libelleAdresse' => $adresses->getLibelleAdresse(),
+            'coordonneeLongitude' => $adresses->getCoordonneeLongitude(),
+            'coordonneLatitude' => $adresses->getCoordonneLatitude(),
+            'villeLibelle' => $adresses->getVilleLibelle(),
+            'cpVille' => $adresses->getCpVille(),
+            'idAdresse' => $adresses->getIdAdresse(),
         ]);
     }
 }

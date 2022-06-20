@@ -1,0 +1,55 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Gestions des adresses{% endblock %}
+
+
+{% block content %}
+    <h1 class="display-1 text-center mt-5">Adresses</h1>
+    <main>
+        <a href="/admin/create/adresse">Ajouter une adresse</a>
+        <form class="form-admin" method="POST" action="/admin/adresses/filter">
+            <div class="form-group">
+                <label for="filter_city">Rechercher une adresse par sa ville</label>
+                <input type="text" value="{{ filtres['filter_city'] }}" name="filter_city" class="form-control" id="filter_city" placeholder="Nom de la ville">
+            </div>
+            <div class="form-group">
+                <label for="filter_cp">Rechercher une adresse par son code postal</label>
+                <input type="text" value="{{ filtres['filter_cp'] }}" name="filter_cp" class="form-control" id="filter_cp" placeholder="Code postal">
+            </div>
+            <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
+            <a href="/admin/adresses" class="btn btn-primary">Annuler</a>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Code postal</th>
+                <th scope="col">Ville</th>
+                <th scope="col">Adresse</th>
+                <th scope="col">Longitude</th>
+                <th scope="col">Latitude</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for adresse in adresses %}
+                <tr>
+                    <th scope="row">{{ adresse.cpVille }}</th>
+                    <td>{{ adresse.villeLibelle }}</td>
+                    <td>{{ adresse.libelleAdresse }}</td>
+                    <td>{{ adresse.coordonneeLongitude }}</td>
+                    <td>{{ adresse.coordonneLatitude }}</td>
+                    <td>
+                        <form method="POST" action="/admin/edit/adresses" >
+                            <button type="submit" name="id" class="btn btn-warning" value="{{ adresse.idAdresse }}">Modifier</button>
+                        </form>
+                        <form method="POST" action="/admin/delete/adresses" >
+                            <button type="submit" name="id" class="btn btn-danger" value="{{ adresse.idAdresse }}">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </main>
+{% endblock %}

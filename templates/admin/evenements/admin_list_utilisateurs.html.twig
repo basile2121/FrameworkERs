@@ -1,0 +1,53 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Gestions des evenements{% endblock %}
+
+
+{% block content %}
+    <h1 class="display-1 text-center mt-5">Les utilisateurs inscrits</h1>
+    <main>
+        <div>
+            <p>Titre : {{ evenement.titre }}</p>
+            <p>Date : {{ evenement.date | date('d-m-Y') }}</p>
+            <p>Statut : {{ evenement.statuts.libelleStatut }}</p>
+            <p>Prix : {{ evenement.prix }} €</p>
+            <p>Inscrits : {{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }} / {{ evenement.nbParticipantsMax }}</p>
+            <a href="/admin/evenements" class="btn btn-primary">Revenir aux evenements</a>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Prénom</th>
+                <th scope="col">Date de naissance</th>
+                <th scope="col">Date d'inscription</th>
+                <th scope="col">Mail</th>
+                <th scope="col">Téléphone</th>
+                <th scope="col">Role</th>
+                <th scope="col">Ecole</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for utilisateur in utilisateurs %}
+                <tr>
+                    <th scope="row">{{ utilisateur.nom }}</th>
+                    <td>{{ utilisateur.prenom }}</td>
+                    <td>{{ utilisateur.dateNaissance | date('d-m-Y') }}</td>
+                    <td>{{ utilisateur.dateInscription | date('d-m-Y')}}</td>
+                    <td>{{ utilisateur.mail }}</td>
+                    <td>{{ utilisateur.telephone }}</td>
+                    <td>{{ utilisateur.roles.libelleRole }}</td>
+                    <td>{{ utilisateur.promotions.ecoles.nomEcole }}</td>
+                    <td>
+                        <form method="POST" action="/admin/delete/evenement/utilisateur">
+                            <input type="hidden" name="idEvenement" value="{{ evenement.idEvenement }}" />
+                            <button type="submit" name="idUtilisateur" class="btn btn-danger" value="{{ utilisateur.idUtilisateur }}">Supprimer de cet evenement</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </main>
+{% endblock %}

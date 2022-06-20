@@ -6,5 +6,104 @@
 {% block content %}
     <h1 class="display-1 text-center mt-5">Evenements</h1>
     <main>
+        <form class="form-admin" method="POST" action="/admin/evenements/filter">
+            <div class="form-group">
+                <label for="filter_titre">Rechercher un evenement par son titre</label>
+                <input type="text" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control" id="filter_titre" placeholder="Titre">
+            </div>
+            <div class="form-group">
+                <label for=filtre_categorie">Categories</label>
+                <select name="filtre_categorie" id=filtre_categorie">
+                    {% for categorie in categories %}
+                        {% if filtres['filtre_categorie'] is defined and categorie.idCategorie == filtres['filtre_categorie'] %}
+                            <option selected value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
+                        {% else %}
+                            <option value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="filtre_statut">Statuts</label>
+                <select name="filtre_statut" id="filtre_statut">
+                    {% for statut in statuts %}
+                        {% if filtres['filtre_statut'] is defined and statut.idStatut == filtres['filtre_statut'] %}
+                            <option selected value="{{ statut.idStatut }}"><div style="width: 20px; color: {{ statut.couleurStatus }}"></div>{{ statut.libelleStatut }}</option>
+                        {% else %}
+                            <option value="{{ statut.idStatut }}"><div style="width: 20px; color: {{ statut.couleurStatus }}"></div>{{ statut.libelleStatut }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="filtre_city">Ville</label>
+                <input type="text" value="{{ filtres['filtre_city'] }}" name="filtre_city" class="form-control" id="filtre_city" placeholder="Ville">
+            </div>
+            <div class="form-group">
+                <label for="filtre_cp">Code postale</label>
+                <input type="text" value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control" id="filtre_cp" placeholder="Code postale">
+            </div>
+            <div class="form-group">
+                <label for="order_date">Date</label>
+                <select class="form-select" name="order_date" id="order_date">
+                    <option value="ASC">Croissant</option>
+                    <option value="DESC">Décroissant</option>
+                </select>
+            </div>
+            <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
+            <a href="/admin/evenements" class="btn btn-primary">Annuler</a>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Titre</th>
+                <th scope="col">Sous titre</th>
+                <th scope="col">Prix</th>
+                <th scope="col">Date</th>
+                <th scope="col">Capacité</th>
+                <th scope="col">Statut</th>
+                <th scope="col">Categorie</th>
+                <th scope="col">Ville</th>
+                <th scope="col">Adresse</th>
+                <th scope="col">Acceder à l'evenement</th>
+                <th scope="col">Gérer les utilisateurs</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for evenement in evenements %}
+                <tr>
+                    <th scope="row">{{ evenement.titre }}</th>
+                    <td>{{ evenement.sousTitre }}</td>
+                    <td>{{ evenement.prix }} €</td>
+                    <td>{{ evenement.date | date('d-m-Y') }}</td>
+                    <td>{{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }} / {{ evenement.nbParticipantsMax }}</td>
+                    <td>{{ evenement.statuts.libelleStatut }}</td>
+                    <td>{{ evenement.categories.libelleCategorie }}</td>
+                    <td>{{ evenement.adresses.cpVille }} {{ evenement.adresses.villeLibelle }}</td>
+                    <td>{{ evenement.adresses.libelleAdresse }}</td>
+                    <td>
+                        <form method="POST" action="/evenement" >
+                            <button type="submit" name="id" class="btn btn-primary" value="{{ evenement.idEvenement }}">Acceder</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="POST" action="/admin/evenements/list/utilisateurs" >
+                            <button type="submit" name="id" class="btn btn-primary" value="{{ evenement.idEvenement }}">Acceder</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="POST" action="/admin/edit/evenements" >
+                            <button type="submit" name="id" class="btn btn-warning" value="{{ evenement.idEvenement }}">Modifier</button>
+                        </form>
+                        <form method="POST" action="/admin/delete/evenements" >
+                            <button type="submit" name="id" class="btn btn-danger" value="{{ evenement.idEvenement }}">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </main>
 {% endblock %}

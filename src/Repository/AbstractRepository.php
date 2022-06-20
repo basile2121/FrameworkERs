@@ -66,6 +66,24 @@ abstract class AbstractRepository
     }
 
     /**
+     * Filtre en fonction des conditions et parameteres passés
+     * @throws ReflectionException
+     */
+    public function filter(array $conditions, array $parameters, string $additionalQuery = '', string $orderBy = '', string $direction = 'ASC'): array
+    {
+        $query = 'SELECT * FROM ' . static::TABLE;
+        $query .= $additionalQuery;
+        $query .= " WHERE ".implode(" AND ", $conditions);
+        if ($orderBy) {
+            $query .= ' ORDER BY ' . $orderBy . ' ' . $direction;
+        }
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($parameters);
+        $data = $stmt->fetchAll();
+        return $this->setHydrate($data);
+    }
+
+    /**
      * Hydradation pour les findAll
      * Le tableau est un tableau contenant un tableau associatif de clef valeur ou les clef sont les attributs sql
      * @throws ReflectionException

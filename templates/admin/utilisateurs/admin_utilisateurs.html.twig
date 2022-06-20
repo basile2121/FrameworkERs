@@ -79,7 +79,7 @@
                     <td>{{ utilisateur.mail }}</td>
                     <td>{{ utilisateur.telephone }}</td>
                     <td>{{ utilisateur.roles.libelleRole }}</td>
-                    <td>{{ utilisateur.nom }}</td>
+                    <td>{{ utilisateur.promotions.ecoles.nomEcole }}</td>
                     <td>
                         <form method="POST" action="/admin/edit/utilisateurs" >
                             <button type="submit" name="id" class="btn btn-warning" value="{{ utilisateur.idUtilisateur}}">Modifier</button>
