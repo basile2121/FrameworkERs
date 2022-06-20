@@ -1,0 +1,56 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Gestions des promotions{% endblock %}
+
+
+{% block content %}
+    <h1 class="display-1 text-center mt-5">Promotions</h1>
+    <main>
+     <a href="/admin/create/promotions" class="btn btn-primary">Ajouter une promotion</a>
+        <form class="form-admin" method="POST" action="/admin/promotions/filter">
+            <div class="form-group">
+                <label for="searchPromotionLibelle">Rechercher une école par nom</label>
+                <input type="text" value="{{ filtres['filtre_Name'] }}" name="filtre_Name" class="form-control" id="searchPromotionLibelle" placeholder="Nom de la promotion">
+            </div>
+               <div class="form-group">
+                <label for="searchPromotionEcole">Rechercher une école par nom</label>
+                <select name="filtre_Ecole" id="searchPromotionEcole">
+                <option>--Choisir école--</option>
+                        {% for ecole in ecoles %}
+                            <option value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
+                        {% endfor %}
+                </select>
+            </div>
+           
+            <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
+            <a href="/admin/promotions" class="btn btn-primary">Annuler</a>
+        </form>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Noms promotion</th>
+                    <th scope="col">Ecoles</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for promotion in promotions %}
+                <tr>
+                    <th scope="row">{{ promotion.libellePromotion }}</th>
+                    <td>{{ promotion.ecoles.nomEcole}}</td>
+                    <td>
+                        <form method="POST" action="/admin/edit/promotions" >
+                            <button type="submit" name="id" class="btn btn-warning" value="{{promotion.idPromotion}}">Modifier</button>
+                        </form>
+                        <form method="POST" action="/admin/delete/promotions" >
+                            <button type="submit" name="id" class="btn btn-danger" value="{{promotion.idPromotion}}">Supprimer</button>
+                        </form>
+                    </td>
+                    
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </main>
+{% endblock %}

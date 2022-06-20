@@ -1,0 +1,19 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Ajouter une école{% endblock %}
+
+
+{% block content %}
+    <h1 class="display-1 text-center mt-5">Ajouter une école</h1>
+    <main>
+        <form class="form-admin" method="POST" action="/admin/add/ecoles" >
+            <div class="form-group">
+                <label for="userName">Nom école</label>
+                <input type="text" name="nomEcole" class="form-control" id="nomEcole" placeholder="Nom de l'école">
+            </div>
+            <input type="hidden" name="redirect_create_adresse_url" value="{{urlRedirection}}">
+            <button type="submit" name="id" class="btn btn-primary" >Sauvegarder</button>
+            <a href="/admin/ecoles" class="btn btn-primary">Annuler</a>
+        </form>
+    </main>
+{% endblock %}

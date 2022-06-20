@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Modifier la promotion{% endblock %}
+
+
+{% block content %}
+    <h1 class="display-1 text-center mt-5">Modifier la promotion</h1>
+    <main>
+        <form class="form-admin" method="POST" action="/admin/add/promotions">
+            <div class="form-group">
+                <label for="libellePromotion">Nom promotion</label>
+                <input type="text" name="libellePromotion" class="form-control" id="libellePromotion"  placeholder="Nom de la promotion">
+            </div>
+             <div class="form-group">
+                <label for="idEcole">Nom école</label>
+                <select name="idEcole" id="idEcole">
+                <option >--Choisir l'école--</option>
+                       {% for ecole in ecoles %}
+                            {% if filtres['filtre_Ecole'] is defined and ecole.idEcole == filtres['filtre_Ecole'] %}
+                            <option selected value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
+                        {% else %}
+                            <option value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <p>La promotion que vous voulez créer n'a pas encore d'école ? <a href="/admin/create/ecoles" class="btn btn-success">Créer une école</a> </p>
+            </div>
+           
+            <button type="submit" name="id" class="btn btn-primary" value="{{ promotion.idPromotion }}">Sauvegarder</button>
+            <a href="/admin/promotions" class="btn btn-primary">Annuler</a>
+        </form>
+    </main>
+{% endblock %}

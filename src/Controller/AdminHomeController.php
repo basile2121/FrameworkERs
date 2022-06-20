@@ -26,35 +26,5 @@ class AdminHomeController extends AbstractController
     public function index()
     {
         echo $this->twig->render('admin/admin_home.html.twig');
-    }
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     */
-    #[Route(path: "/admin/ecoles" , name: "admin_ecoles",)]
-    public function ecoles(UtilisateursRepository $userRepository)
-    {
-        $filters = [];
-        if (empty($filters)) {
-            $users = $userRepository->selectAll();
-        }
-        echo $this->twig->render('admin/admin_home.html.twig');
-    }
-
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     */
-    #[Route(path: "/admin/ecoles" , name: "admin_ecoles",)]
-    public function ecolesFilter(Request $request,UtilisateursRepository $userRepository)
-    {
-        $users = $userRepository->selectAll();
-        $users = $userRepository->selectAll();
-        if (empty($filters)) {
-            $users = $userRepository->selectAll();
-        }
-        echo $this->twig->render('admin/admin_home.html.twig');
-    }
+    } 
 }
