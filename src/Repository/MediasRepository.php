@@ -20,4 +20,12 @@ final class MediasRepository extends AbstractRepository
             'type' => $medias->getType(),
         ]);
     }
+    public function getLastId(){
+        $statement = $this->pdo->prepare("SELECT id_media FROM medias ORDER BY id_media DESC LIMIT 1");
+            $statement->execute();
+            $results = $statement->fetch();
+            if ($results) {
+              return $results['id_media'];
+            } 
+    }
 }

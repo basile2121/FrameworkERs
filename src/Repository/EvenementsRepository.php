@@ -31,6 +31,7 @@ final class EvenementsRepository extends AbstractRepository
         ]);
     }
 
+   
     public function update(Evenements $evenements): bool
     {
         $stmt = $this->pdo->prepare("UPDATE evenements SET 
@@ -42,20 +43,24 @@ final class EvenementsRepository extends AbstractRepository
                         `date` = :date,
                         `updated_at` = :updatedAt,
                         `id_categorie` = :idCategorie, 
-                        `id_adresse` = :idAdresse
-                        WHERE `id_statut` = :idStatut" );
+                        `id_adresse` = :idAdresse,
+                        `id_media` = :idMedia,
+                        `id_statut` = :idStatut
+                        WHERE `id_evenement` = :idEvenement" );
 
         return $stmt->execute([
+            'idEvenement'=> $evenements->getIdEvenement(),
             'titre' => $evenements->getTitre(),
             'sousTitre' => $evenements->getSousTitre(),
             'description' => $evenements->getDescription(),
             'nbParticipantsMax' => $evenements->getNbParticipantsMax(),
             'prix' => $evenements->getPrix(),
             'date' => $evenements->getDate()->format('Y-m-d'),
-            'updatedAt' => $evenements->getUpdatedAt(),
+            'updatedAt' => $evenements->getUpdatedAt()->format('Y-m-d'),
             'idCategorie' => $evenements->getIdCategorie(),
             'idAdresse' => $evenements->getIdAdresse(),
             'idStatut' => $evenements->getIdStatut(),
+            'idMedia' => $evenements->getIdMedia(),
         ]);
     }
 }
