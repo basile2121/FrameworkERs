@@ -34,4 +34,14 @@ final class PromotionsRepository extends AbstractRepository
             'idEcole' => $promotions->getIdEcole()
         ]);
     }
+
+    public function findOneById(int $idEcole){
+        $stmt = $this->pdo->prepare("SELECT * FROM " . static::TABLE . " WHERE id_ecole = :idEcole");
+        $stmt->bindValue('idEcole', $idEcole, \PDO::PARAM_INT);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+        
+        return $results;
+
+    }
 }

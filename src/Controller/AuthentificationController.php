@@ -9,6 +9,7 @@ use App\Entity\Utilisateurs;
 use Doctrine\ORM\EntityManager;
 use App\Routing\Attribute\Route;
 use App\Controller\AbstractController;
+use App\Repository\EcolesRepository;
 use App\Repository\PromotionsRepository;
 use App\Repository\UtilisateursRepository;
 use App\Repository\RolesRepository;
@@ -101,13 +102,31 @@ class AuthentificationController extends AbstractController
      * @return void
      */
     #[Route(path: '/register', name: "register")]
-    public function register(PromotionsRepository $promotionsRepository)
+    public function register(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository)
     {
+        $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
         echo $this->twig->render("authentification/register.html.twig", [
-            'promotions' =>$promotions
+            'promotions' =>$promotions,
+            'ecoles' => $ecoles
         ]);
     }
+
+        /**
+     * Récupération JSON promotions en fonction de l'école sélectionnée
+     *
+     * @return void
+     */
+    #[Route(path: '/json/promotions/{id}' , httpMethod:"GET",name: "json_promotions")]
+    public function ecoleJson(PromotionsRepository $promotionsRepository, int $id)
+    {
+      
+      $result = $promotionsRepository->findOneById($id);
+      
+      echo json_encode($result);
+    }
+
+    
 
     /**
      * Affiche page registration

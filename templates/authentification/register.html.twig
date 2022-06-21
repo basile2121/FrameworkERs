@@ -37,6 +37,17 @@
 				<input type="text" name="telephone" class="form-control" id="telephone" placeholder="Numéro de téléphone" required>
 			</div>
 			<div class="form-group">
+				<label for="ecoles">Ecoles</label>
+				<select name="ecoles" class="form-control" id="ecoles">
+					<option selected disabled>
+						Sélectionner votre école</option>
+					{% for ecole in ecoles %}
+						<option value={{ecole.idEcole}}>
+							{{ecole.nomEcole}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="form-group">
 				<label for="promotions">Promotions</label>
 				<select name="promotions" class="form-control" id="promotions">
 					<option selected disabled>
@@ -103,5 +114,27 @@
 
 		</form>
 	</div>
-</div>{% endblock %}
+</div>
+{% endblock %}
 
+{% block script %}
+<script>
+	 function selectedEcole(){
+		let listeEcole = document.querySelector('#ecoles');
+	
+		let valueSelected = listeEcole.options[listeEcole.selectedIndex].value;
+		
+	}
+	let listeEcole = document.querySelector('#ecoles');
+	
+		let valueSelected = listeEcole.options[listeEcole.selectedIndex].value;
+	function ajaxHTML(valueSelected){
+    fetch('http://localhost:8000/json/promotions/' + valueSelected)
+            .then(response => response.json())
+			.then(datas => console.log(datas))
+    }
+	
+
+	document.querySelector("#ecoles").addEventListener('change',ajaxHTML);
+</script>
+{% endblock %}
