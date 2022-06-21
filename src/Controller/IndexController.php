@@ -15,9 +15,15 @@ class IndexController extends AbstractController
         var_dump($utilisateursRepository->selectOneById(281));
     }
 
-    #[Route(path: "/contact", name: "contact", httpMethod: "POST")]
-    public function contact()
+
+    /**
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Twig\Error\LoaderError
+     */
+    #[Route(path: "/base", name: "base", httpMethod: "GET")]
+    public function base()
     {
-        echo $this->twig->render('index/contact.html.twig');
+        echo $this->twig->render('base.html.twig');
     }
 }
