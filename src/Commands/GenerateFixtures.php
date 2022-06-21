@@ -181,10 +181,13 @@ class GenerateFixtures extends Command
 
     private function _loadStatuts()
     {
-        $statutsLibelles = ['Statut 1', 'Statut 2', 'Statut 3'];
+        $statutsLibelles = ['En cours de validation', 'A venir', 'Presque complet', 'Complet', 'Passé'];
+        $couleurStatus = ['#eadf27' , '#30e632', '#f77212', '#ff0355', '#837f80'];
         foreach ($statutsLibelles as $libelle){
+            
+            $index = array_search($libelle, $statutsLibelles);   
             $statuts = new Statuts();
-            $statuts->setCouleurStatus($this->faker->hexColor);
+            $statuts->setCouleurStatus($couleurStatus[$index]);
             $statuts->setLibelleStatut($libelle);
 
             $this->container->get(StatutsRepository::class)->save($statuts);
