@@ -114,43 +114,4 @@ abstract class AbstractRepository
         $parameters = $this->hydrator->getParameters($model);
         return $this->hydrator->hydrate($data, $model,$parameters );
     }
-    //Fonction permettant de récupérer trois évenèments dont la date est la plus proche
-    public function getEvenementAVenir()
-    {
-        
-        $query = "SELECT * FROM evenements WHERE date > now() ORDER BY date ASC LIMIT 3;";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-        $data = $stmt->fetchAll();
-        return $this->setHydrate($data);
-    }
-    //Fonction permettant de récupérer neuf évenèments dont la date est la plus proche
-    public function getEvenementProchain()
-    {
-        $thirdFirstEvent = $this->getEvenementAVenir();
-        $id = [];
-        foreach($thirdFirstEvent as $event){
-           $eventId= $event->getIdEvenement();
-           array_push($id, $eventId);
-        }
-        $idImplode = implode(",", $id);
-        
-        $query = "SELECT * FROM evenements WHERE date > now() AND id_evenement NOT IN (".$idImplode.") ORDER BY date ASC LIMIT 9;";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-        $data = $stmt->fetchAll();
-        return $this->setHydrate($data);
-    }
-
-    public function getEvenementByParticipation()
-    {
-        $query ="SELECT e.titre,(COUNT(u.id_utilisateur)/e.nb_participants_max*100) as pourcentage FROM evenements e LEFT JOIN participe p ON e.id_evenement = p.id_evenement LEFT JOIN utilisateurs u ON  p.id_utilisateur = u.id_utilisateur WHERE e.date > now() GROUP BY e.id_evenement ORDER BY date ASC LIMIT 3;";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-        $data = $stmt->fetchAll();
-        var_dump($data);
-        return $this->setHydrate($data);
-    }
-
-
 }
