@@ -126,7 +126,6 @@ class AuthentificationController extends AbstractController
                 'errors' => $verifRegister
             ]);
         } else {
-            
                 $role = $rolesRepository->selectOneByLibelle('UTILISATEUR');
     
                 $user = new Utilisateurs();

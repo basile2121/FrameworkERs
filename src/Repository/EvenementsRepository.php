@@ -81,6 +81,9 @@ final class EvenementsRepository extends AbstractRepository
     public function getEvenementProchain(): array
     {
         $thirdFirstEvent = $this->getEvenementAVenir();
+        if (empty($thirdFirstEvent)) {
+            return [];
+        }
         $id = [];
         foreach($thirdFirstEvent as $event){
             $eventId= $event->getIdEvenement();

@@ -53,14 +53,16 @@ class EvenementsController extends AbstractController
 
         $nbParticipantMax = $evenement->getNbParticipantsMax();
         $nbParticipants = $this->_getNbParticipants([], $participes, $id);
-
-        if ($nbParticipants[$id] < $nbParticipantMax) {
+        $nbParticipant = count($nbParticipants[$id]);
+        if ($nbParticipant < $nbParticipantMax) {
             // Ajout de la participation
             $participe = new Participe();
             $participe->setIdEvenement($id);
             $participe->setIdUtilisateur(intval($_SESSION['id']));
+            $participeRepository->save($participe);
 
-            $pourcent = (($nbParticipants[$id] + 1) / $nbParticipantMax) * 100;
+
+            $pourcent = (($nbParticipant + 1) / $nbParticipantMax) * 100;
 
             if ($pourcent > 80) {
                 $statut = $evenement->selectOneByLibelle('Presque complet');

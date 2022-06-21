@@ -20,6 +20,15 @@
 		</div>
 		{% endif %}
 		<h1>Accueil PHP MVC</h1>
+
+	{% for evenementAVenir in evenementsAVenir %}
+		<div>
+			<p>{{ evenementAVenir.idEvenement }}</p>
+			<form method="POST" action="/evenement/participe">
+				<button type="submit" name="id" class="btn btn-warning" value="{{ evenementAVenir.idEvenement }}">Acceder</button>
+			</form>
+		</div>
+	{% endfor %}
 		<h3>Bienvenue sur notre projet PHP MVC from Scratch</h3>
 {% endblock %}
 
