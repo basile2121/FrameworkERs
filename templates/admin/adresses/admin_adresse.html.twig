@@ -10,12 +10,19 @@
         <form class="form-admin" method="POST" action="/admin/adresses/filter">
             <div class="form-group">
                 <label for="filter_city">Rechercher une adresse par sa ville</label>
-                <input type="text" value="{{ filtres['filter_city'] }}" name="filter_city" class="form-control" id="filter_city" placeholder="Nom de la ville">
+                <input maxlength="255" type="text" value="{{ filtres['filter_city'] }}" name="filter_city" class="form-control" id="filter_city" placeholder="Nom de la ville">
             </div>
             <div class="form-group">
                 <label for="filter_cp">Rechercher une adresse par son code postal</label>
-                <input type="text" value="{{ filtres['filter_cp'] }}" name="filter_cp" class="form-control" id="filter_cp" placeholder="Code postal">
+                <input maxlength="5" type="text" value="{{ filtres['filter_cp'] }}" name="filter_cp" class="form-control" id="filter_cp" placeholder="Code postal">
             </div>
+            {% if errors %}
+                <div class="alert alert-danger m-auto mt-2">
+                    {{ errors['filter_cp'] }}
+                    {{ errors['filter_city'] }}
+                </div>
+            {% endif %}
+            <input type="hidden" name="redirect_create_adresse_url" class="form-control" id="redirect_create_adresse_url" value="{{ urlRedirection }}">
             <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
             <a href="/admin/adresses" class="btn btn-primary">Annuler</a>
         </form>

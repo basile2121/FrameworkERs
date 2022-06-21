@@ -4,9 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Adresses;
 use App\Repository\AdressesRepository;
-use App\Repository\UserRepository;
 use App\Routing\Attribute\Route;
-use DateTime;
 use Exception;
 use ReflectionException;
 use Twig\Error\LoaderError;
@@ -43,6 +41,15 @@ class AdresseController extends AbstractController
         $parameters = [];
         $filtres = [];
 
+        $errors = $this->_verifSizeInput($_POST['filter_city'], $_POST['filter_cp']);
+        if ($errors !== true) {
+            $adresses = $adressesRepository->selectAll();
+            echo $this->twig->render('admin/adresses/admin_adresse.html.twig', [
+                'adresses' => $adresses,
+                'errors' => $errors,
+            ]);
+        }
+
         if (!empty($_POST['filter_city'])) {
             $filtres['filter_city'] = $_POST['filter_city'];
             $conditions[] = 'ville_libelle LIKE ?';
@@ -58,7 +65,8 @@ class AdresseController extends AbstractController
         $adresses = $adressesRepository->filter($conditions, $parameters);
         echo $this->twig->render('admin/adresses/admin_adresse.html.twig', [
             'adresses' => $adresses,
-            'filtres' => $filtres
+            'filtres' => $filtres,
+            'errors' => $errors
         ]);
     }
 
@@ -68,9 +76,8 @@ class AdresseController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/create/adresse", name: "admin_create_adresses",)]
-    public function createAdresses(AdressesRepository $adressesRepository)
+    public function createAdresses()
     {
-        $adresses = $adressesRepository->selectAll();
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $urlRedirection = $_SERVER['HTTP_REFERER'];
         } else {
@@ -78,7 +85,6 @@ class AdresseController extends AbstractController
         }
 
         echo $this->twig->render('admin/adresses/admin_form_create_adresse.html.twig', [
-            'adresses' => $adresses,
             'urlRedirection' => $urlRedirection
         ]);
     }
@@ -91,6 +97,7 @@ class AdresseController extends AbstractController
     #[Route(path: "/admin/add/adresses", httpMethod: 'POST', name: "admin_add_adresses",)]
     public function addAdresses(AdressesRepository $adressesRepository)
     {
+
         $adresse = new Adresses();
         $adresse->setLibelleAdresse($_POST['adresse']);
         $adresse->setCpVille($_POST['codePostal']);
@@ -98,6 +105,13 @@ class AdresseController extends AbstractController
         $adresse->setCoordonneLatitude($_POST['coordonneeLatitude']);
         $adresse->setCoordonneeLongitude($_POST['coordonneeLongitude']);
 
+        $errors = $this->_verifSizeInput($_POST['ville'], $_POST['codePostal'], $_POST['adresse']);
+        if ($errors !== true) {
+            echo $this->twig->render('admin/adresses/admin_form_create_adresse.html.twig', [
+                'urlRedirection' => $_POST['redirect_create_adresse_url'],
+                'adresse' => $adresse
+            ]);
+        }
 
         $adressesRepository->save($adresse);
         header('Location: '. $_POST['redirect_create_adresse_url']);
@@ -134,7 +148,6 @@ class AdresseController extends AbstractController
         $adresse->setCoordonneLatitude($_POST['coordonneeLatitude']);
         $adresse->setCoordonneeLongitude($_POST['coordonneeLongitude']);
 
-
         $adressesRepository->update($adresse);
 
         header('Location: /admin/adresses');
@@ -147,5 +160,29 @@ class AdresseController extends AbstractController
         $id = intval($_POST['id']);
         $adressesRepository->delete($id);
         header('Location: /admin/adresses');
+    }
+
+    /**
+     * @param string $ville
+     * @param string $codePostal
+     * @param string|null $adresse
+     * @return bool|array
+     */
+    private function _verifSizeInput(string $ville, string $codePostal, string $adresse = null): bool|array
+    {
+        $errors = [];
+        if (isset($adresse) && strlen($adresse) > 255) {
+            $errors['adresse'] = 'Adresse renseignée trop grande';
+        }
+        if (strlen($codePostal) !== 5) {
+            $errors['codePostal'] = 'Le code postal doit faire exactement 5 caractéres';
+        }
+        if (strlen($ville) > 255) {
+            $errors['ville'] = 'Ville renseignée trop grande';
+        }
+        if (empty($errors)) {
+            return true;
+        }
+        return $errors;
     }
 }

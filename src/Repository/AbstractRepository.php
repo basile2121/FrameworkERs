@@ -83,7 +83,6 @@ abstract class AbstractRepository
             $query .= ' ' . $limit;
         }
         $stmt = $this->pdo->prepare($query);
-        var_dump($stmt);
         $stmt->execute($parameters);
         $data = $stmt->fetchAll();
         return $this->setHydrate($data);
