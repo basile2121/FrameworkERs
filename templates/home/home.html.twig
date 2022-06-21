@@ -6,17 +6,17 @@
 {% block content %}
     {% if sessionSuccess %}
 		<div class="alert alert-success m-auto col-3">
-			{{sessionSuccess ~ '!'}}
+			{{ sessionSuccess ~ '!' }}
 		</div>
 		{% endif %}
 		{% if logout %}
 		<div class="alert alert-warning m-auto mt-2 col-3">
-			{{logout}}
+			{{ logout }}
 		</div>
 		{% endif %}
 		{% if connected %}
 		<div class="alert alert-warning m-auto mt-2 col-6">
-			{{connected}}
+			{{  connected }}
 		</div>
 		{% endif %}
 		<h1>Accueil PHP MVC</h1>

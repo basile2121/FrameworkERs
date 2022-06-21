@@ -24,7 +24,6 @@ class AuthentificationController extends AbstractController
     #[Route(path: "/login")]
     public function getLogin(Session $session)
     {
-        session_start();
         echo $this->twig->render("authentification/login.html.twig", [
             'notLogged' => $session->get('notLogged'),
             'successRegister' => $session->get('successRegister')
@@ -45,8 +44,6 @@ class AuthentificationController extends AbstractController
     #[Route(path: "/login", httpMethod: "POST", name: "login")]
     public function postLogin(UtilisateursRepository $utilisateursRepository, Session $session)
     {
-        session_start();
-        
         if (isset($_POST['email']) && isset($_POST['password'])) {
             $user = $utilisateursRepository->selectOneByEmail($_POST["email"]);
             
@@ -144,7 +141,6 @@ class AuthentificationController extends AbstractController
                 $user->setIdRole($role->getIdRole());
     
                 $utilisateursRepository->save($user);
-                session_start();
                 $session->set('successRegister', 'Votre compte a bien été créé, veuillez vous connecter');
                 header("Location: http://localhost:8000/login");
                

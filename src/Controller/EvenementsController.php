@@ -185,8 +185,7 @@ class EvenementsController extends AbstractController
         $evenement->setIdAdresse(intval($_POST['adresseSelect']));
         $evenement->setCreatedAt(new DateTime());
         $evenement->setUpdatedAt(new DateTime());
-        // TODO Fabien SESSION
-        $evenement->setIdUtilisateur(293);
+        $evenement->setIdUtilisateur(intval($_SESSION['id']));
         // TODO WALID FILE UPLOAD
         $evenement->setIdMedia(1);
 

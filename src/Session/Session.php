@@ -5,11 +5,10 @@ namespace App\Session;
 class Session 
 {
     
-    private function ensureStarted(){
+    public function ensureStarted(){
         if(session_status() === PHP_SESSION_NONE){
             session_start();
         }
-        
     }
     
     public function get(string $key, $default = null){

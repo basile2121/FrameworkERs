@@ -57,13 +57,14 @@ $ecolesRepository = new EcolesRepository($pdoConnection->getPdoConnection(), $hy
 $categoriesRepository = new CategoriesRepository($pdoConnection->getPdoConnection(), $hydrator);
 $appartientRepository = new AppartientRepository($pdoConnection->getPdoConnection(), $hydrator);
 $adressesRepository = new AdressesRepository($pdoConnection->getPdoConnection(), $hydrator);
+//Session
+$session = new Session();
+$session->ensureStarted();
 
 // Twig - Vue
 $twigEnvironment = new TwigEnvironment();
 $twig = $twigEnvironment->init();
-
-//Session 
-$session = new Session();
+$twig->addGlobal('session_utilisateur_id', $session->get('id'));
 
 // Service Container
 $container->set(Environment::class, $twig);

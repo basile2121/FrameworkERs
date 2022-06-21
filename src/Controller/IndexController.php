@@ -13,7 +13,6 @@ class IndexController extends AbstractController
     #[Route(path: "/", name: "accueil")]
     public function index(UtilisateursRepository $utilisateursRepository, Session $session)
     {
-        session_start();
         if(!empty($_SESSION)){
             $user = $utilisateursRepository->selectOneById($_SESSION["id"]);
 
