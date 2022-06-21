@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Statuts;
+use ReflectionException;
 
 final class StatutsRepository extends AbstractRepository
 {
@@ -18,5 +19,18 @@ final class StatutsRepository extends AbstractRepository
             'libelleStatut' => $statuts->getLibelleStatut(),
             'couleurStatus' => $statuts->getCouleurStatus(),
         ]);
+    }
+
+    /**
+     * Récuperer évenèments dont la date est la plus proche
+     * @throws ReflectionException
+     */
+    public function selectOneByLibelle(string $libelle): array
+    {
+        $query = 'SELECT * FROM statuts WHERE id_statut = $libelle';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        $data = $stmt->fetchAll();
+        return $this->setHydrate($data);
     }
 }

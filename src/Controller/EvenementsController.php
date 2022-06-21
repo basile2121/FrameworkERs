@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Evenements;
+use App\Entity\Participe;
 use App\Repository\AdressesRepository;
 use App\Repository\CategoriesRepository;
 use App\Repository\EcolesRepository;
@@ -34,6 +35,50 @@ class EvenementsController extends AbstractController
 
         echo $this->twig->render('evenements/evenement.html.twig', [
             'evenement' => $evenement,
+        ]);
+    }
+
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
+    #[Route(path: "/evenement/participe", httpMethod: 'POST', name: "evenement_participe",)]
+    public function participeEvenement(EvenementsRepository $evenementsRepository,StatutsRepository $statutsRepository, ParticipeRepository $participeRepository)
+    {
+        $id = intval($_POST['id']);
+        $evenement = $evenementsRepository->selectOneById($id);
+        $participes = $participeRepository->selectAll();
+
+
+        $nbParticipantMax = $evenement->getNbParticipantsMax();
+        $nbParticipants = $this->_getNbParticipants([], $participes, $id);
+        $nbParticipant = count($nbParticipants[$id]);
+        if ($nbParticipant < $nbParticipantMax) {
+            // Ajout de la participation
+            $participe = new Participe();
+            $participe->setIdEvenement($id);
+            $participe->setIdUtilisateur(intval($_SESSION['id']));
+            $participeRepository->save($participe);
+
+
+            $pourcent = (($nbParticipant + 1) / $nbParticipantMax) * 100;
+
+            if ($pourcent > 80) {
+                $statut = $evenement->selectOneByLibelle('Presque complet');
+                $evenement->setStatuts($statut);
+            } else if ($pourcent === 100) {
+                $statut = $evenement->selectOneByLibelle('Complet');
+                $evenement->setStatuts($statut);
+            }
+            $message = 'Participation pris en compte';
+        } else {
+            $message = 'Evenement complet impossible d\'y participer';
+        }
+
+        echo $this->twig->render('evenements/evenement.html.twig', [
+            'evenement' => $evenement,
+            'message' => $message,
         ]);
     }
 

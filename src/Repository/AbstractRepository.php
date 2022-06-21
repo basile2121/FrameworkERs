@@ -69,15 +69,21 @@ abstract class AbstractRepository
      * Filtre en fonction des conditions et parameteres passés
      * @throws ReflectionException
      */
-    public function filter(array $conditions, array $parameters, string $additionalQuery = '', string $orderBy = '', string $direction = 'ASC'): array
+    public function filter(array $conditions, array $parameters, string $additionalQuery = '', string $orderBy = '', string $direction = 'ASC', string $limit = ''): array
     {
         $query = 'SELECT * FROM ' . static::TABLE;
         $query .= ' ' . $additionalQuery;
-        $query .= " WHERE ".implode(" AND ", $conditions);
+        if(!empty($parameters) && !empty($conditions)) {
+            $query .= " WHERE ".implode(" AND ", $conditions);
+        }
         if ($orderBy) {
             $query .= ' ORDER BY ' . $orderBy . ' ' . $direction;
         }
+        if ($limit) {
+            $query .= ' ' . $limit;
+        }
         $stmt = $this->pdo->prepare($query);
+        var_dump($stmt);
         $stmt->execute($parameters);
         $data = $stmt->fetchAll();
         return $this->setHydrate($data);
@@ -108,5 +114,4 @@ abstract class AbstractRepository
         $parameters = $this->hydrator->getParameters($model);
         return $this->hydrator->hydrate($data, $model,$parameters );
     }
-
 }
