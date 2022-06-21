@@ -1,0 +1,107 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	Registration
+{% endblock %}
+
+{% block content %}
+	{% if msg %}
+		<div class="alert alert-danger mt-2">
+			{{msg}}
+		</div>
+	{% endif %}
+	<div class="col-4 m-auto">
+		<h1>Veuillez vous enregistrer</h1>
+		<form method="POST" action="/register">
+            
+			<div class="form-group">
+				<label for="nom">Nom
+				</label>
+				<input type="text" name="nom" class="form-control" id="nom" placeholder="Nom" required>
+			</div>
+
+			<div class="form-group">
+				<label for="prenom">Prénom
+				</label>
+				<input type="text" name="prenom" class="form-control" id="prenom" placeholder="Prénom" required>
+			</div>
+			<div class="form-group">
+				<label for="date_naissance">Date de naissance
+				</label>
+				<input type="date" name="date_naissance" class="form-control" id="date_naissance" placeholder="Nom" required>
+			</div>
+			<div class="form-group">
+				<label for="telephone">
+					Téléphone
+				</label>
+				<input type="text" name="telephone" class="form-control" id="telephone" placeholder="Numéro de téléphone" required>
+			</div>
+			<div class="form-group">
+				<label for="promotions">Promotions</label>
+				<select name="promotions" class="form-control" id="promotions">
+					<option selected disabled>
+						Sélectionner votre promotion</option>
+					{% for promotion in promotions %}
+						<option value={{promotion.idPromotion}}>
+							{{promotion.libellePromotion}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="email">Email
+				</label>
+				<input type="text" name="email" class="form-control" id="email" placeholder="email@example.com" required>
+			</div>
+            {% if errors %}
+				{% if errors['mail_existant'] %}
+					<div class="alert alert-danger m-auto mt-2">
+						{{ errors['mail_existant'] }}
+					</div>
+				{% endif %}
+			{% endif %}
+            {% if errors %}
+				{% if errors['mail'] %}
+					<div class="alert alert-danger m-auto mt-2">
+						{{ errors['mail'] }}
+					</div>
+				{% endif %}
+			{% endif %}
+			<div class="form-group">
+				<label for="password">Password
+				</label>
+				<input type="password" name="password" class="form-control" id="password" placeholder="Mot de passe" required>
+			</div>
+			<div class="form-group">
+				<label for="password_confirm">Confirmation Password
+				</label>
+				<input type="password" name="password_confirm" class="form-control" id="password_confirm" placeholder="Confirmation mot de passe" required>
+			</div>
+            {% if errors %}
+				{% if errors['password'] %}
+					<div class="alert alert-danger m-auto mt-2">
+                    <h5>Erreur{% if errors['password'] | length > 1 %}s{% endif %} du mot de passe :</h5>
+                    <ul> 
+                    {% for error in errors['password'] %} 
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+					</div>
+				{% endif %}
+			{% endif %}
+           {% if errors %}
+				{% if errors['empty'] %}
+					<div class="alert alert-danger m-auto mt-2">
+						{{ errors['empty'] }}
+					</div>
+				{% endif %}
+			{% endif %}
+            
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary mt-3">S'enregistrer</button>
+			</div>
+			
+
+		</form>
+	</div>
+</div>{% endblock %}
+

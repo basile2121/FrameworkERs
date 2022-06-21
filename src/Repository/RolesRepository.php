@@ -18,4 +18,19 @@ final class RolesRepository extends AbstractRepository
             'libelleRole' => $roles->getLibelleRole(),
         ]);
     }
+
+       /**
+     * Recuperation de l'id_role en fonction du libellé
+     */
+    public function selectOneByLibelle(string $libelleRole): ?object
+    {
+        $statement = $this->pdo->prepare("SELECT id_role FROM " . static::TABLE . " WHERE libelle_role = :role");
+        $statement->bindValue('role', $libelleRole, \PDO::PARAM_STR);
+        $statement->execute();
+        $results = $statement->fetch();
+        if ($results) {
+            return $this->setHydrateOne($results);
+        }
+        return null;
+    }
 }

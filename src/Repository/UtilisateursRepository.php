@@ -51,4 +51,20 @@ final class UtilisateursRepository extends AbstractRepository
             'idUtilisateur' => $utilisateurs->getIdUtilisateur()
         ]);
     }
+
+    /**
+     * Recuperation d'un seul element via son email (Login)
+     * @throws ReflectionException
+     */
+    public function selectOneByEmail(string $mail): ?object
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM " . static::TABLE . " WHERE mail = :mail");
+        $statement->bindValue('mail', $mail, \PDO::PARAM_STR);
+        $statement->execute();
+        $results = $statement->fetch();
+        if ($results) {
+            return $this->setHydrateOne($results);
+        }
+        return null;
+    }
 }

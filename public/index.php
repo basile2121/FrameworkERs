@@ -28,7 +28,6 @@ use App\Routing\ArgumentResolver;
 use App\Routing\RouteNotFoundException;
 use App\Routing\Router;
 use App\Session\Session;
-use App\Session\SessionInterface;
 use App\Utils\Hydrator;
 use Symfony\Component\Dotenv\Dotenv;
 use Twig\Environment;
@@ -63,9 +62,12 @@ $adressesRepository = new AdressesRepository($pdoConnection->getPdoConnection(),
 $twigEnvironment = new TwigEnvironment();
 $twig = $twigEnvironment->init();
 
+//Session 
+$session = new Session();
+
 // Service Container
 $container->set(Environment::class, $twig);
-$container->set(SessionInterface::class, new Session());
+$container->set(Session::class, $session);
 $container->set(UtilisateursRepository::class, $utilisateursRepository);
 $container->set(StatutsRepository::class, $statutsRepository);
 $container->set(RolesRepository::class, $rolesRepository);
