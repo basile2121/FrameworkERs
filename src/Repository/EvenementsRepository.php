@@ -109,4 +109,21 @@ final class EvenementsRepository extends AbstractRepository
         $data = $stmt->fetchAll();
         return $this->setHydrate($data);
     }
+
+    /**
+     * Permet de récupérer les évènements créés par un utilisateur avec le rôle BDE 
+     *
+     * @return Evenements
+     */
+    public function selectEvenementByUser(int $id): array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM " . static::TABLE . " WHERE id_utilisateur = :id");
+        $stmt->bindValue('id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $results = $stmt->fetchAll();
+        if ($results) {
+            return $this->setHydrate($results);
+        }
+        return [];
+    }
 }

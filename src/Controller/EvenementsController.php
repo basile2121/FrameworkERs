@@ -136,6 +136,7 @@ class EvenementsController extends AbstractController
         $parameters = [];
         $filtres = [];
         $query = '';
+        $id=null;
 
         if (!empty($_POST['filter_titre'])) {
             $filtres['filter_titre'] = $_POST['filter_titre'];
@@ -173,9 +174,18 @@ class EvenementsController extends AbstractController
         if (!empty($_POST['order_date'])) {
             $filtres['order_date'] = $_POST['order_date'];
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $_POST['order_date']);
+        } 
+        //Si utilisateur a le role BDE et peut vérifier/modifier les évènements qu'il a créé 
+        if(!empty($_POST['userBDE'])){
+            $id = $_SESSION["id"];
+            $conditions[] = 'evenements.id_utilisateur = ?';
+            $parameters[] = $_SESSION["id"];
+            $evenements = $evenementsRepository->filter($conditions, $parameters, $query);
         } else {
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query);
         }
+        
+       
 
         echo $this->twig->render('admin/evenements/admin_evenements.html.twig', [
             'evenements' => $evenements,
@@ -183,6 +193,7 @@ class EvenementsController extends AbstractController
             'statuts' => $statuts,
             'adresses' => $adresses,
             'filtres' => $filtres,
+            'userBDE' => $id,
             'arrayParticipeUtilisateurs' => $this->_getNbParticipants($evenements, $participes)
         ]);
     }
@@ -340,6 +351,42 @@ class EvenementsController extends AbstractController
         header('Location: /admin/evenements');
     }
 
+     /**
+     * Permet d'afficher les evenements que l'utilisateur connecté à créer 
+     * S'il a le rôle : BDE 
+     *
+     * @param EvenementsRepository $evenementsRepository
+     * @param CategoriesRepository $categoriesRepository
+     * @param StatutsRepository $statutsRepository
+     * @param AdressesRepository $adressesRepository
+     * @param ParticipeRepository $participeRepository
+     * @return void
+     */
+    #[Route(path: "/admin/evenements/utilisateurBde", httpMethod: 'GET', name: "admin_evenement_utilisateur_bde")]
+    public function gestionEvenementByCreateur(EvenementsRepository $evenementsRepository,
+    CategoriesRepository $categoriesRepository,
+    StatutsRepository $statutsRepository,
+    AdressesRepository $adressesRepository,
+    ParticipeRepository $participeRepository)
+    {
+        $id = $_SESSION["id"];
+        $evenements = $evenementsRepository->selectEvenementByUser($id);
+        $categories = $categoriesRepository->selectAll();
+        $statuts = $statutsRepository->selectAll();
+        $adresses = $adressesRepository->selectAll();
+        $participes = $participeRepository->selectAll();
+
+
+        echo $this->twig->render('admin/evenements/admin_evenements.html.twig', [
+            'evenements' => $evenements,
+            'categories' => $categories,
+            'statuts' => $statuts,
+            'userBDE' => $id,
+            'adresses' => $adresses,
+            'arrayParticipeUtilisateurs' => $this->_getNbParticipants($evenements, $participes)
+        ]);
+    }
+
 
     private function _getNbParticipants(array $evenements, array $participes, int $evenementId = null): array {
         $arrayParticipeUtilisateurs = [];
@@ -363,4 +410,5 @@ class EvenementsController extends AbstractController
 
         return $arrayParticipeUtilisateurs;
     }
+   
 }

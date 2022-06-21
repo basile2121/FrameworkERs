@@ -12,8 +12,8 @@
                 <input type="text" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control" id="filter_titre" placeholder="Titre">
             </div>
             <div class="form-group">
-                <label for=filtre_categorie">Categories</label>
-                <select name="filtre_categorie" id=filtre_categorie">
+                <label for="filtre_categorie">Categories</label>
+                <select name="filtre_categorie" id="filtre_categorie">
                     <option disabled selected>Selectioner une categorie</option>
                     {% for categorie in categories %}
                         <option {% if filtres['filtre_categorie'] is defined and categorie.idCategorie == filtres['filtre_categorie'] %} selected {% endif %} value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
@@ -45,6 +45,9 @@
                     <option value="DESC">Décroissant</option>
                 </select>
             </div>
+            {% if userBDE %}
+            <input type="hidden" name="userBDE" value={{userBDE}}>
+            {% endif %}
             <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
             <a href="/admin/evenements" class="btn btn-primary">Annuler</a>
         </form>
