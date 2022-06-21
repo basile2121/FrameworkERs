@@ -19,6 +19,9 @@
                 <label for="adresse">Adresse</label>
                 <input type="text" name="adresse" class="form-control" id="adresse" placeholder="Adresse">
             </div>
+
+            {% include 'maps/maps_create.html.twig' %}
+
             <div class="form-group">
                 <label for="coordonneeLongitude">Coordonnée longitude</label>
                 <input type="text" name="coordonneeLongitude" class="form-control" id="coordonneeLongitude" placeholder="Coordonnee en longitude">
