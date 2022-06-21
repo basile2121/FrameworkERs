@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Evenements;
+use App\Entity\Medias;
 use App\Entity\Participe;
 use App\Repository\AdressesRepository;
 use App\Repository\CategoriesRepository;
 use App\Repository\EcolesRepository;
 use App\Repository\EvenementsRepository;
+use App\Repository\MediasRepository;
 use App\Repository\ParticipeRepository;
 use App\Repository\RolesRepository;
 use App\Repository\StatutsRepository;
@@ -216,27 +218,55 @@ class EvenementsController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/add/evenements", httpMethod: 'POST', name: "admin_add_evenements",)]
-    public function addEvenements(EvenementsRepository $evenementsRepository)
+    public function addEvenements(EvenementsRepository $evenementsRepository , MediasRepository $mediasRepository)
     {
-        $evenement = new Evenements();
-        $evenement->setTitre($_POST['evenementTitle']);
-        $evenement->setSousTitre($_POST['evenementSubTitle']);
-        $evenement->setDate(new DateTime($_POST['evenementDate']));
-        $evenement->setNbParticipantsMax($_POST['nbParticipantMax']);
-        $evenement->setPrix($_POST['prix']);
-        $evenement->setDescription($_POST['description']);
-        $evenement->setIdCategorie(($_POST['categorieSelect']));
-        $evenement->setIdStatut(intval($_POST['statutSelect']));
-        $evenement->setIdAdresse(intval($_POST['adresseSelect']));
-        $evenement->setCreatedAt(new DateTime());
-        $evenement->setUpdatedAt(new DateTime());
-        $evenement->setIdUtilisateur(intval($_SESSION['id']));
+       
+       
         // TODO WALID FILE UPLOAD
-        $evenement->setIdMedia(1);
+        if (!isset($_FILES['imageEvent'])) {
+            echo "Erreur : pas d'image";
+            return;
+          }
+      
+          $image = $_FILES['imageEvent'];
+          
+      
+          if (
+            is_uploaded_file($image['tmp_name']) &&
+            move_uploaded_file(
+              $image['tmp_name'],__DIR__ . DIRECTORY_SEPARATOR . '../../public/events/' . basename($image['name'])
+            )
+          ) {
+            $media= new Medias();
+            $media->setNom(basename($image['name']));
+            $media->setPath('events/' . basename($image['name']));
+            $media->setType($image['type']);
+            $mediasRepository->save($media);
+
+            $idmedia= $mediasRepository->getLastId();
+
+          $evenement = new Evenements();
+          $evenement->setTitre($_POST['evenementTitle']);
+          $evenement->setSousTitre($_POST['evenementSubTitle']);
+          $evenement->setDate(new DateTime($_POST['evenementDate']));
+          $evenement->setNbParticipantsMax($_POST['nbParticipantMax']);
+          $evenement->setPrix($_POST['prix']);
+          $evenement->setDescription($_POST['description']);
+          $evenement->setIdCategorie(($_POST['categorieSelect']));
+          $evenement->setIdStatut(intval($_POST['statutSelect']));
+          $evenement->setIdAdresse(intval($_POST['adresseSelect']));
+          $evenement->setCreatedAt(new DateTime());
+          $evenement->setUpdatedAt(new DateTime());
+          $evenement->setIdUtilisateur(intval($_SESSION['id']));
+          $evenement->setIdMedia($idmedia);
 
         $evenementsRepository->save($evenement);
 
         header('Location: /admin/evenements');
+          } else {
+            echo "Erreur lors de l'upload";
+          }
+          
     }
 
     /**
@@ -273,7 +303,7 @@ class EvenementsController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: "/admin/update/evenements", httpMethod: 'POST', name: "admin_update_evenements",)]
-    public function updateEvenements(EvenementsRepository $evenementsRepository)
+    public function updateEvenements(EvenementsRepository $evenementsRepository, MediasRepository $mediasRepository)
     {
         $evenement = $evenementsRepository->selectOneById(intval($_POST['id']));
 
@@ -287,6 +317,29 @@ class EvenementsController extends AbstractController
         $evenement->setIdStatut(intval($_POST['statutSelect']));
         $evenement->setIdAdresse(intval($_POST['adresseSelect']));
         $evenement->setUpdatedAt(new DateTime());
+
+        if (isset($_FILES['imageEvent'])) {
+           
+            $image = $_FILES['imageEvent'];
+            if (
+                is_uploaded_file($image['tmp_name']) &&
+                move_uploaded_file(
+                  $image['tmp_name'],__DIR__ . DIRECTORY_SEPARATOR . '../../public/events/' . basename($image['name'])
+                )
+              ) {
+                $media= new Medias();
+                $media->setNom(basename($image['name']));
+                $media->setPath('events/' . basename($image['name']));
+                $media->setType($image['type']);
+                $mediasRepository->save($media);
+    
+                $idmedia= $mediasRepository->getLastId();
+                
+                $evenement->setIdMedia($idmedia);
+              }
+
+
+        }
 
         $evenementsRepository->update($evenement);
 

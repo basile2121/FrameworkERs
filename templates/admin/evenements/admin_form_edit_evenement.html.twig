@@ -6,7 +6,7 @@
 {% block content %}
     <h1 class="display-1 text-center mt-5">Modifier un évenement</h1>
     <main>
-        <form class="form-admin" method="POST" action="/admin/update/evenements">
+        <form class="form-admin" method="POST" action="/admin/update/evenements" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="evenementTitle">Titre</label>
                 <input type="text" name="evenementTitle" class="form-control" id="evenementTitle" value="{{ evenement.titre }}" placeholder="Titre">
@@ -68,6 +68,8 @@
                 </select>
                 <a href="/admin/create/adresse">Ajouter une adresse</a>
             </div>
+            <img src="/{{ evenement.medias.path}}" alt="" srcset="">
+             <input type="file" name="imageEvent"/>
             <button type="submit" name="id" class="btn btn-primary" value="{{ evenement.idEvenement }}">Sauvegarder</button>
             <a href="/admin/evenements" class="btn btn-primary">Annuler</a>
         </form>
