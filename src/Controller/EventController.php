@@ -26,8 +26,7 @@ class EventController extends AbstractController
     if (
       is_uploaded_file($image['tmp_name']) &&
       move_uploaded_file(
-        $image['tmp_name'],
-        __DIR__ . DIRECTORY_SEPARATOR . '../../public/events/' . basename($image['name'])
+        $image['tmp_name'],__DIR__ . DIRECTORY_SEPARATOR . '../../public/events/' . basename($image['name'])
       )
     ) {
       echo "ok";
