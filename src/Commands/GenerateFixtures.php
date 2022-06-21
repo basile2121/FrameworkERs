@@ -162,7 +162,7 @@ class GenerateFixtures extends Command
             $user->setDateInscription($this->faker->dateTime);
             $user->setMail($this->faker->email);
             $user->setTelephone('0609213456');
-            $user->setPassword($this->faker->password);
+            $user->setPassword('password');
             // Generation d'un id aleatoire entre les bornes des id des tables
             $user->setIdPromotion($this->faker->numberBetween($this->idArray['Promotions'][0], $this->idArray['Promotions'][1]));
             $user->setIdRole($this->faker->numberBetween($this->idArray['Roles'][0], $this->idArray['Roles'][1]));
@@ -197,7 +197,7 @@ class GenerateFixtures extends Command
 
     private function _loadRoles()
     {
-        $rolesLibelles = ['Role 1', 'Role 2', 'Role 3'];
+        $rolesLibelles = ['SUPER_ADMIN', 'ADMIN', 'BDE', 'UTILISATEUR'];
         foreach ($rolesLibelles as $libelle){
             $role = new Roles();
             $role->setLibelleRole($libelle);

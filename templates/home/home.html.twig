@@ -4,50 +4,23 @@
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Bienvenue sur notre projet</h1>
-    <h4 class="text-center">Vous trouverez ici la liste des fonctionnalités développer</h4>
-    <main>
-        <div class="card text-center mt-5 mb-5">
-            <div class="card-body">
-                <h5 class="card-title">Envoyer un mail</h5>
-                <p class="card-text">Ici vous pouvez tester le formulaire pour envoyer un Mail. Il est possible d'envoyer des PJ :).</p>
-                <a href="/mail" class="btn btn-primary">Tester l'envoie de mail</a>
-            </div>
-        </div>
-        <div class="card text-center mt-5 mb-5">
-            <div class="card-body">
-                <h5 class="card-title">Suivis des mails envoyé</h5>
-                <p class="card-text">Ici vous pouvez suivre tout les mail envoyer.</p>
-                <a href="/mails" class="btn btn-primary">Voir les mails envoyé</a>
-            </div>
-        </div>
-        <div class="card text-center mt-5 mb-5">
-            <div class="card-body">
-                <h5 class="card-title">Convertir un csv en exel</h5>
-                <p class="card-text">Ici vous pouvez effectuer la conversion d'un Csv en exil.</p>
-                <a href="/convert/csv" class="btn btn-primary">Tester la convertion</a>
-            </div>
-        </div>
-        <div class="card text-center mt-5 mb-5">
-            <div class="card-body">
-                <h5 class="card-title">Télécharger un fichier via une URL</h5>
-                <p class="card-text">Ici vous pouvez effectuer le télécharger d'un fichier.</p>
-                <a href="/download" class="btn btn-primary">Tester le téléchargement</a>
-            </div>
-        </div>
-        <div class="card text-center mt-5 mb-5">
-            <div class="card-body">
-                <h5 class="card-title">Register / Login </h5>
-                <p class="card-text">Ici vous pouvez vous connecter et vous enregistrer.</p>
-                <a href="/login" class="btn btn-primary">Login</a>
-                <a href="/register" class="btn btn-primary">Register</a>
-            </div>
-        </div>
-    </main>
+    {% if sessionSuccess %}
+		<div class="alert alert-success m-auto col-3">
+			{{sessionSuccess ~ '!'}}
+		</div>
+		{% endif %}
+		{% if logout %}
+		<div class="alert alert-warning m-auto mt-2 col-3">
+			{{logout}}
+		</div>
+		{% endif %}
+		{% if connected %}
+		<div class="alert alert-warning m-auto mt-2 col-6">
+			{{connected}}
+		</div>
+		{% endif %}
+		<h1>Accueil PHP MVC</h1>
+
+		<h3>Bienvenue sur notre projet PHP MVC from Scratch</h3>
 {% endblock %}
 
-{% block footer %}
-    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
-        Site realisé par Basile REGNAULT et Walid HALLOULI.
-    </div>
-{% endblock %}
