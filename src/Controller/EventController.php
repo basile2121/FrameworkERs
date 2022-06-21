@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Routing\Attribute\Route;
 
+
 class EventController extends AbstractController
 {
   #[Route(path: '/event/create', httpMethod: 'GET', name: 'event_create_form')]
@@ -34,4 +35,16 @@ class EventController extends AbstractController
       echo "Erreur lors de l'upload";
     }
   }
+
+
+
+  #[Route(path: '/event/show', httpMethod: 'GET', name: 'event_show')]
+  public function show()
+  {
+      $latitude= 50.06;
+      $longitude= 01.49;
+
+    echo $this->twig->render('event/show.html.twig' , ['longitude'=>$longitude,'latitude'=>$latitude ]);
+  }
+
 }
