@@ -16,8 +16,8 @@
                 <input type="text" value="{{ filtres['filtre_firstName'] }}" name="filtre_firstName" class="form-control" id="searchUserFirstName" placeholder="Prénom de l'utilisateur">
             </div>
             <div class="form-group">
-                <label for="ecoleSelect">Ecoles</label>
-                <select class="form-select" name="filtre_ecole" id="ecoleSelect">
+                <label for="ecoles">Ecoles</label>
+                <select class="form-select" name="filtre_ecole" id="ecoles">
                     <option disabled selected>Selectioner une écoles</option>
                     {% for ecole in ecoles %}
                         <option  {% if filtres['filtre_ecole'] is defined and ecole.idEcole == filtres['filtre_ecole'] %} selected {% endif %} value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
@@ -25,12 +25,10 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="promotionsSelect">Promotions</label>
-                <select class="form-select" name="filtre_promotion" class="form-control" id="promotionsSelect">
+                <label for="promotions">Promotions</label>
+                <select class="form-select" name="filtre_promotion" class="form-control" id="promotions">
                     <option disabled selected>Selectioner une promotion</option>
-                    {% for promotion in promotions %}
-                        <option {% if filtres['filtre_promotion'] is defined and promotion.idPromotion == filtres['filtre_promotion'] %} selected  {% endif %} value="{{ promotion.idPromotion }}">{{ promotion.libellePromotion }}</option>
-                    {% endfor %}
+                   
                 </select>
             </div>
             <div class="form-group">
@@ -96,4 +94,27 @@
             </tfoot>
         </table>
     </main>
+{% endblock %}
+
+{% block script %}
+<script>
+		let listeEcole = document.querySelector('#ecoles');
+		let listePromotions = document.querySelector('#promotions');
+	function ajaxPromotions(){
+		
+		let valueSelected = listeEcole.value;
+		
+    fetch('http://localhost:8000/json/promotions/' + valueSelected)
+            .then(response => response.json())
+			.then(datas =>insertOption(datas) 
+			)
+    }
+
+	function insertOption(datas){
+		listePromotions.innerHTML ='<option selected disabled>Sélectionner votre promotion</option>'
+		datas.forEach(element=> listePromotions.innerHTML += '<option value='+element[0]+'> '+element[1]+'</option>')
+	}
+
+	document.querySelector("#ecoles").addEventListener('change',ajaxPromotions);
+</script>
 {% endblock %}
