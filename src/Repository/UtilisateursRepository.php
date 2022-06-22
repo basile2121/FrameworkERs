@@ -97,4 +97,25 @@ final class UtilisateursRepository extends AbstractRepository
         }
         return null;
     }
+
+    /**
+     * Suppresion d'un utilisateur en cascade via son id
+     */
+    public function deleteCascadeUtilisateur(int $id): void
+    {
+        $statement = $this->pdo->prepare("SELECT id FROM participe as p WHERE p.id_utilisateur = :id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        if (!empty($results)) {
+            foreach ($results as $result) {
+                $statement = $this->pdo->prepare("DELETE FROM participe WHERE id =:idParticipe");
+                $statement->bindValue('idParticipe', $result['id'], \PDO::PARAM_INT);
+                $statement->execute();
+            }
+        }
+
+        $this->delete($id);
+    }
 }

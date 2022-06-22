@@ -147,4 +147,53 @@ final class EvenementsRepository extends AbstractRepository
         }
         return null;
     }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function verifContraintsUtilisateursAppartient($id): ?array
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM appartient as a WHERE a.id_evenement = :id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        if ($results) {
+            return $this->setHydrate($results);
+        }
+        return null;
+    }
+
+    /**
+     * Suppresion d'un evenement en cascade via son id
+     */
+    public function deleteCascadeEvenement(int $id): void
+    {
+        $statement = $this->pdo->prepare("SELECT id FROM participe as p WHERE p.id_evenement = :id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        if (!empty($results)) {
+            foreach ($results as $result) {
+                $statement = $this->pdo->prepare("DELETE FROM participe WHERE id =:idParticipe");
+                $statement->bindValue('idParticipe', $result['id'], \PDO::PARAM_INT);
+                $statement->execute();
+            }
+        }
+
+        $statement = $this->pdo->prepare("SELECT * FROM appartient as a WHERE a.id_evenement = :id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+
+        if (!empty($results)) {
+            foreach ($results as $result) {
+                $statement = $this->pdo->prepare("DELETE FROM appartient WHERE id =:idAppartient");
+                $statement->bindValue('idAppartient', $result['id'], \PDO::PARAM_INT);
+                $statement->execute();
+            }
+        }
+        $this->delete($id);
+    }
 }

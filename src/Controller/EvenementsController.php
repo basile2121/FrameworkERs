@@ -355,17 +355,30 @@ class EvenementsController extends AbstractController
      * @throws ReflectionException
      */
     #[Route(path: "/admin/delete/evenements", httpMethod: 'POST', name: "admin_delete_evenements")]
-    public function deleteEvenements(EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, EvenementsRepository $evenementsRepository)
+    public function deleteEvenements(EvenementsRepository $evenementsRepository)
     {
         $id = intval($_POST['id']);
         $utilisateursParticipantEvenement = $evenementsRepository->verifContraintsUtilisateursParticipes($id);
+        $categoriesAppartientEvenement = $evenementsRepository->verifContraintsUtilisateursAppartient($id);
         if ($utilisateursParticipantEvenement !== null) {
             // TODO POP UP
             // Message pop-up Impossible de l'eveneemnt car des utilisateurs y sont inscrits afficher les mails utilisateurs
+        } else if ($categoriesAppartientEvenement !== null) {
+            // TODO POP UP
+            // Message pop-up Impossible de l'eveneemnt car des categories sont lié a l'eveneemnt
         } else {
             $evenementsRepository->delete($id);
             header('Location: /admin/evenements');
         }
+    }
+
+
+    #[Route(path: "/admin/delete/evenements/cascade", httpMethod: 'POST', name: "admin_delete_evenements_cascade")]
+    public function deleteEvenementsCascade(EvenementsRepository $evenementsRepository)
+    {
+        $id = intval($_POST['id']);
+        $evenementsRepository->deleteCascadeEvenement($id);
+        header('Location: /admin/evenements');
     }
 
 

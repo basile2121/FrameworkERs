@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\EcolesRepository;
+use App\Repository\EvenementsRepository;
 use App\Repository\PromotionsRepository;
 use App\Repository\RolesRepository;
 use App\Repository\UserRepository;
@@ -149,5 +150,13 @@ class UtilisateurController extends AbstractController
             header('Location: /admin/utilisateurs');
 
         }
+    }
+
+    #[Route(path: "/admin/delete/utilisateurs/cascade", httpMethod: 'POST', name: "admin_delete_utilisateurs_cascade")]
+    public function deleteEvenementsCascade(UtilisateursRepository $utilisateursRepository)
+    {
+        $id = intval($_POST['id']);
+        $utilisateursRepository->deleteCascadeUtilisateur($id);
+        header('Location: /admin/utilisateurs');
     }
 }
