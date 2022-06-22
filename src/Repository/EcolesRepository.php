@@ -29,4 +29,16 @@ final class EcolesRepository extends AbstractRepository
             'nomEcole' => $ecoles->getNomEcole()
         ]);
     }
+
+    public function verifContraintsPromotions(int $id): ?array
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM promotions as p WHERE p.id_ecole = :id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        if ($results) {
+            return $this->setHydrate($results);
+        }
+        return null;
+    }
 }

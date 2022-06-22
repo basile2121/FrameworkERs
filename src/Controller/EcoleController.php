@@ -133,7 +133,13 @@ class EcoleController extends AbstractController
     public function deleteEcoles(EcolesRepository $ecolesRepository)
     {
         $id = intval($_POST['id']);
-        $ecolesRepository->delete($id);
-        header('Location: /admin/ecoles');
+        $promotions = $ecolesRepository->verifContraintsPromotions($id);
+        if ($promotions !== null) {
+            // TODO POP UP
+            // Message pop-up Impossible de supprimer l'ecole car une promotion associer à l'ecole existe
+        } else {
+            $ecolesRepository->delete($id);
+            header('Location: /admin/ecoles');
+        }
     }
 }

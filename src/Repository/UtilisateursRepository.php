@@ -67,4 +67,34 @@ final class UtilisateursRepository extends AbstractRepository
         }
         return null;
     }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function verifContraintsEvenementCreate(int $id): ?array
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM utilisateurs as u JOIN evenements as e ON e.id_utilisateur = u.id_utilisateur WHERE u.id_utilisateur = :id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        if ($results) {
+            return $this->setHydrate($results);
+        }
+        return null;
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function verifContraintsParticipeEvenement(int $id): ?array
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM participe as p JOIN utilisateurs as u ON p.id_utilisateur = u.id_utilisateur WHERE p.id_utilisateur = :id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        if ($results) {
+            return $this->setHydrate($results);
+        }
+        return null;
+    }
 }

@@ -351,12 +351,21 @@ class EvenementsController extends AbstractController
     }
 
 
+    /**
+     * @throws ReflectionException
+     */
     #[Route(path: "/admin/delete/evenements", httpMethod: 'POST', name: "admin_delete_evenements")]
-    public function deleteEvenements(EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository)
+    public function deleteEvenements(EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, EvenementsRepository $evenementsRepository)
     {
         $id = intval($_POST['id']);
-        $utilisateursRepository->delete($id);
-        header('Location: /admin/evenements');
+        $utilisateursParticipantEvenement = $evenementsRepository->verifContraintsUtilisateursParticipes($id);
+        if ($utilisateursParticipantEvenement !== null) {
+            // TODO POP UP
+            // Message pop-up Impossible de l'eveneemnt car des utilisateurs y sont inscrits afficher les mails utilisateurs
+        } else {
+            $evenementsRepository->delete($id);
+            header('Location: /admin/evenements');
+        }
     }
 
 

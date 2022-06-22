@@ -131,4 +131,20 @@ final class EvenementsRepository extends AbstractRepository
         }
         return [];
     }
+
+
+    /**
+     * @throws ReflectionException
+     */
+    public function verifContraintsUtilisateursParticipes($id): ?array
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM participe as p WHERE p.id_evenement = :id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        if ($results) {
+            return $this->setHydrate($results);
+        }
+        return null;
+    }
 }

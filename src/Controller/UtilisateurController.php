@@ -135,7 +135,19 @@ class UtilisateurController extends AbstractController
     public function deleteUtilisateurs(UtilisateursRepository $utilisateursRepository)
     {
         $id = intval($_POST['id']);
-        $utilisateursRepository->delete($id);
-        header('Location: /admin/utilisateurs');
+
+        $evenementsCreatedByUser = $utilisateursRepository->verifContraintsEvenementCreate($id);
+        $evenementsParticipeByUser = $utilisateursRepository->verifContraintsParticipeEvenement($id);
+        if ($evenementsCreatedByUser !== null) {
+            // TODO POP UP
+            // Message pop-up Impossible de supprimer l'utilisateur car il a créer un evenement
+        } else if ($evenementsParticipeByUser !== null) {
+            // TODO POP UP
+            // Message pop-up Impossible de supprimer l'utilisateur car il participe à un evenement
+        } else {
+            $utilisateursRepository->delete($id);
+            header('Location: /admin/utilisateurs');
+
+        }
     }
 }
