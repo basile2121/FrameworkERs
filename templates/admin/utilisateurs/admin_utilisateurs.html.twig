@@ -18,7 +18,7 @@
             <div class="form-group">
                 <label for="ecoles">Ecoles</label>
                 <select class="form-select" name="filtre_ecole" id="ecoles">
-                    <option disabled selected>Selectioner une écoles</option>
+                    <option value='' selected>Selectioner une écoles</option>
                     {% for ecole in ecoles %}
                         <option  {% if filtres['filtre_ecole'] is defined and ecole.idEcole == filtres['filtre_ecole'] %} selected {% endif %} value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
                     {% endfor %}
@@ -27,14 +27,14 @@
             <div class="form-group">
                 <label for="promotions">Promotions</label>
                 <select class="form-select" name="filtre_promotion" class="form-control" id="promotions">
-                    <option disabled selected>Selectioner une promotion</option>
+                    <option value='' selected>Selectioner une promotion</option>
                    
                 </select>
             </div>
             <div class="form-group">
                 <label for="rolesSelect">Roles</label>
                 <select class="form-select" name="filtre_role" id="rolesSelect">
-                    <option disabled selected>Selectioner un role</option>
+                    <option value='' selected>Selectioner un role</option>
                     {% for role in roles %}
                         <option {% if filtres['filtre_role'] is defined and role.idRole == filtres['filtre_role'] %} selected {% endif %} value="{{ role.idRole }}">{{ role.libelleRole }}</option>
                     {% endfor %}
@@ -111,7 +111,7 @@
     }
 
 	function insertOption(datas){
-		listePromotions.innerHTML ='<option selected disabled>Sélectionner votre promotion</option>'
+		listePromotions.innerHTML ='<option selected value=''>Sélectionner votre promotion</option>'
 		datas.forEach(element=> listePromotions.innerHTML += '<option value='+element[0]+'> '+element[1]+'</option>')
 	}
 
