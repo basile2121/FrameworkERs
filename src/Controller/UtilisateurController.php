@@ -134,8 +134,12 @@ class UtilisateurController extends AbstractController
     #[Route(path: "/admin/delete/utilisateurs", httpMethod: 'POST', name: "admin_delete_utilisateurs")]
     public function deleteUtilisateurs(UtilisateursRepository $utilisateursRepository)
     {
-        $id = intval($_POST['id']);
-        $utilisateursRepository->delete($id);
+        $id = intval($_POST['idUtilisateur']);
+        try {
+            $utilisateursRepository->delete($id);
+        } catch (\Throwable $th) {
+            return  "we can not";
+        }
         header('Location: /admin/utilisateurs');
     }
 }

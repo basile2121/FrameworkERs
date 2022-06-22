@@ -44,11 +44,11 @@
                         <form method="POST" action="/admin/edit/adresses" >
                             <button type="submit" name="id" class="btn btn-warning" value="{{ adresse.idAdresse }}">Modifier</button>
                         </form>
-                        <form method="POST" action="/admin/delete/adresses" >
-                            <button type="submit" name="id" class="btn btn-danger" value="{{ adresse.idAdresse }}">Supprimer</button>
-                        </form>
+
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{adresse.idAdresse  }}">Supprimer</button>
                     </td>
                 </tr>
+                {% include 'utils/pupop/delete_adresse_model.html.twig'%}
             {% endfor %}
             </tbody>
             <tfoot>

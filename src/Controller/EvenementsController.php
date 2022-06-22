@@ -15,7 +15,9 @@ use App\Repository\RolesRepository;
 use App\Repository\StatutsRepository;
 use App\Repository\UtilisateursRepository;
 use App\Routing\Attribute\Route;
+use App\Session\Session;
 use DateTime;
+use PhpParser\Node\Stmt\TryCatch;
 use ReflectionException;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -36,7 +38,7 @@ class EvenementsController extends AbstractController
         $evenement = $evenementsRepository->selectOneById($id);
 
         echo $this->twig->render('evenements/evenement.html.twig', [
-            'evenement' => $evenement,
+            'evenement' => $evenement
         ]);
     }
 
@@ -46,9 +48,11 @@ class EvenementsController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/evenement/participe", httpMethod: 'POST', name: "evenement_participe",)]
-    public function participeEvenement(EvenementsRepository $evenementsRepository,StatutsRepository $statutsRepository, ParticipeRepository $participeRepository)
+    public function participeEvenement(EvenementsRepository $evenementsRepository,StatutsRepository $statutsRepository, ParticipeRepository $participeRepository ,Session $session)
     {
-        $id = intval($_POST['id']);
+        $session->delete('successParticiper');
+        $session->delete('errorParticiper');
+        $id = intval($_POST['idEvenement']);
         $evenement = $evenementsRepository->selectOneById($id);
         $participes = $participeRepository->selectAll();
 
@@ -74,14 +78,13 @@ class EvenementsController extends AbstractController
                 $evenement->setStatuts($statut);
             }
             $message = 'Participation pris en compte';
+            $session->set('successParticiper', 'Participation pris en compte');
         } else {
             $message = 'Evenement complet impossible d\'y participer';
+            $session->set('errorParticiper', 'Evenement complet impossible d\'y participer');
         }
-
-        echo $this->twig->render('evenements/evenement.html.twig', [
-            'evenement' => $evenement,
-            'message' => $message,
-        ]);
+        
+        //header("Location: /evenement");
     }
 
 
@@ -352,10 +355,10 @@ class EvenementsController extends AbstractController
 
 
     #[Route(path: "/admin/delete/evenements", httpMethod: 'POST', name: "admin_delete_evenements")]
-    public function deleteEvenements(EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository)
+    public function deleteEvenements(EvenementsRepository $evenementsRepository)
     {
         $id = intval($_POST['id']);
-        $utilisateursRepository->delete($id);
+        $evenementsRepository->delete($id);
         header('Location: /admin/evenements');
     }
 
@@ -392,7 +395,11 @@ class EvenementsController extends AbstractController
         $idUtilisateur = intval($_POST['idUtilisateur']);
         $idEvenement = intval($_POST['idEvenement']);
 
-        $participeRepository->deleteUtilisateur($idUtilisateur, $idEvenement);
+        try {
+            $participeRepository->deleteUtilisateur($idUtilisateur, $idEvenement);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
 
         header('Location: /admin/evenements');
     }

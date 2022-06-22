@@ -43,11 +43,10 @@
                         <form method="POST" action="/admin/edit/promotions" >
                             <button type="submit" name="id" class="btn btn-warning" value="{{promotion.idPromotion}}">Modifier</button>
                         </form>
-                        <form method="POST" action="/admin/delete/promotions" >
-                            <button type="submit" name="id" class="btn btn-danger" value="{{promotion.idPromotion}}">Supprimer</button>
-                        </form>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{promotion.idPromotion  }}">Supprimer</button>
                     </td>
                 </tr>
+                {% include 'utils/pupop/delete_promotion_model.html.twig'%}
             {% endfor %}
             </tbody>
             <tfoot>

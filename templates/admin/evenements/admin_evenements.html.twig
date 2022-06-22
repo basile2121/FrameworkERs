@@ -98,11 +98,12 @@
                             <form method="POST" action="/admin/edit/evenements" >
                                 <button type="submit" name="id" class="btn btn-warning" value="{{ evenement.idEvenement }}">Modifier</button>
                             </form>
-                            <form method="POST" action="/admin/delete/evenements" >
-                                <button type="submit" name="id" class="btn btn-danger" value="{{ evenement.idEvenement }}">Supprimer</button>
-                            </form>
+
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{evenement.idEvenement }}">Supprimer</button>
+
                         </td>
                     </tr>
+                     {% include 'utils/pupop/delete_evenement_model.html.twig'%}
                 {% endfor %}
             </tbody>
             <tfoot>
