@@ -53,7 +53,7 @@ final class EvenementsRepository extends AbstractRepository
             'nbParticipantsMax' => $evenements->getNbParticipantsMax(),
             'prix' => $evenements->getPrix(),
             'date' => $evenements->getDate()->format('Y-m-d'),
-            'updatedAt' => $evenements->getUpdatedAt(),
+            'updatedAt' => $evenements->getUpdatedAt()->format('Y-m-d'),
             'idCategorie' => $evenements->getIdCategorie(),
             'idAdresse' => $evenements->getIdAdresse(),
             'idStatut' => $evenements->getIdStatut(),

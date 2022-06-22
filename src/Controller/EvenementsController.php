@@ -363,4 +363,29 @@ class EvenementsController extends AbstractController
 
         return $arrayParticipeUtilisateurs;
     }
+
+    #[Route(path: "/mapshow", httpMethod: 'GET', name: "mapshow")]
+    public function mapshow(){
+        echo $this->twig->render('maps/maps_show.html.twig');
+    }
+
+
+    #[Route(path: "/map", httpMethod: 'POST', name: "map")]
+    public function maps(){
+
+            var_dump($_POST['addr']);
+            $url = "https://api-adresse.data.gouv.fr/search/?q=8+bd+du+port";
+
+            $curl = curl_init($url);
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+            //for debug only!
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+            $resp = curl_exec($curl);
+            curl_close($curl);
+            var_dump($resp);
+    }
 }
