@@ -1,0 +1,53 @@
+{% extends "base.html.twig" %}
+{% block head %}
+{{ parent() }}
+ <link rel="stylesheet" href="/css/profilUser.css"/>
+ {% endblock %}
+
+{% block title %}
+	Etudiant
+	{{user.prenom}}
+{% endblock %}
+
+{% block content %}
+
+    {% if successUpdate %}
+		<div class="alert alert-info m-auto mt-2 col-4" style="width: 400px;">
+			{{successUpdate}}
+		</div>
+	{% endif %}
+
+    <section id='profil'>
+    <div class="card">
+		<img class="card-img-top" src="http://localhost:8000/image/user.png" alt="Card image cap">
+		<div class="card-body">
+			<h3 class="card-title" id="name"> {{user.nom}} {{user.prenom}}</h3>
+			
+		</div>
+		<ul class="list-group list-group-flush">
+        
+			<li class="list-group-item"><h5>Date de naissance :</h5>
+            {{user.dateNaissance|date("d/m/Y")}}
+            </li>
+            <li class="list-group-item"><h5>Mail :</h5>
+            {{user.mail}}
+            </li>
+             <li class="list-group-item"><h5>Téléphone :</h5>
+            {{user.telephone}}
+            </li>
+             <li class="list-group-item"><h5>Ecole :</h5>
+            {{ecole.nomEcole}}
+            </li>
+             <li class="list-group-item"><h5>Promotion :</h5>
+            {{promotion.libellePromotion}}
+            </li>
+		</ul>
+		<div class="card-body">
+            <button class="btn btn-primary mt-3"> <a href="/utilisateurs/profil/edit" > Modifier ses informations </a></button>
+            <button class="btn btn-secondary mt-3"> <a href="/" > Retour </a></button>
+		</div>
+	</div>
+    </section>
+	
+
+{% endblock %}

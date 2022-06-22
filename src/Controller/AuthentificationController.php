@@ -112,21 +112,6 @@ class AuthentificationController extends AbstractController
         ]);
     }
 
-        /**
-     * Récupération JSON promotions en fonction de l'école sélectionnée
-     *
-     * @return void
-     */
-    #[Route(path: '/json/promotions/{id}' , httpMethod:"GET",name: "json_promotions")]
-    public function ecoleJson(PromotionsRepository $promotionsRepository, int $id)
-    {
-      
-      $result = $promotionsRepository->findOneById($id);
-      
-      echo json_encode($result);
-    }
-
-    
 
     /**
      * Affiche page registration
@@ -164,6 +149,20 @@ class AuthentificationController extends AbstractController
                
         }
 
+    }
+
+    /**
+     * Récupération JSON promotions en fonction de l'école sélectionnée
+     *
+     * @return Promotions
+     */
+    #[Route(path: '/json/promotions/{id}' , httpMethod:"GET",name: "json_promotions")]
+    public function ecoleJson(PromotionsRepository $promotionsRepository, int $id)
+    {
+      
+      $result = $promotionsRepository->findOneById($id);
+      
+      echo json_encode($result);
     }
     /**
      * Vérifier si le password respecte certaines conditions
