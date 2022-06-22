@@ -51,6 +51,7 @@ abstract class AbstractRepository
      */
     public function delete(int $id): void
     {
+
         $statement = $this->pdo->prepare("DELETE FROM " . static::TABLE . " WHERE ". static::ID . " =:id");
         $statement->bindValue('id', $id, \PDO::PARAM_INT);
         $statement->execute();

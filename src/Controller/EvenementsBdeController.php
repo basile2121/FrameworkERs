@@ -19,7 +19,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class EvenementsController extends AbstractController
+class EvenementsBdeController extends AbstractController
 {
 
     /**
@@ -27,69 +27,7 @@ class EvenementsController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/evenement", httpMethod: 'POST', name: "evenement",)]
-    public function evenements(EvenementsRepository $evenementsRepository,CategoriesRepository $categoriesRepository, StatutsRepository $statutsRepository, AdressesRepository $adressesRepository, ParticipeRepository $participeRepository)
-    {
-        $id = intval($_POST['id']);
-        $evenement = $evenementsRepository->selectOneById($id);
-
-        echo $this->twig->render('evenements/evenement.html.twig', [
-            'evenement' => $evenement,
-        ]);
-    }
-
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     */
-    #[Route(path: "/evenement/participe", httpMethod: 'POST', name: "evenement_participe",)]
-    public function participeEvenement(EvenementsRepository $evenementsRepository,StatutsRepository $statutsRepository, ParticipeRepository $participeRepository)
-    {
-        $id = intval($_POST['id']);
-        $evenement = $evenementsRepository->selectOneById($id);
-        $participes = $participeRepository->selectAll();
-
-
-        $nbParticipantMax = $evenement->getNbParticipantsMax();
-        $nbParticipants = $this->_getNbParticipants([], $participes, $id);
-        $nbParticipant = count($nbParticipants[$id]);
-        if ($nbParticipant < $nbParticipantMax) {
-            // Ajout de la participation
-            $participe = new Participe();
-            $participe->setIdEvenement($id);
-            $participe->setIdUtilisateur(intval($_SESSION['id']));
-            $participeRepository->save($participe);
-
-
-            $pourcent = (($nbParticipant + 1) / $nbParticipantMax) * 100;
-
-            if ($pourcent > 80) {
-                $statut = $evenement->selectOneByLibelle('Presque complet');
-                $evenement->setStatuts($statut);
-            } else if ($pourcent === 100) {
-                $statut = $evenement->selectOneByLibelle('Complet');
-                $evenement->setStatuts($statut);
-            }
-            $message = 'Participation pris en compte';
-        } else {
-            $message = 'Evenement complet impossible d\'y participer';
-        }
-
-        echo $this->twig->render('evenements/evenement.html.twig', [
-            'evenement' => $evenement,
-            'message' => $message,
-        ]);
-    }
-
-
-
-    /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     */
-    #[Route(path: "/admin/evenements", name: "admin_evenements",)]
+    #[Route(path: "/bde/evenements", name: "bde_evenements",)]
     public function adminEvenements(EvenementsRepository $evenementsRepository,
                                     CategoriesRepository $categoriesRepository,
                                     StatutsRepository $statutsRepository,
@@ -97,14 +35,16 @@ class EvenementsController extends AbstractController
                                     ParticipeRepository $participeRepository
     )
     {
-        $evenements = $evenementsRepository->selectAll('date', 'DESC');
+        $id = $_SESSION["id"];
+        $evenements = $evenementsRepository->selectEvenementByUser($id);
+        // $evenements = $evenementsRepository->selectAll('date', 'DESC');
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
         $adresses = $adressesRepository->selectAll();
         $participes = $participeRepository->selectAll();
 
 
-        echo $this->twig->render('admin/evenements/admin_evenements.html.twig', [
+        echo $this->twig->render('bde/evenements/bde_evenements.html.twig', [
             'evenements' => $evenements,
             'categories' => $categories,
             'statuts' => $statuts,
@@ -119,7 +59,7 @@ class EvenementsController extends AbstractController
      * @throws LoaderError
      * @throws ReflectionException
      */
-    #[Route(path: "/admin/evenements/filter", httpMethod: 'POST', name: "admin_evenements_filter",)]
+    #[Route(path: "/bde/evenements/filter", httpMethod: 'POST', name: "bde_evenements_filter",)]
     public function evenementsFilter(EvenementsRepository $evenementsRepository,
                                      CategoriesRepository $categoriesRepository,
                                      StatutsRepository $statutsRepository,
@@ -136,7 +76,11 @@ class EvenementsController extends AbstractController
         $parameters = [];
         $filtres = [];
         $query = '';
-        
+
+        //Utilisateur BDE 
+        $id = $_SESSION["id"];
+        $conditions[] = 'evenements.id_utilisateur = ?';
+        $parameters[] = $_SESSION["id"];
 
         if (!empty($_POST['filter_titre'])) {
             $filtres['filter_titre'] = $_POST['filter_titre'];
@@ -170,23 +114,24 @@ class EvenementsController extends AbstractController
             $conditions[] = 'adresses.cp_ville LIKE ?';
             $parameters[] = '%'.$_POST['filtre_cp']."%";
         }
-
         if (!empty($_POST['order_date'])) {
             $filtres['order_date'] = $_POST['order_date'];
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $_POST['order_date']);
         } 
-        else {
+         else {
+            
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query);
         }
         
        
 
-        echo $this->twig->render('admin/evenements/admin_evenements.html.twig', [
+        echo $this->twig->render('bde/evenements/bde_evenements.html.twig', [
             'evenements' => $evenements,
             'categories' => $categories,
             'statuts' => $statuts,
             'adresses' => $adresses,
             'filtres' => $filtres,
+            'user/bde' => $id,
             'arrayParticipeUtilisateurs' => $this->_getNbParticipants($evenements, $participes)
         ]);
     }
@@ -196,7 +141,7 @@ class EvenementsController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/admin/create/evenements", name: "admin_create_evenements",)]
+    #[Route(path: "/bde/create/evenements", name: "bde_create_evenements",)]
     public function createEvenements(CategoriesRepository $categoriesRepository,
                                    StatutsRepository $statutsRepository,
                                    AdressesRepository $adressesRepository,
@@ -207,7 +152,7 @@ class EvenementsController extends AbstractController
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
 
-        echo $this->twig->render('admin/evenements/admin_form_create_evenement.html.twig', [
+        echo $this->twig->render('bde/evenements/bde_form_create_evenement.html.twig', [
             'adresses' => $adresses,
             'categories' => $categories,
             'statuts' => $statuts,
@@ -219,7 +164,7 @@ class EvenementsController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/admin/add/evenements", httpMethod: 'POST', name: "admin_add_evenements",)]
+    #[Route(path: "/bde/add/evenements/", httpMethod: 'POST', name: "bde_add_evenements",)]
     public function addEvenements(EvenementsRepository $evenementsRepository)
     {
         $evenement = new Evenements();
@@ -240,7 +185,7 @@ class EvenementsController extends AbstractController
 
         $evenementsRepository->save($evenement);
 
-        header('Location: /admin/evenements');
+        header('Location: /bde/evenements');
     }
 
     /**
@@ -248,7 +193,7 @@ class EvenementsController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/admin/edit/evenements", httpMethod: 'POST', name: "admin_edit_evenements",)]
+    #[Route(path: "/bde/edit/evenements", httpMethod: 'POST', name: "bde_edit_evenements",)]
     public function editEvenements(EvenementsRepository $evenementsRepository,
                                    CategoriesRepository $categoriesRepository,
                                    StatutsRepository $statutsRepository,
@@ -263,7 +208,7 @@ class EvenementsController extends AbstractController
         $statuts = $statutsRepository->selectAll();
         $participes = $participeRepository->selectAll();
 
-        echo $this->twig->render('admin/evenements/admin_form_edit_evenement.html.twig', [
+        echo $this->twig->render('bde/evenements/bde_form_edit_evenement.html.twig', [
             'evenement' => $evenement,
             'adresses' => $adresses,
             'categories' => $categories,
@@ -276,7 +221,7 @@ class EvenementsController extends AbstractController
     /**
      * @throws \Exception
      */
-    #[Route(path: "/admin/update/evenements", httpMethod: 'POST', name: "admin_update_evenements",)]
+    #[Route(path: "/bde/update/evenements", httpMethod: 'POST', name: "bde_update_evenements",)]
     public function updateEvenements(EvenementsRepository $evenementsRepository)
     {
         $evenement = $evenementsRepository->selectOneById(intval($_POST['id']));
@@ -294,16 +239,16 @@ class EvenementsController extends AbstractController
 
         $evenementsRepository->update($evenement);
 
-        header('Location: /admin/evenements');
+        header('Location: /bde/evenements');
     }
 
 
-    #[Route(path: "/admin/delete/evenements", httpMethod: 'POST', name: "admin_delete_evenements")]
-    public function deleteEvenements(EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository)
+    #[Route(path: "/bde/delete/evenements", httpMethod: 'POST', name: "bde_delete_evenements")]
+    public function deleteEvenements( EvenementsRepository $evenementsRepository)
     {
         $id = intval($_POST['id']);
-        $utilisateursRepository->delete($id);
-        header('Location: /admin/evenements');
+        $evenementsRepository->delete($id);
+        header('Location: /bde/evenements');
     }
 
 
@@ -313,7 +258,7 @@ class EvenementsController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/admin/evenements/list/utilisateurs", httpMethod: 'POST', name: "admin_evenements_list_utilisateurs",)]
+    #[Route(path: "/bde/evenements/list/utilisateurs", httpMethod: 'POST', name: "bde_evenements_list_utilisateurs",)]
     public function adminEvenementsListUtilisateurs(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, UtilisateursRepository $utilisateursRepository)
     {
         $id = intval($_POST['id']);
@@ -326,14 +271,14 @@ class EvenementsController extends AbstractController
             array_push($utilisateurs, $utilisateursRepository->selectOneById($utilisateurId));
         }
 
-        echo $this->twig->render('admin/evenements/admin_list_utilisateurs.html.twig', [
+        echo $this->twig->render('bde/evenements/bde_list_utilisateurs.html.twig', [
             'evenement' => $evenement,
             'utilisateurs' => $utilisateurs,
             'arrayParticipeUtilisateurs' => $arrayParticipeUtilisateurs
         ]);
     }
 
-    #[Route(path: "/admin/delete/evenement/utilisateur", httpMethod: 'POST', name: "admin_delete_evenement_utilisateur")]
+    #[Route(path: "bde/delete/evenement/utilisateur", httpMethod: 'POST', name: "bde_delete_evenement_utilisateur")]
     public function deleteUtilisateur(ParticipeRepository $participeRepository)
     {
         $idUtilisateur = intval($_POST['idUtilisateur']);
@@ -341,8 +286,45 @@ class EvenementsController extends AbstractController
 
         $participeRepository->deleteUtilisateur($idUtilisateur, $idEvenement);
 
-        header('Location: /admin/evenements');
+        header('Location: /bde/evenements');
     }
+
+    //  /**
+    //  * Permet d'afficher les evenements que l'utilisateur connecté à créer 
+    //  * S'il a le rôle : /bde 
+    //  *
+    //  * @param EvenementsRepository $evenementsRepository
+    //  * @param CategoriesRepository $categoriesRepository
+    //  * @param StatutsRepository $statutsRepository
+    //  * @param AdressesRepository $adressesRepository
+    //  * @param ParticipeRepository $participeRepository
+    //  * @return void
+    //  */
+    // #[Route(path: "/admin/evenements/utilisateurBde", httpMethod: 'GET', name: "admin_evenement_utilisateur_bde")]
+    // public function gestionEvenementByCreateur(EvenementsRepository $evenementsRepository,
+    // CategoriesRepository $categoriesRepository,
+    // StatutsRepository $statutsRepository,
+    // AdressesRepository $adressesRepository,
+    // ParticipeRepository $participeRepository)
+    // {
+    //     $id = $_SESSION["id"];
+    //     $evenements = $evenementsRepository->selectEvenementByUser($id);
+    //     $categories = $categoriesRepository->selectAll();
+    //     $statuts = $statutsRepository->selectAll();
+    //     $adresses = $adressesRepository->selectAll();
+    //     $participes = $participeRepository->selectAll();
+
+
+    //     echo $this->twig->render('admin/evenements/admin_evenements.html.twig', [
+    //         'evenements' => $evenements,
+    //         'categories' => $categories,
+    //         'statuts' => $statuts,
+    //         'user/bde' => $id,
+    //         'adresses' => $adresses,
+    //         'arrayParticipeUtilisateurs' => $this->_getNbParticipants($evenements, $participes)
+    //     ]);
+    // }
+
 
     private function _getNbParticipants(array $evenements, array $participes, int $evenementId = null): array {
         $arrayParticipeUtilisateurs = [];
