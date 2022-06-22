@@ -37,14 +37,22 @@
 				<input type="text" name="telephone" class="form-control" id="telephone" placeholder="Numéro de téléphone" required>
 			</div>
 			<div class="form-group">
+				<label for="ecoles">Ecoles</label>
+				<select name="ecoles" class="form-control" id="ecoles">
+					<option selected disabled>
+						Sélectionner votre école</option>
+					{% for ecole in ecoles %}
+						<option value={{ecole.idEcole}}>
+							{{ecole.nomEcole}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="form-group">
 				<label for="promotions">Promotions</label>
 				<select name="promotions" class="form-control" id="promotions">
 					<option selected disabled>
 						Sélectionner votre promotion</option>
-					{% for promotion in promotions %}
-						<option value={{promotion.idPromotion}}>
-							{{promotion.libellePromotion}}</option>
-					{% endfor %}
+					
 				</select>
 			</div>
 			<div class="form-group">
@@ -103,5 +111,28 @@
 
 		</form>
 	</div>
-</div>{% endblock %}
+</div>
+{% endblock %}
 
+{% block script %}
+<script>
+		let listeEcole = document.querySelector('#ecoles');
+		let listePromotions = document.querySelector('#promotions');
+	function ajaxPromotions(){
+		
+		let valueSelected = listeEcole.value;
+		
+    fetch('http://localhost:8000/json/promotions/' + valueSelected)
+            .then(response => response.json())
+			.then(datas =>insertOption(datas) 
+			)
+    }
+
+	function insertOption(datas){
+		listePromotions.innerHTML ='<option selected disabled>Sélectionner votre promotion</option>'
+		datas.forEach(element=> listePromotions.innerHTML += '<option value='+element[0]+'> '+element[1]+'</option>')
+	}
+
+	document.querySelector("#ecoles").addEventListener('change',ajaxPromotions);
+</script>
+{% endblock %}

@@ -57,14 +57,16 @@ class Router
     if ($route === null) {
       throw new RouteNotFoundException();
     }
-
+    
+    
     $controllerName = $route->getController();
     $constructorParams = $this->getMethodServiceParams($controllerName, '__construct');
     $controller = new $controllerName(...$constructorParams);
-
+    
     $method = $route->getMethod();
     $servicesParams = $this->getMethodServiceParams($controllerName, $method);
     $getParams = $route->getGetParams();
+    
 
     call_user_func_array(
       [$controller, $method],
