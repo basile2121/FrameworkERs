@@ -135,7 +135,7 @@ class UtilisateurController extends AbstractController
     #[Route(path: "/admin/delete/utilisateurs", httpMethod: 'POST', name: "admin_delete_utilisateurs")]
     public function deleteUtilisateurs(UtilisateursRepository $utilisateursRepository)
     {
-        $id = intval($_POST['id']);
+        $id = intval($_POST['idUtilisateur']);
 
         $evenementsCreatedByUser = $utilisateursRepository->verifContraintsEvenementCreate($id);
         $evenementsParticipeByUser = $utilisateursRepository->verifContraintsParticipeEvenement($id);
@@ -155,7 +155,7 @@ class UtilisateurController extends AbstractController
     #[Route(path: "/admin/delete/utilisateurs/cascade", httpMethod: 'POST', name: "admin_delete_utilisateurs_cascade")]
     public function deleteEvenementsCascade(UtilisateursRepository $utilisateursRepository)
     {
-        $id = intval($_POST['id']);
+        $id = intval($_POST['idUtilisateur']);
         $utilisateursRepository->deleteCascadeUtilisateur($id);
         header('Location: /admin/utilisateurs');
     }

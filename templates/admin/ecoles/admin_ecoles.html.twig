@@ -31,11 +31,12 @@
                         <form method="POST" action="/admin/edit/ecoles" >
                             <button type="submit" name="id" class="btn btn-warning" value="{{ ecole.idEcole }}">Modifier</button>
                         </form>
-                        <form method="POST" action="/admin/delete/ecoles" >
-                            <button type="submit" name="id" class="btn btn-danger" value="{{ ecole.idEcole }}">Supprimer</button>
-                        </form>
+                       
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ecole.idEcole }}">Supprimer</button>
                     </td>
                 </tr>
+                
+                {% include 'utils/pupop/delete_ecole_model.html.twig'%}
             {% endfor %}
             </tbody>
             <tfoot>

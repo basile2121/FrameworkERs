@@ -76,11 +76,11 @@
                         <form method="POST" action="/admin/edit/utilisateurs" >
                             <button type="submit" name="id" class="btn btn-warning" value="{{ utilisateur.idUtilisateur}}">Modifier</button>
                         </form>
-                        <form method="POST" action="/admin/delete/utilisateurs" >
-                            <button type="submit" name="id" class="btn btn-danger" value="{{ utilisateur.idUtilisateur }}">Supprimer</button>
-                        </form>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{utilisateur.idUtilisateur }}">Supprimer</button>
+
                     </td>
                 </tr>
+                {% include 'utils/pupop/delete_utilisateur_model.html.twig'%}
             {% endfor %}
             </tbody>
             <tfoot>

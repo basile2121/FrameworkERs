@@ -4,6 +4,16 @@
 
 
 {% block content %}
+	 {% if errorParticiper %}
+		<div class="alert alert-success m-auto col-3">
+			{{ sessionSuccess ~ '!' }}
+		</div>
+		{% endif %}
+		{% if errorParticiper %}
+		<div class="alert alert-warning m-auto mt-2 col-3">
+			{{ logout }}
+		</div>
+		{% endif %}
     {% if sessionSuccess %}
 		<div class="alert alert-success m-auto col-3">
 			{{ sessionSuccess ~ '!' }}
@@ -24,7 +34,7 @@
 	{% for evenementAVenir in evenementsAVenir %}
 		<div>
 			<p>{{ evenementAVenir.idEvenement }}</p>
-			<form method="POST" action="/evenement/participe">
+			<form method="POST" action="/evenement">
 				<button type="submit" name="id" class="btn btn-warning" value="{{ evenementAVenir.idEvenement }}">Acceder</button>
 			</form>
 		</div>
