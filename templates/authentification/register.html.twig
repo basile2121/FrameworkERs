@@ -52,10 +52,7 @@
 				<select name="promotions" class="form-control" id="promotions">
 					<option selected disabled>
 						Sélectionner votre promotion</option>
-					{% for promotion in promotions %}
-						<option value={{promotion.idPromotion}}>
-							{{promotion.libellePromotion}}</option>
-					{% endfor %}
+					
 				</select>
 			</div>
 			<div class="form-group">
@@ -119,22 +116,23 @@
 
 {% block script %}
 <script>
-	 function selectedEcole(){
 		let listeEcole = document.querySelector('#ecoles');
-	
-		let valueSelected = listeEcole.options[listeEcole.selectedIndex].value;
+		let listePromotions = document.querySelector('#promotions');
+	function ajaxPromotions(){
 		
-	}
-	let listeEcole = document.querySelector('#ecoles');
-	
-		let valueSelected = listeEcole.options[listeEcole.selectedIndex].value;
-	function ajaxHTML(valueSelected){
+		let valueSelected = listeEcole.value;
+		
     fetch('http://localhost:8000/json/promotions/' + valueSelected)
             .then(response => response.json())
-			.then(datas => console.log(datas))
+			.then(datas =>insertOption(datas) 
+			)
     }
-	
 
-	document.querySelector("#ecoles").addEventListener('change',ajaxHTML);
+	function insertOption(datas){
+		listePromotions.innerHTML ='<option selected disabled>Sélectionner votre promotion</option>'
+		datas.forEach(element=> listePromotions.innerHTML += '<option value='+element[0]+'> '+element[1]+'</option>')
+	}
+
+	document.querySelector("#ecoles").addEventListener('change',ajaxPromotions);
 </script>
 {% endblock %}
