@@ -19,14 +19,8 @@
                 <label for="adresse">Adresse</label>
                 <input type="text" name="adresse" class="form-control" id="adresse" value="{{ adresse.libelleAdresse }}" placeholder="Adresse">
             </div>
-            <div class="form-group">
-                <label for="coordonneeLongitude">Coordonnée longitude</label>
-                <input type="text" name="coordonneeLongitude" class="form-control" id="coordonneeLongitude" value="{{ adresse.coordonneeLongitude }}" placeholder="Coordonnee en longitude">
-            </div>
-            <div class="form-group">
-                <label for="coordonneeLatitude">Coordonnée latitude</label>
-                <input type="text" name="coordonneeLatitude" class="form-control" id="coordonneeLatitude" value="{{ adresse.coordonneLatitude }}" placeholder="Coordonnee en latitude">
-            </div>
+            <h3>Position actuel</h3>
+            {% include 'maps/maps_show.html.twig' %}
             <button type="submit" name="id" class="btn btn-primary" value="{{ adresse.idAdresse }}">Sauvegarder</button>
             <a href="/admin/adresses" class="btn btn-primary">Annuler</a>
         </form>

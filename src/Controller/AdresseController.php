@@ -4,11 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Adresses;
 use App\Repository\AdressesRepository;
-use App\Repository\UserRepository;
 use App\Routing\Attribute\Route;
-use DateTime;
 use Exception;
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use ReflectionException;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -98,14 +95,9 @@ class AdresseController extends AbstractController
         $adresse->setCpVille($_POST['codePostal']);
         $adresse->setVilleLibelle($_POST['ville']);
 
-           $reponse = $this->maps($_POST['adresse'],$_POST['codePostal']);
-         
-
+        $reponse = $this->_getCoordonneeMaps($_POST['adresse'],$_POST['codePostal']);
         $adresse->setCoordonneLatitude($reponse[1]);
         $adresse->setCoordonneeLongitude($reponse[0]);
-
-
-
 
         $adressesRepository->save($adresse);
         header('Location: '. $_POST['redirect_create_adresse_url']);
@@ -139,9 +131,10 @@ class AdresseController extends AbstractController
         $adresse->setLibelleAdresse($_POST['adresse']);
         $adresse->setCpVille($_POST['codePostal']);
         $adresse->setVilleLibelle($_POST['ville']);
-        $adresse->setCoordonneLatitude($_POST['coordonneeLatitude']);
-        $adresse->setCoordonneeLongitude($_POST['coordonneeLongitude']);
 
+        $reponse = $this->_getCoordonneeMaps($_POST['adresse'],$_POST['codePostal']);
+        $adresse->setCoordonneLatitude($reponse[1]);
+        $adresse->setCoordonneeLongitude($reponse[0]);
 
         $adressesRepository->update($adresse);
 
@@ -157,29 +150,20 @@ class AdresseController extends AbstractController
         header('Location: /admin/adresses');
     }
 
-  
-
-
     
-    public function maps($adresse,$code){
+    private function _getCoordonneeMaps($adresse,$code){
+        $url =  "https://api-adresse.data.gouv.fr/search/?q=".urlencode($adresse).'&postcode='.$code;
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-            $url =  "https://api-adresse.data.gouv.fr/search/?q=".urlencode($adresse).'&postcode='.$code;
+        //for debug only!
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
-
-            $curl = curl_init($url);
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-            //for debug only!
-            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-
-            $resp = curl_exec($curl);
-            curl_close($curl);
-           $resp= json_decode($resp, true);
-           
-            return $resp['features'][0]['geometry']['coordinates'];
-          
-        
+        $resp = curl_exec($curl);
+        curl_close($curl);
+        $resp= json_decode($resp, true);
+        return $resp['features'][0]['geometry']['coordinates'];
     }   
 }

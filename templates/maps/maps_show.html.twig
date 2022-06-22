@@ -1,4 +1,10 @@
-<iframe  id="map" width="40%" height="500" src="https://maps.google.com/maps?q={{ evenement.adresses.coordonneLatitude}},{{ evenement.adresses.coordonneeLongitude}}&output=embed&z=17"></iframe>
-
-
- 
+<iframe  id="map" width="40%" height="500" src="https://maps.google.com/maps?q=
+{% if evenement %}
+        {{ evenement.adresses.coordonneLatitude}},
+        {{ evenement.adresses.coordonneeLongitude}}
+   {% else %}
+        {{ adresse.coordonneLatitude}},
+        {{ adresse.coordonneeLongitude}}
+    {% endif %}
+    &output=embed&z=17">
+</iframe>
