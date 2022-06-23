@@ -35,8 +35,10 @@
                     </td>
                 </tr>
                 {% include 'utils/pop-up/delete_categorie_model.html.twig'%}
+                
             {% endfor %}
             </tbody>
+            {% include 'utils/pop-up/delete_categorie_withcontraint_model.html.twig'%}
             <tfoot>
                 <tr>
                     {% if categories is not empty %}
@@ -48,4 +50,11 @@
             </tfoot>
         </table>
     </main>
+
+    {% if cateforipop == "cateforipop"  %}
+            <script type="text/javascript">
+               $('#deleteModalwithcontraintcategorie').modal('show');
+            </script>
+    {% endif %}
+    
 {% endblock %}
