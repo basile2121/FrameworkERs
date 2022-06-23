@@ -1,5 +1,5 @@
  <!-- Modal -->
-        <div class="modal fade" id="deleteModal{{evenement.idEvenement }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel{{evenement.idEvenement }}" aria-hidden="true">
+        <div class="modal fade" id="deleteModalwithcontraint{{evenement.idEvenement }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel{{evenement.idEvenement }}" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
@@ -9,12 +9,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                <form action="/admin/delete/evenements" method="POST" autocomplete="off">
-                    Voulez vous supprimer l'evenement
+                <form action="/admin/delete/evenements/cascade" method="POST" autocomplete="off">
+                    Message pop-up Impossible de l'eveneemnt car des utilisateurs y sont inscrits
                         <input type="hidden" name="id" value="{{evenement.idEvenement}}">
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger">Supprimer</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Forcer la Suppression</button>
+                    <a class="btn btn-secondary" href="{{ '/admin/evenements/list/utilisateurs?id=' ~ evenement.idEvenement }}">List participants</a>
                 </div>
                 </form> 
                 </div>

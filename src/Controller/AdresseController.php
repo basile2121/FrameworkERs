@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Adresses;
 use App\Repository\AdressesRepository;
 use App\Routing\Attribute\Route;
+use App\Session\Session;
 use Exception;
 use ReflectionException;
 use Twig\Error\LoaderError;
@@ -19,14 +20,17 @@ class AdresseController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/adresses", name: "admin_adresses",)]
-    public function adresses(AdressesRepository $adressesRepository)
+    public function adresses(AdressesRepository $adressesRepository, Session $session)
     {
         $adresses = $adressesRepository->selectAll();
        
 
         echo $this->twig->render('admin/adresses/admin_adresse.html.twig', [
             'adresses' => $adresses,
+            'Adressepop'=>$session->get('Adressepop'),
         ]);
+
+        $session->delete('Adressepop');
     }
 
     /**
@@ -143,11 +147,19 @@ class AdresseController extends AbstractController
 
 
     #[Route(path: "/admin/delete/adresses", httpMethod: 'POST', name: "admin_delete_adresses")]
-    public function deleteAdresses(AdressesRepository $adressesRepository)
+    public function deleteAdresses(AdressesRepository $adressesRepository, Session $session)
     {
-        $id = intval($_POST['id']);
-        $adressesRepository->delete($id);
-        header('Location: /admin/adresses');
+        $id = intval($_POST['idAdresse']);
+        $evenementsCreatedByUser = $adressesRepository->verifContraintsAdresse($id);
+        if ($evenementsCreatedByUser !== null) {
+            // TODO POP UP
+            // Message pop-up Impossible de supprimer l'adresse car elle est utiliser dans un evenement
+            $session->set('Adressepop',"Adressepop");
+            header('Location: /admin/adresses'); 
+        } else {
+            $adressesRepository->delete($id);
+            header('Location: /admin/adresses'); 
+        } 
     }
 
     

@@ -6,6 +6,7 @@ use App\Repository\EcolesRepository;
 use App\Repository\PromotionsRepository;
 use App\Entity\Ecoles;
 use App\Routing\Attribute\Route;
+use App\Session\Session;
 use PHPUnit\Util\Exception;
 use ReflectionException;
 use Twig\Error\LoaderError;
@@ -19,16 +20,19 @@ class EcoleController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/admin/ecoles", name: "admin_ecoles",)]
-    public function ecoles(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository)
+    #[Route(path: "/admin/ecoles", httpMethod: 'GET',  name: "admin_ecoles",)]
+    public function ecoles(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository , Session $session)
     {
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
 
         echo $this->twig->render('admin/ecoles/admin_ecoles.html.twig', [
             'ecoles' => $ecoles,
-            'promotions' => $promotions,
+            'impossible' => $session->get('impossible'),
+            'promotions' => $promotions
         ]);
+
+        $session->delete('impossible');
     }
 
     /**
@@ -130,12 +134,14 @@ class EcoleController extends AbstractController
 
 
     #[Route(path: "/admin/delete/ecoles", httpMethod: 'POST', name: "admin_delete_ecoles")]
-    public function deleteEcoles(EcolesRepository $ecolesRepository)
+    public function deleteEcoles(EcolesRepository $ecolesRepository, Session $session)
     {
         $id = intval($_POST['id']);
         $promotions = $ecolesRepository->verifContraintsPromotions($id);
         if ($promotions !== null) {
             // TODO POP UP
+            $session->set('impossible',"impossible");
+            header('Location: /admin/ecoles');
             // Message pop-up Impossible de supprimer l'ecole car une promotion associer à l'ecole existe
         } else {
             $ecolesRepository->delete($id);

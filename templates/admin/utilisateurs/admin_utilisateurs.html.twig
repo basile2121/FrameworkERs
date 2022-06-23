@@ -82,8 +82,12 @@
                     </td>
                 </tr>
                 {% include 'utils/pop-up/delete_utilisateur_model.html.twig'%}
+                {% include 'utils/pop-up/delete_utilisateur_withparticipe_model.html.twig'%}
             {% endfor %}
+
             </tbody>
+                {% include 'utils/pop-up/delete_utilisateur_withcontraint_model.html.twig'%}
+
             <tfoot>
                 <tr>
                     {% if utilisateurs is not empty %}
@@ -95,6 +99,23 @@
             </tfoot>
         </table>
     </main>
+
+     {% if utilisateursPOP[0] == "ut"  %}
+           <input id='popup' type="hidden" value={{ utilisateursPOP[1]}} >
+            <script type="text/javascript">
+              let id = document.querySelector("#popup").value
+              console.log(id);
+                $('#deleteModalwithcontraint'+parseInt(id)).modal("show")
+            </script>
+        {% endif %}
+
+        {% if utilisateursPOP[1] == 'null'  %}
+            <script type="text/javascript">
+                console.log('sdddsd');
+               $("#deleteModalwithcontraintuser").modal("show")
+            </script>
+        {% endif %}
+
 {% endblock %}
 
 {% block script %}

@@ -26,7 +26,7 @@ class UtilisateurController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/utilisateurs", name: "admin_utilisateurs",)]
-    public function utilisateurs(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository)
+    public function utilisateurs(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository , Session $session)
     {
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
@@ -38,7 +38,10 @@ class UtilisateurController extends AbstractController
             'roles' => $roles,
             'promotions' => $promotions,
             'utilisateurs' => $utilisateurs,
+            'utilisateursPOP'=> $session->get('utilisateursPOP'),
         ]);
+
+        $session->delete('utilisateursPOP');
     }
 
     /**
@@ -192,7 +195,7 @@ class UtilisateurController extends AbstractController
 
 
     #[Route(path: "/admin/delete/utilisateurs", httpMethod: 'POST', name: "admin_delete_utilisateurs")]
-    public function deleteUtilisateurs(UtilisateursRepository $utilisateursRepository)
+    public function deleteUtilisateurs(UtilisateursRepository $utilisateursRepository , Session $session)
     {
         $id = intval($_POST['idUtilisateur']);
 
@@ -200,10 +203,19 @@ class UtilisateurController extends AbstractController
         $evenementsParticipeByUser = $utilisateursRepository->verifContraintsParticipeEvenement($id);
         if ($evenementsCreatedByUser !== null) {
             // TODO POP UP
-            // Message pop-up Impossible de supprimer l'utilisateur car il a créer un evenement
+            // Message pop-up Impossible de supprimer l'utilisateur car il a créer un  supprime pas
+          
+            $rp[0]="utilisateurs" ; $rp[1]='null';
+            $session->set('utilisateursPOP',$rp);
+            header('Location: /admin/utilisateurs');
+            
         } else if ($evenementsParticipeByUser !== null) {
             // TODO POP UP
-            // Message pop-up Impossible de supprimer l'utilisateur car il participe à un evenement
+            // Message pop-up Impossible de supprimer l'utilisateur car il participe à un evenement supprime
+          
+            $rp[0]="ut";$rp[1]=$id;
+            $session->set('utilisateursPOP',$rp);
+            header('Location: /admin/utilisateurs');
         } else {
             $utilisateursRepository->delete($id);
             header('Location: /admin/utilisateurs');
@@ -291,35 +303,5 @@ class UtilisateurController extends AbstractController
                 $utilisateursRepository->update($user);
                 $session->set('successUpdate', 'Vos informations ont bien été modifiées !');
                 header("Location: http://localhost:8000/utilisateurs/profil");
-    }
-
-    private function _verifRegister(UtilisateursRepository $utilisateursRepository)
-    {
-        $errors = [];
-        $verifPassword = $this->_verifPassword($_POST["password"], $_POST["password_confirm"]);
-        if ($verifPassword !== true) {
-            $errors["password"] = $verifPassword;
-        }
-
-        $verifEmpty = $this->_verifIfEmpty();
-        if ($verifEmpty !== true){
-            $errors["empty"] = $verifEmpty;
-        }
-
-        $verifMail = $this->_verifMail($_POST["email"]);
-        if($verifMail !== true){
-            $errors["mail"] = $verifMail;
-        }
-
-        //Vérifier que l'adresse ne soit pas déjà utilisée
-        $emailExist = $utilisateursRepository->selectOneByEmail($_POST["email"]);
-        if (isset($emailExist)) {
-            $errors["mail_existant"] = "L'adresse mail est déjà utilisée !";
-        }
-
-        if(empty($errors)) {
-            return true;
-        }
-        return $errors;
     }
 }

@@ -44,4 +44,19 @@ final class PromotionsRepository extends AbstractRepository
         return $results;
 
     }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function verifContraintsPromotions(int $id): ?array
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM utilisateurs WHERE id_promotion = :id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        if ($results) {
+            return $this->setHydrate($results);
+        }
+        return null;
+    }
 }

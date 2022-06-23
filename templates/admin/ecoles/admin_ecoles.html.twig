@@ -38,6 +38,7 @@
                 
                 {% include 'utils/pop-up/delete_ecole_model.html.twig'%}
             {% endfor %}
+             {% include 'utils/pop-up/delete_ecole_withcontraint_model.html.twig'%}
             </tbody>
             <tfoot>
                 <tr>
@@ -50,4 +51,11 @@
             </tfoot>
         </table>
     </main>
+
+    {% if impossible == "impossible"  %}
+            <script type="text/javascript">
+                $('#deleteModalwithcontraintecole').modal("show")
+            </script>
+        {% endif %}
+
 {% endblock %}
