@@ -19,6 +19,7 @@ use App\Session\Session;
 use DateTime;
 use PhpParser\Node\Stmt\TryCatch;
 use ReflectionException;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -31,15 +32,31 @@ class EvenementsController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/evenement", httpMethod: 'POST', name: "evenement",)]
-    public function evenements(EvenementsRepository $evenementsRepository,CategoriesRepository $categoriesRepository, StatutsRepository $statutsRepository, AdressesRepository $adressesRepository, ParticipeRepository $participeRepository)
+    #[Route(path: "/evenement", httpMethod: 'GET', name: "evenement",)]
+    public function evenements(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, Request $request, Session $session)
     {
-        $id = intval($_POST['id']);
+        $noConnectedMessage = null;
+        $alreadyParticipe = null;
+
+        $id = $request->query->get('id');
         $evenement = $evenementsRepository->selectOneById($id);
+        if (!empty($_SESSION['id'])) {
+            $alreadyParticipe = $participeRepository->checkIfAlreadyParticipe($_SESSION['id'], $id);
+        } else {
+            $noConnectedMessage = 'Merci de votre connecté';
+        }
+
 
         echo $this->twig->render('evenements/evenement.html.twig', [
-            'evenement' => $evenement
+            'evenement' => $evenement,
+            'successParticiper' => $session->get('successParticiper'),
+            'errorParticiper' => $session->get('errorParticiper'),
+            'alreadyParticipe' => $alreadyParticipe,
+            'noConnectedMessage' => $noConnectedMessage
         ]);
+
+        $session->delete('successParticiper');
+        $session->delete('errorParticiper');
     }
 
     /**
@@ -47,12 +64,11 @@ class EvenementsController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/evenement/participe", httpMethod: 'POST', name: "evenement_participe",)]
-    public function participeEvenement(EvenementsRepository $evenementsRepository,StatutsRepository $statutsRepository, ParticipeRepository $participeRepository ,Session $session)
+    #[Route(path: "/evenement/participe", name: "evenement_participe",)]
+    public function participeEvenement(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository ,Session $session, Request $request)
     {
-        $session->delete('successParticiper');
-        $session->delete('errorParticiper');
-        $id = intval($_POST['idEvenement']);
+        $id = $request->query->get('idEvenement');
+
         $evenement = $evenementsRepository->selectOneById($id);
         $participes = $participeRepository->selectAll();
 
@@ -77,14 +93,12 @@ class EvenementsController extends AbstractController
                 $statut = $evenement->selectOneByLibelle('Complet');
                 $evenement->setStatuts($statut);
             }
-            $message = 'Participation pris en compte';
             $session->set('successParticiper', 'Participation pris en compte');
         } else {
-            $message = 'Evenement complet impossible d\'y participer';
             $session->set('errorParticiper', 'Evenement complet impossible d\'y participer');
         }
         
-        //header("Location: /evenement");
+        header("Location: /evenement?id=" . $id );
     }
 
 
@@ -183,8 +197,6 @@ class EvenementsController extends AbstractController
         else {
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query);
         }
-        
-       
 
         echo $this->twig->render('admin/evenements/admin_evenements.html.twig', [
             'evenements' => $evenements,
