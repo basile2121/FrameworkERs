@@ -17,7 +17,7 @@
             </div>
             <div class="form-group">
                 <label for="evenementDate">Date de l'événement</label>
-                <input type="date" name="evenementDate" class="form-control" id="evenementDate" value="{{ evenement.date | date('Y-m-d') }}" placeholder="Date de l'événement">
+                <input type="date" name="evenementDate" class="form-control" id="evenementDate" value="{{ evenement.date | date('Y-m-d\\TH:i:s') }}" placeholder="Date de l'événement">
             </div>
             <p>Nombre de participant : {{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }}</p>
             <div class="form-group">

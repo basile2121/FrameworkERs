@@ -78,7 +78,7 @@
                         <th scope="row">{{ evenement.titre }}</th>
                         <td>{{ evenement.sousTitre }}</td>
                         <td>{{ evenement.prix }} €</td>
-                        <td>{{ evenement.date | date('d-m-Y') }}</td>
+                        <td>{{ evenement.date | date('d/m/Y H:i') }}</td>
                         <td>{{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }} / {{ evenement.nbParticipantsMax }}</td>
                         <td>{{ evenement.statuts.libelleStatut }}</td>
                         <td>{{ evenement.categories.libelleCategorie }}</td>

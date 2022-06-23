@@ -27,10 +27,14 @@ final class StatutsRepository extends AbstractRepository
      */
     public function selectOneByLibelle(string $libelle): array
     {
-        $query = 'SELECT * FROM statuts WHERE id_statut = $libelle';
+        $query = 'SELECT * FROM statuts WHERE libelle_statut = :libelle';
+        
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
+        $stmt->execute([
+            'libelle' => $libelle,
+        ]);
         $data = $stmt->fetchAll();
+    
         return $this->setHydrate($data);
     }
 }

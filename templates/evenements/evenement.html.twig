@@ -27,12 +27,18 @@
 			<h2>{{evenement.sousTitre}}</h2>
 			<h4>
 				Le
-				{{evenement.date|date("d-m-Y")}}
+				{{evenement.date|date('d/m/Y H:i')}}
 				à
 				<span id="ville">{{evenement.adresses.villeLibelle}}</span>
 			</h4>
 			{% if alreadyParticipe == false and noConnectedMessage is null %}
-				<button type="button" class="btn btn-warning participer" data-toggle="modal" data-target="#Modal{{ evenement.idEvenement }}">Participer</button>
+				{% if evenement.statuts.libelleStatut ==  "Passé" %}
+					<button type="button" class="btn btn-warning participer" data-toggle="modal" data-target="#Modal{{ evenement.idEvenement }}" disabled>Participer</button>
+					<p>L'évènement est déjà passé</p>
+				{% else %}
+					<button type="button" class="btn btn-warning participer" data-toggle="modal" data-target="#Modal{{ evenement.idEvenement }}" >Participer</button>
+				{% endif %}
+				
 				{% elseif alreadyParticipe == true %}
 				<button type="button" class="btn btn-warning participer" data-toggle="modal" data-target="#ModalP{{ evenement.idEvenement }}">Ne plus participer</button>
 
