@@ -3,17 +3,9 @@
 namespace App\Controller;
 
 use App\Repository\EvenementsRepository;
-use App\Repository\ParticipeRepository;
-use App\Repository\UserRepository;
-
-
 use App\Repository\UtilisateursRepository;
 use App\Routing\Attribute\Route;
-
 use App\Session\Session;
-
-
-use DateTime;
 use ReflectionException;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -31,6 +23,7 @@ class IndexController extends AbstractController
     #[Route(path: "/", name: "accueil")]
     public function index(UtilisateursRepository $utilisateursRepository, EvenementsRepository $evenementsRepository, Session $session)
     {
+        $whiteNavbar = true;
         $evenementsAVenir = $evenementsRepository->getEvenementAVenir();
         $evenementsProchain = $evenementsRepository->getEvenementProchain();
         //Résultat permettant de récupérer trois évenèments récemment ajouté
@@ -46,6 +39,7 @@ class IndexController extends AbstractController
                 'evenementsAVenir' => $evenementsAVenir,
                 'evenementsProchain' => $evenementsProchain,
                 'evenementsRecentAjoute' => $evenementsRecentAjoute,
+                'whiteNavbar' => $whiteNavbar
             ]);
 
             $session->delete('success');
@@ -55,21 +49,11 @@ class IndexController extends AbstractController
                 'evenementsAVenir' => $evenementsAVenir,
                 'evenementsProchain' => $evenementsProchain,
                 'evenementsRecentAjoute' => $evenementsRecentAjoute,
+                'whiteNavbar' => $whiteNavbar
             ]);
         }
     }
 
-
-    /**
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws LoaderError
-     */
-    #[Route(path: "/base", name: "base", httpMethod: "GET")]
-    public function base()
-    {
-        echo $this->twig->render('base.html.twig');
-    }
 
     //   //Fonction permettant de récupérer trois évenèments dont la date est la plus proche dont le nombre de participants est le plus élevé
     //   #[Route(path: "/accueil/recentAjoutee", name: "recentAjoute")]
@@ -79,5 +63,34 @@ class IndexController extends AbstractController
     //     $evenements = $evenementsRepository->getEvenementByParticipation();
         
     // }
+    #[Route(path: "/evenements/filter", name: "filtre_evenement_accueil", httpMethod:"POST")]
+    public function evenementFilter(EvenementsRepository $evenementsRepository)
+    {
+        $evenementError= "";
+        $conditions = [];
+        $parameters = [];
+        $filtres = [];
+        $whiteNavbar = true;
+
+        if (!empty($_POST['filter_titre'])) {
+            $filtres['filter_titre'] = $_POST['filter_titre'];
+            $conditions[] = 'titre LIKE ?';
+            $parameters[] = '%'.$_POST['filter_titre']."%";
+        } else {
+            header('Location: http://localhost:8000/');
+        }
+        $evenements = $evenementsRepository->filter($conditions, $parameters);
+        $evenementsAVenir = $evenementsRepository->getEvenementAVenir();
+    if(count($evenements) == 0){
+        $evenementError = "Aucun résultat ne correspond à votre recherche";
+    }
+        echo $this->twig->render('home/home.html.twig', [
+            'evenementsFiltered' => $evenements,
+            'filtres' => $filtres,
+            "evenementError" => $evenementError,
+            'whiteNavbar' => $whiteNavbar,
+            "evenementsAVenir" =>$evenementsAVenir
+        ]);
+    }
 }
 

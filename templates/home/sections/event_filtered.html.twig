@@ -1,0 +1,9 @@
+<section class="events-filtered container">
+	<h1 class="text-center">Résultat de votre recherche</h1>
+	<hr>
+	<div class="all-events-filtered row ">
+	{% for evenement in evenementsFiltered %} 
+{% include 'home/sections/card_event.html.twig' %}
+				{% endfor %}
+			</div>
+	</section>
