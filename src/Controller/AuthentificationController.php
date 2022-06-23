@@ -63,6 +63,8 @@ class AuthentificationController extends AbstractController
 
                     
                     $session->set('id',$user->getIdUtilisateur());
+                    $session->set('nom',$user->getNom());
+                    $session->set('prenom',$user->getPrenom());
                     $session->set('success', 'Vous êtes connecté ');
                     header("Location: http://localhost:8000/");
                     exit();

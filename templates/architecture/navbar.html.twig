@@ -1,4 +1,8 @@
-<nav class="navbar navbar-expand-lg navbar-light mx-5 ">
+{% if whiteNavbar %}
+<nav class="navbar navbar-expand-lg navbar-light px-5 ">
+{% else %}
+<nav class="navbar navbar-expand-lg navbar-light px-5" style="background-color:rgba(0, 0, 0, 0.8)">
+{% endif %}
     <a class="navbar-brand" href="/">
     <img src="{{path_logo}}/logo.png" width="100">
     </a>
@@ -8,7 +12,7 @@
     <div class="collapse navbar-collapse ml-auto" id="navbarNav">
         <ul class="navbar-nav ml-auto d-flex align-items-center " >
         
-              {% if whiteNavbar %}
+              
               <li class="nav-item ">
                     <a class="nav-link text-white" href="/">Evènements</a>
                 </li>
@@ -26,30 +30,24 @@
                 </li>
 
                 <li class="nav-item p-2 ">
-                    <a class="nav-link text-white btn-connect px-4 py-3" href="/logout">Logout</a>
-                </li>
-            {% endif %}
-              {% else %}
-              <li class="nav-item ">
-                    <a class="nav-link" href="/">Evènements</a>
-                </li>
-            {% if session_utilisateur_id is null %}
-          
-                <li class="nav-item p-2">
-                    <a class="nav-link" href="/register">S'inscrire</a>
-                </li>
-                <li class="nav-item p-2 ">
-                    <a class="nav-link btn-connect px-4 py-3 text-white" href="/login">Se connecter</a>
-                </li>
-            {% else %}
-                <li class="nav-item p-2 ">
-                    <a class="nav-link" href="/dashboard">Dashboard</a>
-                </li>
+                        <div class="dropdown show">
+                      
+            <a class="btn text-light dropdown-toggle text-dropdown" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 <img src="{{path_logo}}/user.png" alt="" width="20">
+               {{session_utilisateur_nom}}
+               {{session_utilisateur_prenom}}
+            </a>
 
-                <li class="nav-item p-2 ">
-                    <a class="nav-link btn-connect px-4 py-3 text-white" href="/logout">Logout</a>
+            <div class="dropdown-menu px-4" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item py-3 text-dropdown" href="/utilisateurs/profil">Profil</a>
+                <a class="dropdown-item py-3 text-dropdown" href="/utilisateurs/profil/edit">Modifier le profil</a>
+                <a class="nav-link text-white btn-connect px-4 py-3 text-dropdown text-center" href="/logout">Logout</a>
+            </div>
+        </div>
+                    
                 </li>
-            {% endif %}
+          
+             
               {% endif %}
         </ul>
     </div>
