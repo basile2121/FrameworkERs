@@ -1,0 +1,29 @@
+#profil{
+    margin: 35px auto;
+    width: 400px;
+    text-align: center;
+    
+}
+
+#profil .card img {
+    width:350px;
+    margin: auto;
+    padding: 20px;
+}
+#name {
+    font-weight: bolder;
+    text-align: center;
+}
+
+h5 {
+    text-decoration: underline;
+}
+
+label {
+    text-decoration: underline;
+}
+
+#button {
+    display: flex;
+    justify-content: space-evenly;
+}

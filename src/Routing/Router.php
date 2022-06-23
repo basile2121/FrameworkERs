@@ -74,26 +74,27 @@ class Router
     );
   }
 
-  /**
-   * Get a route. Returns null if not found
-   *
-   * @param string $uri
-   * @param string $httpMethod
-   * @return Route|null
-   */
-  public function getRoute(string $uri, string $httpMethod): ?Route
-  {
-    foreach ($this->routes as $route) {
-      if ($this->argumentResolver->match($uri, $route) && $route->getHttpMethod() === $httpMethod) {
-        $params = $this->argumentResolver->getGetParams($uri, $route);
+    /**
+     * Get a route. Returns null if not found
+     *
+     * @param string $uri
+     * @param string $httpMethod
+     * @return Route|null
+     */
+    public function getRoute(string $uri, string $httpMethod): ?Route
+    {
+        $uri = explode('?' , $uri);
+        foreach ($this->routes as $route) {
+            if ($this->argumentResolver->match($uri[0], $route) && $route->getHttpMethod() === $httpMethod) {
+                $params = $this->argumentResolver->getGetParams($uri[0], $route);
 
-        $route->setGetParams($params);
-        return $route;
-      }
+                $route->setGetParams($params);
+                return $route;
+            }
+        }
+
+        return null;
     }
-
-    return null;
-  }
 
   /**
    * Resolve method's parameters from the service container

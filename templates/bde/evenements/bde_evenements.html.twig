@@ -14,7 +14,7 @@
             <div class="form-group">
                 <label for="filtre_categorie">Categories</label>
                 <select name="filtre_categorie" id="filtre_categorie">
-                    <option disabled selected>Selectioner une categorie</option>
+                    <option value='' selected>Selectioner une categorie</option>
                     {% for categorie in categories %}
                         <option {% if filtres['filtre_categorie'] is defined and categorie.idCategorie == filtres['filtre_categorie'] %} selected {% endif %} value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
                     {% endfor %}
@@ -23,7 +23,7 @@
             <div class="form-group">
                 <label for="filtre_statut">Statuts</label>
                 <select name="filtre_statut" id="filtre_statut">
-                    <option disabled selected>Selectioner un statut</option>
+                    <option value='' selected>Selectioner un statut</option>
                     {% for statut in statuts %}
                         <option {% if filtres['filtre_statut'] is defined and statut.idStatut == filtres['filtre_statut'] %} selected {% endif %} value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
                     {% endfor %}
@@ -40,7 +40,7 @@
             <div class="form-group">
                 <label for="order_date">Date</label>
                 <select class="form-select" name="order_date" id="order_date">
-                    <option disabled selected>Selectioner un ordre d'affichage</option>
+                    <option value='' selected>Selectioner un ordre d'affichage</option>
                     <option value="ASC">Croissant</option>
                     <option value="DESC">Décroissant</option>
                 </select>

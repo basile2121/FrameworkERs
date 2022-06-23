@@ -2,18 +2,20 @@
 
 namespace App\Controller;
 
+use DateTime;
+use App\Session\Session;
+use ReflectionException;
+use App\Entity\Promotions;
+use Twig\Error\LoaderError;
+use Twig\Error\SyntaxError;
+use Twig\Error\RuntimeError;
+use App\Routing\Attribute\Route;
+use App\Repository\UserRepository;
+use App\Repository\RolesRepository;
 use App\Repository\EcolesRepository;
 use App\Repository\EvenementsRepository;
 use App\Repository\PromotionsRepository;
-use App\Repository\RolesRepository;
-use App\Repository\UserRepository;
 use App\Repository\UtilisateursRepository;
-use App\Routing\Attribute\Route;
-use DateTime;
-use ReflectionException;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
 class UtilisateurController extends AbstractController
 {
@@ -158,5 +160,81 @@ class UtilisateurController extends AbstractController
         $id = intval($_POST['idUtilisateur']);
         $utilisateursRepository->deleteCascadeUtilisateur($id);
         header('Location: /admin/utilisateurs');
+    }
+
+    /**
+     * Affiche profil utilisateur
+     *
+     * @param UtilisateursRepository $utilisateursRepository
+     * @return void
+     */
+    #[Route(path: "/utilisateurs/profil", name: "profil_utilisateurs")]
+    public function profilUtilisateur(UtilisateursRepository $utilisateursRepository, EcolesRepository $ecolesRepository, PromotionsRepository $promotionsRepository, Session $session)
+    {
+        $id = $_SESSION['id'];
+        $user = $utilisateursRepository->selectOneById($id);
+        $idPromotion = $user->getPromotions()->getIdPromotion();
+        $promotion = $promotionsRepository->selectOneById($idPromotion);        
+        
+        $ecole = $ecolesRepository->selectOneById($idPromotion);
+        
+        echo $this->twig->render('utilisateur/profil_user.html.twig', [
+            'user' => $user,
+            'ecole' => $ecole,
+            'promotion' => $promotion,
+            'successUpdate' => $session->get('successUpdate')
+        ]);
+        $session->delete('successUpdate');
+    }
+
+    /**
+     * Affiche page edition utilisateur
+     *
+     * @param UtilisateursRepository $utilisateursRepository
+     * @return void
+     */
+    #[Route(path: "/utilisateurs/profil/edit", name: "edit_profil_utilisateurs")]
+    public function editProfilUtilisateur(UtilisateursRepository $utilisateursRepository, EcolesRepository $ecolesRepository, PromotionsRepository $promotionsRepository)
+    {
+        $id = $_SESSION['id'];
+        $user = $utilisateursRepository->selectOneById($id);
+        $idPromotion = $user->getPromotions()->getIdPromotion();
+        $promotion = $promotionsRepository->selectOneById($idPromotion);        
+        $ecole = $ecolesRepository->selectOneById($idPromotion);
+
+        $ecoles = $ecolesRepository->selectAll();
+        $promotions = $promotionsRepository->selectAll();
+        
+        echo $this->twig->render('utilisateur/profil_edit_user.html.twig', [
+            'user' => $user,
+            'ecole' => $ecole,
+            'promotion' => $promotion,
+            'ecoles' => $ecoles,
+            'promotions' => $promotions
+        ]);
+    }
+     /**
+     * Edit les informations du profil
+     *
+     * @return void
+     */
+    #[Route(path: '/utilisateurs/profil/edit',httpMethod:"POST", name: "edit_user")]
+    public function updateProfilUtilisateur(UtilisateursRepository $utilisateursRepository, RolesRepository $rolesRepository, Session $session, PromotionsRepository $promotionsRepository)
+    {
+               
+                $id = $_SESSION['id'];
+                $user = $utilisateursRepository->selectOneById($id);
+                $user->setNom(trim($_POST["nom"]));
+                $user->setPrenom(trim($_POST["prenom"]));
+                $user->setDateNaissance(new DateTime($_POST['date']));
+                $user->setIdPromotion(intval($_POST["promotions"]));
+                $user->setTelephone(trim($_POST["telephone"]));
+                $user->setMail(trim($_POST["email"]));
+    
+                $utilisateursRepository->update($user);
+                $session->set('successUpdate', 'Vos informations ont bien été modifiées !');
+                header("Location: http://localhost:8000/utilisateurs/profil");
+        
+
     }
 }
