@@ -1,7 +1,7 @@
 {% if whiteNavbar %}
 <nav class="navbar navbar-expand-lg navbar-light px-5 ">
 {% else %}
-<nav class="navbar navbar-expand-lg navbar-light px-5" style="background-color:rgba(0, 0, 0, 0.8)">
+<nav class="navbar navbar-expand-lg navbar-light px-5" style="background-color:rgba(0, 0, 0)">
 {% endif %}
     <a class="navbar-brand" href="/">
     <img src="{{path_logo}}/logo.png" width="100">
@@ -15,6 +15,22 @@
               
               <li class="nav-item ">
                     <a class="nav-link text-white" href="/">Evènements</a>
+                </li>
+                <li class="nav-item">
+                        <div class="dropdown show">
+                      
+            <a class="btn text-light dropdown-toggle text-dropdown" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 Catégories
+            </a>
+
+            <div class="dropdown-menu px-4" aria-labelledby="dropdownMenuLink">
+            {% for categorie in global_categories %}
+                <a class="dropdown-item py-3 text-dropdown" href={{ '/evenements/filter?filtre_categorie=' ~ categorie.idCategorie }}>{{categorie.libelleCategorie}}</a>  
+            {% endfor %}
+                
+               
+            </div>
+        </div>  
                 </li>
             {% if session_utilisateur_id is null %}
           
@@ -33,7 +49,7 @@
                         <div class="dropdown show">
                       
             <a class="btn text-light dropdown-toggle text-dropdown" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                 <img src="{{path_logo}}/user.png" alt="" width="20" class="user-nav">
+                 <img src="{{path_logo}}/user_nav.png" alt="" width="20" class="user-nav">
                {{session_utilisateur_nom}}
                {{session_utilisateur_prenom}}
             </a>
