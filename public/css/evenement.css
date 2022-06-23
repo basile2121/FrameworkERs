@@ -1,0 +1,27 @@
+#eventImage{
+    background-image: linear-gradient(70deg,rgba(124, 40, 99,0.4),rgba(0, 0, 0, 0.3)),url(http://localhost:8000/image/event.jpeg);
+    background-size: cover;
+    background-position: center;
+    color:white;
+    text-align: center;
+    padding: 200px 0;
+}
+
+#eventImage h1 {
+    
+    text-transform: uppercase;
+    font-size: 40px;
+    font-weight: bolder;
+    padding-bottom: 25px;
+    
+}
+#eventImage h5 {
+    padding-bottom: 25px;
+}  
+#eventImage h6 {
+    font-style: italic;
+} 
+
+#ville {
+    text-decoration: underline;
+}

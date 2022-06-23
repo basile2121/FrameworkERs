@@ -65,13 +65,13 @@ class EvenementsController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/evenement/participe", name: "evenement_participe",)]
-    public function participeEvenement(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository ,Session $session, Request $request)
+    public function participeEvenement(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository ,Session $session, Request $request, StatutsRepository $statutsRepository)
     {
         $id = $request->query->get('idEvenement');
 
         $evenement = $evenementsRepository->selectOneById($id);
         $participes = $participeRepository->selectAll();
-
+        
 
         $nbParticipantMax = $evenement->getNbParticipantsMax();
         $nbParticipants = $this->_getNbParticipants([], $participes, $id);
@@ -87,10 +87,10 @@ class EvenementsController extends AbstractController
             $pourcent = (($nbParticipant + 1) / $nbParticipantMax) * 100;
 
             if ($pourcent > 80) {
-                $statut = $evenement->selectOneByLibelle('Presque complet');
+                $statut = $statutsRepository->selectOneByLibelle('Presque complet');
                 $evenement->setStatuts($statut);
             } else if ($pourcent === 100) {
-                $statut = $evenement->selectOneByLibelle('Complet');
+                $statut = $statutsRepository->selectOneByLibelle('Complet');
                 $evenement->setStatuts($statut);
             }
             $session->set('successParticiper', 'Participation pris en compte');
