@@ -14,7 +14,6 @@ use App\Config\PdoConnection;
 use App\Config\TwigEnvironment;
 use App\DependencyInjection\Container;
 use App\Repository\AdressesRepository;
-use App\Repository\AppartientRepository;
 use App\Repository\CategoriesRepository;
 use App\Repository\EcolesRepository;
 use App\Repository\EvenementsRepository;
@@ -56,7 +55,6 @@ $mediasRepository = new MediasRepository($pdoConnection->getPdoConnection(), $hy
 $evenementsRepository = new EvenementsRepository($pdoConnection->getPdoConnection(), $hydrator);
 $ecolesRepository = new EcolesRepository($pdoConnection->getPdoConnection(), $hydrator);
 $categoriesRepository = new CategoriesRepository($pdoConnection->getPdoConnection(), $hydrator);
-$appartientRepository = new AppartientRepository($pdoConnection->getPdoConnection(), $hydrator);
 $adressesRepository = new AdressesRepository($pdoConnection->getPdoConnection(), $hydrator);
 //Session
 $session = new Session();
@@ -85,7 +83,6 @@ $container->set(MediasRepository::class, $mediasRepository);
 $container->set(EvenementsRepository::class, $evenementsRepository);
 $container->set(EcolesRepository::class, $ecolesRepository);
 $container->set(CategoriesRepository::class, $categoriesRepository);
-$container->set(AppartientRepository::class, $appartientRepository);
 $container->set(AdressesRepository::class, $adressesRepository);
 $container->set(PromotionsRepository::class, $promotionsRepository);
 

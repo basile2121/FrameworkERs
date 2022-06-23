@@ -501,7 +501,7 @@ class EvenementsController extends AbstractController
             $session->set('popup',$rp);
             header('Location: /admin/evenements');
         } else {
-            $evenementsRepository->deleteCascadeEvenementAppartient($id);
+            $evenementsRepository->delete($id);
             header('Location: /admin/evenements');
         }
     }

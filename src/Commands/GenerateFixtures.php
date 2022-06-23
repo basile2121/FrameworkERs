@@ -4,7 +4,6 @@ namespace App\Commands;
 
 use App\DependencyInjection\Container;
 use App\Entity\Adresses;
-use App\Entity\Appartient;
 use App\Entity\Categories;
 use App\Entity\Ecoles;
 use App\Entity\Evenements;
@@ -15,7 +14,6 @@ use App\Entity\Roles;
 use App\Entity\Statuts;
 use App\Entity\Utilisateurs;
 use App\Repository\AdressesRepository;
-use App\Repository\AppartientRepository;
 use App\Repository\CategoriesRepository;
 use App\Repository\EcolesRepository;
 use App\Repository\EvenementsRepository;
@@ -52,7 +50,6 @@ class GenerateFixtures extends Command
     private const NB_EVENEMENTS = 8;
     private const NB_MEDIAS = 1;
     private const NB_ADRESSES = 4;
-    private const NB_APPARTIENT = 3;
 
     private array $idArray = [
         'Utilisateurs' => [],
@@ -62,7 +59,6 @@ class GenerateFixtures extends Command
         'Evenements' => [],
         'Medias' => [],
         'Adresses' => [],
-        'Appartient' => [],
         'Categories' => [],
         'Roles' => [],
         'Statuts' => [],
@@ -91,7 +87,6 @@ class GenerateFixtures extends Command
 
         $this->faker = $this->container->get(Factory::class);
         $tabRepos =  [
-            AppartientRepository::class,
             ParticipeRepository::class,
             EvenementsRepository::class,
             UtilisateursRepository::class,
@@ -127,8 +122,6 @@ class GenerateFixtures extends Command
         $this->_loadEvenements();
         $output->writeln('<comment>Chargement Participe</comment>');
         $this->_loadParticipe();
-        $output->writeln('<comment>Chargement Appartient</comment>');
-        $this->_loadAppartient();
 
         $output->writeln('<sucess>Fin de la commande</sucess>');
         return Command::SUCCESS;
@@ -302,19 +295,6 @@ class GenerateFixtures extends Command
         // Ajout des id déclarés dans la bdd
         $categoriesBDD = $this->container->get(CategoriesRepository::class)->selectAll('id_categorie');
         array_push($this->idArray['Categories'], $categoriesBDD[0]->getIdCategorie(), end($categoriesBDD)->getIdCategorie());
-    }
-
-    private function _loadAppartient(){
-        for ($i = 0; $i < static::NB_APPARTIENT; $i++) {
-            $appartient = new Appartient();
-            $appartient->setIdCategorie($this->faker->numberBetween($this->idArray['Categories'][0],  $this->idArray['Categories'][1]));
-            $appartient->setIdEvenement($this->faker->numberBetween($this->idArray['Evenements'][0],  $this->idArray['Evenements'][1]));
-
-            $this->container->get(AppartientRepository::class)->save($appartient);
-        }
-        // Ajout des id déclarés dans la bdd
-        $appartientBDD = $this->container->get(AppartientRepository::class)->selectAll('id');
-        array_push($this->idArray['Appartient'], $appartientBDD[0]->getId(), end($appartientBDD)->getId());
     }
 
     private function _loadAdresses(){

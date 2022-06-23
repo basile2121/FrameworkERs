@@ -190,25 +190,6 @@ final class EvenementsRepository extends AbstractRepository
             }
         }
 
-        $this->deleteCascadeEvenementAppartient($id);
-    }
-
-    public function deleteCascadeEvenementAppartient(int $id) {
-
-        $statement = $this->pdo->prepare("SELECT id FROM appartient as a WHERE a.id_evenement = :id");
-        $statement->bindValue('id', $id, \PDO::PARAM_INT);
-        $statement->execute();
-        $results = $statement->fetchAll();
-
-        // Suppresion des table appartients associer à l'evenement
-        if (!empty($results)) {
-            foreach ($results as $result) {
-                $statement = $this->pdo->prepare("DELETE FROM appartient WHERE id =:idAppartient");
-                $statement->bindValue('idAppartient', $result['id'], \PDO::PARAM_INT);
-                $statement->execute();
-            }
-        }
-
         $this->delete($id);
     }
 }
