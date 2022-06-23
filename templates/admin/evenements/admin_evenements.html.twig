@@ -100,10 +100,12 @@
                             </form>
 
                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{evenement.idEvenement }}">Supprimer</button>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModalwithcontraint{{evenement.idEvenement }}">Supprimerwithcontraint</button>
 
                         </td>
                     </tr>
                      {% include 'utils/pupop/delete_evenement_model.html.twig'%}
+                     {% include 'utils/pupop/delete_evenement_withcontraint_model.html.twig'%}
                 {% endfor %}
             </tbody>
             <tfoot>
