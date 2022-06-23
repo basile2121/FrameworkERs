@@ -100,7 +100,6 @@
                             </form>
 
                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{evenement.idEvenement }}">Supprimer</button>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModalwithcontraint{{evenement.idEvenement }}">Supprimerwithcontraint</button>
 
                         </td>
                     </tr>
@@ -121,4 +120,13 @@
             </tfoot>
         </table>
     </main>
+        
+        {% if popup[0] == "participant"  %}
+           <input id='popup' type="hidden" value={{ popup[1]}} >
+            <script type="text/javascript">
+              let id = document.querySelector("#popup").value
+                $('#deleteModalwithcontraint'+parseInt(id)).modal("show")
+            </script>
+        {% endif %}
+
 {% endblock %}

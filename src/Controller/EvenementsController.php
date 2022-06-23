@@ -113,7 +113,8 @@ class EvenementsController extends AbstractController
                                     CategoriesRepository $categoriesRepository,
                                     StatutsRepository $statutsRepository,
                                     AdressesRepository $adressesRepository,
-                                    ParticipeRepository $participeRepository
+                                    ParticipeRepository $participeRepository,
+                                    Session $session
     )
     {
         $evenements = $evenementsRepository->selectAll('date', 'DESC');
@@ -128,8 +129,10 @@ class EvenementsController extends AbstractController
             'categories' => $categories,
             'statuts' => $statuts,
             'adresses' => $adresses,
+            'popup' => $session->get('popup'),
             'arrayParticipeUtilisateurs' => $this->_getNbParticipants($evenements, $participes)
         ]);
+        $session->delete('popup');
     }
 
     /**
@@ -370,19 +373,19 @@ class EvenementsController extends AbstractController
      * @throws ReflectionException
      */
     #[Route(path: "/admin/delete/evenements", httpMethod: 'POST', name: "admin_delete_evenements")]
-    public function deleteEvenements(EvenementsRepository $evenementsRepository)
+    public function deleteEvenements(EvenementsRepository $evenementsRepository,Session $session)
     {
+        $session->delete('popup');
         $id = intval($_POST['id']);
         $utilisateursParticipantEvenement = $evenementsRepository->verifContraintsUtilisateursParticipes($id);
-        $categoriesAppartientEvenement = $evenementsRepository->verifContraintsUtilisateursAppartient($id);
         if ($utilisateursParticipantEvenement !== null) {
             // TODO POP UP
             // Message pop-up Impossible de l'eveneemnt car des utilisateurs y sont inscrits afficher les mails utilisateurs
-        } else if ($categoriesAppartientEvenement !== null) {
-            // TODO POP UP
-            // Message pop-up Impossible de l'eveneemnt car des categories sont lié a l'eveneemnt
+            $rp[0]="participant";$rp[1]=$id;
+            $session->set('popup',$rp);
+            header('Location: /admin/evenements');
         } else {
-            $evenementsRepository->delete($id);
+            $evenementsRepository->deleteCascadeEvenementAppartient($id);
             header('Location: /admin/evenements');
         }
     }
@@ -392,7 +395,7 @@ class EvenementsController extends AbstractController
     public function deleteEvenementsCascade(EvenementsRepository $evenementsRepository)
     {
         $id = intval($_POST['id']);
-        $evenementsRepository->deleteCascadeEvenement($id);
+        $evenementsRepository->deleteCascadeEvenementParticipe($id);
         header('Location: /admin/evenements');
     }
 
@@ -403,10 +406,10 @@ class EvenementsController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/admin/evenements/list/utilisateurs", httpMethod: 'POST', name: "admin_evenements_list_utilisateurs",)]
-    public function adminEvenementsListUtilisateurs(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, UtilisateursRepository $utilisateursRepository)
+    #[Route(path: "/admin/evenements/list/utilisateurs", httpMethod: 'GET', name: "admin_evenements_list_utilisateurs",)]
+    public function adminEvenementsListUtilisateurs(Request $request, EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, UtilisateursRepository $utilisateursRepository)
     {
-        $id = intval($_POST['id']);
+        $id = $request->query->get('id');
         $evenement = $evenementsRepository->selectOneById($id);
         $participes = $participeRepository->selectAll();
 

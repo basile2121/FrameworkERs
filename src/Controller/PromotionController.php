@@ -6,6 +6,7 @@ use App\Repository\EcolesRepository;
 use App\Repository\PromotionsRepository;
 use App\Entity\Promotions;
 use App\Routing\Attribute\Route;
+use App\Session\Session;
 use Exception;
 use ReflectionException;
 use Twig\Error\LoaderError;
@@ -20,7 +21,7 @@ class PromotionController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/promotions", name: "admin_promotions",)]
-    public function promotions(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository)
+    public function promotions(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository ,Session $session)
     {
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
@@ -28,7 +29,9 @@ class PromotionController extends AbstractController
         echo $this->twig->render('admin/promotions/admin_promotions.html.twig', [
             'ecoles' => $ecoles,
             'promotions' => $promotions,
+            'promotionpop'=>$session->get("promotionpop"),
         ]);
+        $session->delete("promotionpop");
     }
 
     /**
@@ -102,11 +105,20 @@ class PromotionController extends AbstractController
 
 
     #[Route(path: "/admin/delete/promotions", httpMethod: 'POST', name: "admin_delete_promotions")]
-    public function deletePromotions(PromotionsRepository $promotionsRepository)
+    public function deletePromotions(PromotionsRepository $promotionsRepository, Session $session)
     {
-        $id = intval($_POST['id']);
-        $promotionsRepository->delete($id);
-        header('Location: /admin/promotions');
+        $id = intval($_POST['idPromotion']);
+        $utilisateursContraintsPromotions = $promotionsRepository->verifContraintsPromotions($id);
+
+        if ($utilisateursContraintsPromotions !== null) {
+            // TODO POP UP
+            // Message pop-up Impossible de supprimer la promotion car des utilisateurs y sont habilite
+            $session->set('promotionpop',"promotionpop");
+            header('Location: /admin/promotions'); 
+        } else {
+            $promotionsRepository->delete($id);
+            header('Location: /admin/promotions');
+        } 
     }
 
     /**

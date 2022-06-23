@@ -9,13 +9,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                <form action="/admin/delete/evenements" method="POST" autocomplete="off">
+                <form action="/admin/delete/evenements/cascade" method="POST" autocomplete="off">
                     Message pop-up Impossible de l'eveneemnt car des utilisateurs y sont inscrits
-                        <input type="hidden" name="idEvenement" value="{{evenement.idEvenement}}">
+                        <input type="hidden" name="id" value="{{evenement.idEvenement}}">
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-danger">Forcer la Suppression</button>
-                    <a href="/"></a>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">List participants</button>
+                    <a class="btn btn-secondary" href="{{ '/admin/evenements/list/utilisateurs?id=' ~ evenement.idEvenement }}">List participants</a>
                 </div>
                 </form> 
                 </div>

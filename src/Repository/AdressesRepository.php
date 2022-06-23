@@ -43,4 +43,20 @@ final class AdressesRepository extends AbstractRepository
             'idAdresse' => $adresses->getIdAdresse(),
         ]);
     }
+
+
+    /**
+     * @throws ReflectionException
+     */
+    public function verifContraintsAdresse(int $id): ?array
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM evenements WHERE id_adresse = :id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        if ($results) {
+            return $this->setHydrate($results);
+        }
+        return null;
+    }
 }

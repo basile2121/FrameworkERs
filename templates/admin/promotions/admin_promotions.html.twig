@@ -49,6 +49,8 @@
                 {% include 'utils/pop-up/delete_promotion_model.html.twig'%}
             {% endfor %}
             </tbody>
+
+            {% include 'utils/pop-up/delete_promotion_withcontraint_model.html.twig'%}
             <tfoot>
                 <tr>
                     {% if promotions is not empty %}
@@ -59,5 +61,11 @@
                 </tr>
             </tfoot>
         </table>
-    </main>
+    </main> 
+
+    {% if promotionpop == "promotionpop"  %}
+            <script type="text/javascript">
+                $('#deleteModalwithcontraintpromo').modal("show")
+            </script>
+        {% endif %}
 {% endblock %}

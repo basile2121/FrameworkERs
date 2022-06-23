@@ -51,6 +51,8 @@
                 {% include 'utils/pop-up/delete_adresse_model.html.twig'%}
             {% endfor %}
             </tbody>
+                {% include 'utils/pop-up/delete_adresse_withcontraint_model.html.twig'%}
+
             <tfoot>
                 <tr>
                     {% if adresses is not empty %}
@@ -62,4 +64,10 @@
             </tfoot>
         </table>
     </main>
+
+          {% if Adressepop == "Adressepop"  %}
+            <script type="text/javascript">
+                $('#deleteModalwithcontraintadres').modal("show")
+            </script>
+        {% endif %}
 {% endblock %}
