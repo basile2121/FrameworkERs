@@ -36,13 +36,14 @@ class EvenementsController extends AbstractController
     #[Route(path: "/evenements", httpMethod: 'GET', name: "evenements",)]
     public function evenements(EvenementsRepository $evenementsRepository, CategoriesRepository $categoriesRepository, StatutsRepository $statutsRepository, AdressesRepository $adressesRepository)
     {
-       $evenements = $evenementsRepository->selectAllEvenementNotPast();
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
         $adresses = $adressesRepository->selectAll();
 
+        $evenementsOrderByCategories = $this->_orderEvenementsInCategories($categoriesRepository, $evenementsRepository->selectAllEvenementNotPast());
+
         echo $this->twig->render('evenements/evenements.html.twig', [
-            'evenements' => $evenements,
+            'evenementsOrderByCategories' => $evenementsOrderByCategories,
             'categories' => $categories,
             'statuts' => $statuts,
             'adresses' => $adresses,
@@ -67,11 +68,10 @@ class EvenementsController extends AbstractController
         $parameters = [];
         $filtres = [];
         $query = '';
-        $request->query->get('id');
 
         // Filtres
+        $request->query->get('id');
         $filtre_titre = $request->query->get('filter_titre');
-        $filtre_categorie = $request->query->get('filtre_categorie');
         $filtre_statut = $request->query->get('filtre_statut');
         $filtre_city = $request->query->get('filtre_city');
         $filtre_cp = $request->query->get('filtre_cp');
@@ -81,11 +81,6 @@ class EvenementsController extends AbstractController
             $filtres['filter_titre'] = $filtre_titre;
             $conditions[] = 'titre LIKE ?';
             $parameters[] = '%'.$filtre_titre."%";
-        }
-        if ($filtre_categorie) {
-            $filtres['filtre_categorie'] = $filtre_categorie;
-            $conditions[] = 'id_categorie = ?';
-            $parameters[] = $filtre_categorie;
         }
 
         if ($filtre_statut) {
@@ -118,8 +113,9 @@ class EvenementsController extends AbstractController
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query);
         }
 
+        $evenementsOrderByCategories = $this->_orderEvenementsInCategories($categoriesRepository, $evenements);
         echo $this->twig->render('evenements/evenements.html.twig', [
-            'evenements' => $evenements,
+            'evenementsOrderByCategories' => $evenementsOrderByCategories,
             'filtres' => $filtres,
             'categories' => $categories,
             'statuts' => $statuts,
@@ -559,6 +555,22 @@ class EvenementsController extends AbstractController
         }
 
         return $arrayParticipeUtilisateurs;
+    }
+
+    private function _orderEvenementsInCategories(CategoriesRepository $categoriesRepository, $evenements) {
+        $evenementsCategories = [];
+        $categories = $categoriesRepository->selectAll();
+        foreach ($categories as $category) {
+            $evenementsCategories[$category->getLibelleCategorie()] = [];
+        }
+        foreach ($categories as $category) {
+            foreach ($evenements as $evenement) {
+                if ($evenement->getIdCategorie() === $category->getIdCategorie()) {
+                    array_push($evenementsCategories[$category->getLibelleCategorie()], $evenement);
+                }
+            }
+        }
+        return $evenementsCategories;
     }
    
 }
