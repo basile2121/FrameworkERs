@@ -75,6 +75,7 @@ class EvenementsController extends AbstractController
         $filtre_statut = $request->query->get('filtre_statut');
         $filtre_city = $request->query->get('filtre_city');
         $filtre_cp = $request->query->get('filtre_cp');
+        $filtre_categorie = $request->query->get('filtre_categorie');
         $filtre_order_date = $request->query->get('order_date');
 
         if ($filtre_titre) {
@@ -87,6 +88,12 @@ class EvenementsController extends AbstractController
             $filtres['filtre_statut'] = $filtre_statut;
             $conditions[] = 'id_statut = ?';
             $parameters[] = $filtre_statut;
+        }
+
+        if ($filtre_categorie) {
+            $filtres['filtre_categorie'] = $filtre_categorie;
+            $conditions[] = 'id_categorie = ?';
+            $parameters[] = $filtre_categorie;
         }
 
         if ($filtre_city || $filtre_cp) {

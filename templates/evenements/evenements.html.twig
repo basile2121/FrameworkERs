@@ -1,57 +1,81 @@
 {% extends "base.html.twig" %}
 
+
+{% block head %}
+  {{ parent() }}
+  <link rel="stylesheet" href="/css/home.css" />
+  <link rel="stylesheet" href="/css/evenements.css" />
+{% endblock %}
+
 {% block title %}Evenements{% endblock %}
 
 {% block content %}
+    
+    <form class="form-admin container" method="GET" action="/evenements/filter">
+        <div class="row justify-content-between">
+            <div class="form-group col-md-2 col-xs-12 d-flex align-items-center flex-column">
+                <label for="filter_titre">Evènement</label>
+                <input type="text" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control event-searchbar w-50" id="filter_titre" placeholder="Titre">
+            </div>
+            <div class="form-group col-md-2 col-xs-12 d-flex align-items-center flex-column">
+                <label for="filtre_statut">Statut</label>
+                <select name="filtre_statut" id="filtre_statut">
+                    <option value='' selected>Sélectionner un statut</option>
+                    {% for statut in statuts %}
+                        {% if statut.libelleStatut != 'Passé' %}
+                            <option {% if filtres['filtre_statut'] is defined and statut.idStatut == filtres['filtre_statut'] %} selected {% endif %} value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-md-2 col-xs-12 d-flex align-items-center flex-column">
+                <label for="filtre_city">Ville</label>
+                <input type="text" value="{{ filtres['filtre_city'] }}" name="filtre_city" class="form-control event-searchbar w-50" id="filtre_city" placeholder="Ville">
+            </div>
+            <div class="form-group col-md-2 col-xs-12 d-flex align-items-center flex-column">
+                <label for="filtre_cp">Code postale</label>
+                <input type="text" value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control event-searchbar  w-50" id="filtre_cp" placeholder="Code postale">
+            </div>
+            <div class="form-group col-md-2 col-xs-12 d-flex align-items-center flex-column">
+                <label for="order_date">Date</label>
+                <select class="form-select" name="order_date" id="order_date">
+                    <option value ='' selected>Sélectioner un ordre d'affichage</option>
+                    <option value="ASC">Croissant</option>
+                    <option value="DESC">Décroissant</option>
+                </select>
+            </div>
+                <input type="hidden" value="{{ filtres['filtre_categorie'] }}" name="filtre_categorie" class="form-control event-searchbar  w-50">
+       </div>
 
-    <form class="form-admin" method="GET" action="/evenements/filter">
-        <div class="form-group">
-            <label for="filter_titre">Rechercher un evenement par son titre</label>
-            <input type="text" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control" id="filter_titre" placeholder="Titre">
+        <div class="form-group col  my-5 text-center">
+            <button type="submit" class="btn-home text-light">Rechercher</button>
+           <button class="btn-home text-light"> <a href="/evenements">Annuler</button></a>
         </div>
-        <div class="form-group">
-            <label for="filtre_statut">Statuts</label>
-            <select name="filtre_statut" id="filtre_statut">
-                <option value='' selected>Selectioner un statut</option>
-                {% for statut in statuts %}
-                    {% if statut.libelleStatut != 'Passé' %}
-                        <option {% if filtres['filtre_statut'] is defined and statut.idStatut == filtres['filtre_statut'] %} selected {% endif %} value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="filtre_city">Ville</label>
-            <input type="text" value="{{ filtres['filtre_city'] }}" name="filtre_city" class="form-control" id="filtre_city" placeholder="Ville">
-        </div>
-        <div class="form-group">
-            <label for="filtre_cp">Code postale</label>
-            <input type="text" value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control" id="filtre_cp" placeholder="Code postale">
-        </div>
-        <div class="form-group">
-            <label for="order_date">Date</label>
-            <select class="form-select" name="order_date" id="order_date">
-                <option value ='' selected>Selectioner un ordre d'affichage</option>
-                <option value="ASC">Croissant</option>
-                <option value="DESC">Décroissant</option>
-            </select>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Rechercher</button>
-        <a href="/evenements" class="btn btn-primary">Annuler</a>
+      
+        
     </form>
+    
 
-    <h3>Liste des evenements</h3>
+    <h1 class="text-center mb-5">Liste des evenements</h3>
     {% for categorie in categories %}
-        <h2>{{ categorie.libelleCategorie }}</h2>
+    {% if filtres['filtre_categorie'] is defined %}
+        {% if filtres['filtre_categorie'] == categorie.idCategorie %}
+        <h2 class="text-center">{{ categorie.libelleCategorie }}</h2>
+        {% endif %}
+    {% else %}
+        <h2 class="text-center">{{ categorie.libelleCategorie }}</h2>
+    {% endif %}
+       
+        <section class="events-next my-5 container">
+	<div class="all-events-next row">
             {% for evenement in evenementsOrderByCategories[categorie.libelleCategorie] %}
-                <div>
-                <p>{{ evenement.titre }}</p>
-                <form method="GET" action="/evenement">
-                    <button type="submit" name="id" class="btn btn-warning" value="{{ evenement.idEvenement }}">Acceder</button>
-                </form>
-                </div>
+               {% include "home/sections/card_event.html.twig" %}
             {% endfor %}
+            	</div>
+		
+		
+	</section>
+
     {% endfor %}
 {% endblock %}
 
