@@ -32,7 +32,7 @@ final class AdressesRepository extends AbstractRepository
                         `coordonne_latitude` = :coordonneLatitude,
                         `ville_libelle` = :villeLibelle,
                         `cp_ville` = :cpVille
-                        WHERE `id_adresse` = :idAdresse" );
+                        WHERE `id_adresse` = :idAdresse");
 
         return $stmt->execute([
             'libelleAdresse' => $adresses->getLibelleAdresse(),
