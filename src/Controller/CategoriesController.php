@@ -7,6 +7,7 @@ use App\Entity\Categories;
 use App\Repository\AdressesRepository;
 use App\Repository\CategoriesRepository;
 use App\Routing\Attribute\Route;
+use App\Session\Session;
 use Exception;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,13 +23,15 @@ class CategoriesController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/categories", name: "admin_categories",)]
-    public function categories(CategoriesRepository $categoriesRepository)
+    public function categories(CategoriesRepository $categoriesRepository, Session $session)
     {
         $categories = $categoriesRepository->selectAll();
 
         echo $this->twig->render('admin/categories/admin_categorie.html.twig', [
             'categories' => $categories,
+            'cateforipop' => $session->get('cateforipop'),
         ]);
+        $session->delete('cateforipop');
     }
 
     /**
@@ -124,10 +127,22 @@ class CategoriesController extends AbstractController
 
 
     #[Route(path: "/admin/delete/categories", httpMethod: 'POST', name: "admin_delete_categories")]
-    public function deleteCategorie(CategoriesRepository $categoriesRepository)
+    public function deleteCategorie(CategoriesRepository $categoriesRepository ,Session $session)
     {
         $id = intval($_POST['id']);
-        $categoriesRepository->delete($id);
-        header('Location: /admin/categories');
+
+        $evenementsWithCategorie = $categoriesRepository->verifContraintsEvenementCategories($id);
+       
+        if ($evenementsWithCategorie !== null) {
+            // TODO POP UP
+            // Message pop-up Impossible de supprimer la caregorie appartient 
+            
+            $session->set("cateforipop","cateforipop");
+            header('Location: /admin/categories');
+            
+        } else {   
+            $categoriesRepository->delete($id);
+            header('Location: /admin/categories');
+        }
     }
 }
