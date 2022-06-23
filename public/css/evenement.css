@@ -4,7 +4,7 @@
     background-position: center;
     color:white;
     text-align: center;
-    padding: 200px 0;
+    padding: 200px 0 50px 0;
 }
 
 #eventImage h1 {
@@ -15,13 +15,60 @@
     padding-bottom: 25px;
     
 }
-#eventImage h5 {
+#eventImage h2 {
     padding-bottom: 25px;
 }  
-#eventImage h6 {
+#eventImage h4 {
     font-style: italic;
 } 
 
-#ville {
-    text-decoration: underline;
+#eventImage button {
+    margin-top: 50px;
+}
+p{
+    margin:0;
+}
+
+.participation {
+    padding: 50px!important;
+}
+
+/* Span info evenement */
+.tags-items{
+    
+    pointer-events: none;
+    border:1px solid #9F09AC;
+    font-size: 20px;
+    border-radius: 20px;
+}
+.status{
+    border:1px solid #09ac19;
+}
+/* Span info evenement */
+
+div.alert {
+    margin-top: 0!important;
+   border-radius: 20px;
+}
+
+/* Style séparateur*/
+hr {
+    background: linear-gradient(90deg, #EF1B93 0%, #8826D1 100%);
+    height: 2px;
+    margin: 20px auto;
+    width: 95%;
+  }
+
+#description h2 {
+    margin-top: 50px;
+    font-weight: bolder;
+    text-align: center;
+}
+
+#description p {
+    padding: 50px 0;
+}
+
+iframe {
+    margin-top: 40px;
 }

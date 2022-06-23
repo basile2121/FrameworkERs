@@ -114,6 +114,14 @@ final class EvenementsRepository extends AbstractRepository
         $data = $stmt->fetchAll();
         return $this->setHydrate($data);
     }
+    public function nbPlaceDisponible(int $id) {
+        $stmt = $this->pdo->prepare("SELECT (e.nb_participants_max - COUNT(p.id_utilisateur)) as places FROM evenements e LEFT JOIN participe p ON e.id_evenement = p.id_evenement LEFT JOIN utilisateurs u ON p.id_utilisateur = u.id_utilisateur where e.id_evenement = :id GROUP BY e.id_evenement; ");
+        $stmt->bindValue('id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetch();
+        return $data['places'];
+
+    }
 
     /**
      * Permet de récupérer les évènements créés par un utilisateur avec le rôle BDE 

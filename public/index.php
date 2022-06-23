@@ -72,9 +72,6 @@ $twig = $twigEnvironment->init();
 $twig->addGlobal('session_utilisateur_id', $session->get('id'));
 $twig->addGlobal('path_logo', "http://localhost:8000/image");
 
-//Request
-$request = Request::createFromGlobals();
-$container->set(Request::class, $request);
 // Service Container
 $container->set(Environment::class, $twig);
 $container->set(Session::class, $session);

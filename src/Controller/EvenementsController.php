@@ -40,23 +40,27 @@ class EvenementsController extends AbstractController
 
         $id = $request->query->get('id');
         $evenement = $evenementsRepository->selectOneById($id);
+        $place = $evenementsRepository->nbPlaceDisponible($id);
         if (!empty($_SESSION['id'])) {
             $alreadyParticipe = $participeRepository->checkIfAlreadyParticipe($_SESSION['id'], $id);
         } else {
-            $noConnectedMessage = 'Merci de votre connecté';
+            $noConnectedMessage = 'Vous devez vous connecter pour vous inscrire à un évènement';
         }
-
+        
 
         echo $this->twig->render('evenements/evenement.html.twig', [
             'evenement' => $evenement,
+            'desinscription' => $session->get('desinscription'),
             'successParticiper' => $session->get('successParticiper'),
             'errorParticiper' => $session->get('errorParticiper'),
             'alreadyParticipe' => $alreadyParticipe,
-            'noConnectedMessage' => $noConnectedMessage
+            'noConnectedMessage' => $noConnectedMessage,
+            'place' => $place
         ]);
 
         $session->delete('successParticiper');
         $session->delete('errorParticiper');
+        $session->delete('desinscription');
     }
 
     /**
@@ -64,7 +68,7 @@ class EvenementsController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/evenement/participe", name: "evenement_participe",)]
+    #[Route(path: "/evenement/participe", name: "evenement_participe")]
     public function participeEvenement(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository ,Session $session, Request $request, StatutsRepository $statutsRepository)
     {
         $id = $request->query->get('idEvenement');
@@ -99,6 +103,22 @@ class EvenementsController extends AbstractController
         }
         
         header("Location: /evenement?id=" . $id );
+    }
+
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
+    #[Route(path: "/evenement/desincription", name: "evenement_ne_plus_participe")]
+    public function deleteParticipation(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository ,Session $session, Request $request, StatutsRepository $statutsRepository)
+    {
+        $idUser = $_SESSION['id'];
+        $idEvent= $request->query->get('idEvenement');
+        $participeRepository->deleteUtilisateur($idUser, $idEvent);
+        
+        $session->set('desinscription', 'Vous êtes bien désinscrit de l\'évènement');
+        header("Location: /evenement?id=" . $idEvent );
     }
 
 
