@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Adresses;
 use App\Entity\Categories;
 
 final class CategoriesRepository extends AbstractRepository
@@ -16,6 +17,17 @@ final class CategoriesRepository extends AbstractRepository
 
         return $stmt->execute([
             'libelleCategorie' => $categories->getLibelleCategorie(),
+        ]);
+    }
+
+    public function update(Categories $categorie): bool
+    {
+        $stmt = $this->pdo->prepare("UPDATE categories SET 
+                        `libelle_categorie` = :libelleCategorie
+                        WHERE `id_categorie` = :idCategorie");
+        return $stmt->execute([
+            'libelleCategorie' => $categorie->getLibelleCategorie(),
+            'idCategorie' => 187
         ]);
     }
 }

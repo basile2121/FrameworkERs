@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Ajouter une categorie{% endblock %}
+
+
+{% block content %}
+    <h1 class="display-1 text-center mt-5">Ajouter une categorie</h1>
+    <main>
+        <form class="form-admin" method="POST" action="/admin/add/categories">
+              <div class="form-group">
+                <label for="categorie">Nom categorie</label>
+                <input type="text" name="categorie" class="form-control" id="categorie" placeholder="Nom de la categorie">
+            </div>
+            <input type="hidden" name="redirect_create_categorie_url" class="form-control" id="redirect_create_categorie_url" value="{{ urlRedirection }}">
+            <button type="submit" name="id" class="btn btn-primary">Sauvegarder</button>
+        </form>
+    </main>
+{% endblock %}
