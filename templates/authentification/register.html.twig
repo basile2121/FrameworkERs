@@ -50,9 +50,7 @@
 			<div class="form-group">
 				<label for="promotions">Promotions</label>
 				<select name="promotions" class="form-control" id="promotions">
-					<option selected disabled>
-						Sélectionner votre promotion</option>
-					
+									
 				</select>
 			</div>
 			<div class="form-group">
@@ -117,6 +115,7 @@
 {% block script %}
 <script>
 		let listeEcole = document.querySelector('#ecoles');
+		
 		let listePromotions = document.querySelector('#promotions');
 	function ajaxPromotions(){
 		
@@ -131,8 +130,9 @@
 	function insertOption(datas){
 		listePromotions.innerHTML ='<option selected disabled>Sélectionner votre promotion</option>'
 		datas.forEach(element=> listePromotions.innerHTML += '<option value='+element[0]+'> '+element[1]+'</option>')
+		console.log(datas);
 	}
 
-	document.querySelector("#ecoles").addEventListener('change',ajaxPromotions);
+	listeEcole.addEventListener('change', ajaxPromotions);
 </script>
 {% endblock %}

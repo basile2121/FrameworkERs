@@ -1,37 +1,91 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/evenement.css"/>
 
-{% block title %}Evenement{% endblock %}
+{% endblock %}
+{% block title %}Evènement
+	{{ evenement.titre }}
+{% endblock %}
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Evenement</h1>
-    <main>
-        <h1>{{ evenement.titre }}</h1>
-        {% if successParticiper %}
-            <div class="alert alert-warning m-auto mt-2 col-3">
-                {{ successParticiper }}
-            </div>
-        {% endif %}
-        {% if errorParticiper %}
-            <div class="alert alert-success m-auto col-3">
-                {{ errorParticiper ~ '!' }}
-            </div>
-        {% endif %}
+	{% if errorParticiper %}
+		<div class="alert alert-success m-auto col-3">
+			{{ errorParticiper ~ '!' }}
+		</div>
+	{% endif %}
+	{% if desinscription %}
+		<div class="alert alert-success m-auto col-3">
+			{{ desinscription  ~ '!' }}
+		</div>
+	{% endif %}
+
+	<main>
+		<section id="eventImage">
+			<h1>{{ evenement.titre }}</h1>
+			<h2>{{evenement.sousTitre}}</h2>
+			<h4>
+				Le
+				{{evenement.date|date("d-m-Y")}}
+				à
+				<span id="ville">{{evenement.adresses.villeLibelle}}</span>
+			</h4>
+			{% if alreadyParticipe == false and noConnectedMessage is null %}
+				<button type="button" class="btn btn-warning participer" data-toggle="modal" data-target="#Modal{{ evenement.idEvenement }}">Participer</button>
+				{% elseif alreadyParticipe == true %}
+				<button type="button" class="btn btn-warning participer" data-toggle="modal" data-target="#ModalP{{ evenement.idEvenement }}">Ne plus participer</button>
+
+			{% endif %}
+		</section>
+		<section id="infos">
+			<div class="tags d-flex align-items-center justify-content-center py-4">
+				<span class="tags-items px-3 py-1 mx-2">
+					Prix :
+					{{ evenement.prix }}€
+				</span>
+				<span class="tags-items px-3 py-1 mx-2">
+					Places disponibles :
+					{{ place }}
+				</span>
+
+				<span class="tags-items px-3 py-1 mx-2">
+					{{ evenement.categories.libelleCategorie }}
+				</span>
+
+				<span class="tags-items px-3 py-1 mx-2 status">
+					Statut :
+					{{ evenement.statuts.libelleStatut }}
+				</span>
+			</div>
+		</section>
+		{# Message succes participation#}
+		{% if successParticiper %}
+			<div class="alert alert-warning m-auto mt-2 col-3">
+				{{ successParticiper }}
+			</div>
+		{% endif %}
+
+		{# Message login pour participer #}
+		{% if noConnectedMessage %}
+			<div class="alert alert-warning m-auto mb-4 col-4">
+				{{ noConnectedMessage }}
+				<a class="btn btn-secondary m-auto" style="color:white" href="/login">Se connecter</a>
+			</div>
+			
+		{% endif %}
+		<section id="description">
+		 
+		<h2>Description de l'évènement</h2>
+		<hr>
+		 <p class="text-center "> {{evenement.description}}</p>
+		 <hr>
+		</section>
+		
 
 
-        {% if noConnectedMessage %}
-            <p>{{ noConnectedMessage }}</p>
-            <a class="btn btn-primary" href="/login">Se connecter</a>
-       {% else %}
-            {% if alreadyParticipe == false %}
-                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#Modal{{ evenement.idEvenement }}">Participer</button>
-            {% else %}
-                <p>Vous participez déjà à cet évenement</p>
-            {% endif %}
-        {% endif %}
-
-
-        {% include 'utils/pop-up/participer_evenement_model.html.twig' %}
-        {% include 'maps/maps_show.html.twig' %}
-    </main>
+		{% include 'utils/pop-up/participer_evenement_model.html.twig' %}
+		{% include 'utils/pop-up/ne_plus_participer_evenement_model.html.twig' %}
+		{% include 'maps/maps_show.html.twig' %}
+	</main>
 {% endblock %}

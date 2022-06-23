@@ -50,7 +50,7 @@
 					<li class="list-group-item">
 					<div class="form-group">
 						<label for="ecoles">Ecoles</label>
-						<select name="ecoles" class="form-control" id="ecoles" required>
+						<select name="ecoles" class="form-control" id="ecoles" >
 
 							{% for ecoleList in ecoles %}
 								<option {% if ecoleList.nomEcole == user.nomEcole %} selected {% endif %} value={{ecoleList.idEcole}}>
@@ -63,7 +63,7 @@
                     <li class="list-group-item">
 					<div class="form-group">
 						<label for="promotions">Promotions</label>
-						<select name="promotions" class="form-control" id="promotions" required>
+						<select name="promotions" class="form-control" id="promotions" >
 							<option selected value="{{promotion.idPromotion}}">
 								{{promotion.libellePromotion}}</option>
 

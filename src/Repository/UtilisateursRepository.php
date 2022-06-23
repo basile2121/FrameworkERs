@@ -118,4 +118,5 @@ final class UtilisateursRepository extends AbstractRepository
 
         $this->delete($id);
     }
+
 }
