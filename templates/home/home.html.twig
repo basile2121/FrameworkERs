@@ -1,34 +1,66 @@
-{% extends "base.html.twig" %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
-
-
-{% block content %}
-    {% if sessionSuccess %}
-		<div class="alert alert-success m-auto col-3">
-			{{ sessionSuccess ~ '!' }}
-		</div>
-		{% endif %}
-		{% if logout %}
-		<div class="alert alert-warning m-auto mt-2 col-3">
-			{{ logout }}
-		</div>
-		{% endif %}
-		{% if connected %}
-		<div class="alert alert-warning m-auto mt-2 col-6">
-			{{  connected }}
-		</div>
-		{% endif %}
-		<h1>Accueil PHP MVC</h1>
-
-	{% for evenementAVenir in evenementsAVenir %}
-		<div>
-			<p>{{ evenementAVenir.idEvenement }}</p>
-			<form method="POST" action="/evenement/participe">
-				<button type="submit" name="id" class="btn btn-warning" value="{{ evenementAVenir.idEvenement }}">Acceder</button>
-			</form>
-		</div>
-	{% endfor %}
-		<h3>Bienvenue sur notre projet PHP MVC from Scratch</h3>
+{% block head %}
+  {{ parent() }}
+  <link rel="stylesheet" href="/css/home.css" />
 {% endblock %}
 
+{% block title %}
+  Accueil
+{% endblock %}
+
+{% block header %}
+  {{ parent() }}
+  <section class="title-home d-flex justify-content-center align-items-center flex-column flex-direction-column text-white">
+    <h1 class="text-center">
+      BDE Plateform
+    </h1>
+    <h3 class="text-center">
+      Participez aux évènements de l'école
+    </h3>
+  </section>
+{% endblock %}
+
+{% block content %}
+  {% if sessionSuccess %}
+    <div class="alert alert-success m-auto col-3">
+      {{ sessionSuccess ~ '!' }}
+    </div>
+  {% endif %}
+  {% if logout %}
+    <div class="alert alert-warning m-auto mt-2 col-3">
+      {{ logout }}
+    </div>
+  {% endif %}
+  {% if connected %}
+    <div class="alert alert-warning m-auto mt-2 col-6">
+      {{ connected }}
+    </div>
+  {% endif %}
+
+  <form class="form-admin text-center" method="POST" action="/evenements/filter">
+    <div class="form-group ">
+      <label for="filter_titre">Rechercher un évènement :</label>
+      <input type="text"
+        value="{{ filtres['filter_titre'] }}"
+        name="filter_titre"
+        id="filter_titre"
+        class="event-searchbar"
+        placeholder="Titre" />
+    </div>
+    <button type="submit" name="filtre" value="true" class="btn-home text-light">
+      Rechercher
+    </button>
+    <a href="/" class=""><button class="btn-home text-light">Annuler</button></a>
+  </form>
+  {% if evenementsFiltered %}
+    {% include 'home/sections/event_filtered.html.twig' %}
+  {% elseif evenementError %}
+    <h1 class="text-center">{{ evenementError }}</h1>
+	{% include 'home/sections/event_a_venir.html.twig' %}
+  {% else %}
+    {% include 'home/sections/event_a_venir.html.twig' %}
+    {% include 'home/sections/event_prochain.html.twig' %}
+    {% include 'home/sections/event_recent_ajoute.html.twig' %}
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,9 @@
+.btn-connect{
+    border-radius: 15px;
+    background: linear-gradient(90deg, #EF1B93 0%, #8826D1 100%);
+    transition: 0.3s;
+}
+.btn-connect:hover{
+    transform: translateY(-5px);
+
+}

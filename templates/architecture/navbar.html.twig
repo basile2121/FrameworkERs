@@ -1,26 +1,56 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light mx-5 ">
     <a class="navbar-brand" href="/">
-        Home
+    <img src="{{path_logo}}/logo.png" width="100">
     </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
     <div class="collapse navbar-collapse ml-auto" id="navbarNav">
-        <ul class="navbar-nav" >
-
-            {% if session_utilisateur_id is null %}
-                <li class="nav-item ">
-                    <a class="nav-link" href="/register">Register</a>
+        <ul class="navbar-nav ml-auto d-flex align-items-center " >
+        
+              {% if whiteNavbar %}
+              <li class="nav-item ">
+                    <a class="nav-link text-white" href="/">Evènements</a>
                 </li>
-                <li class="nav-item ">
-                    <a class="nav-link" href="/login">Login</a>
+            {% if session_utilisateur_id is null %}
+          
+                <li class="nav-item p-2">
+                    <a class="nav-link text-white" href="/register">S'inscrire</a>
+                </li>
+                <li class="nav-item p-2 ">
+                    <a class="nav-link btn-connect px-4 py-3 text-white" href="/login">Se connecter</a>
                 </li>
             {% else %}
-                <li class="nav-item ">
+                <li class="nav-item p-2 ">
+                    <a class="nav-link text-white" href="/dashboard">Dashboard</a>
+                </li>
+
+                <li class="nav-item p-2 ">
+                    <a class="nav-link text-white btn-connect px-4 py-3" href="/logout">Logout</a>
+                </li>
+            {% endif %}
+              {% else %}
+              <li class="nav-item ">
+                    <a class="nav-link" href="/">Evènements</a>
+                </li>
+            {% if session_utilisateur_id is null %}
+          
+                <li class="nav-item p-2">
+                    <a class="nav-link" href="/register">S'inscrire</a>
+                </li>
+                <li class="nav-item p-2 ">
+                    <a class="nav-link btn-connect px-4 py-3 text-white" href="/login">Se connecter</a>
+                </li>
+            {% else %}
+                <li class="nav-item p-2 ">
                     <a class="nav-link" href="/dashboard">Dashboard</a>
                 </li>
 
-                <li class="nav-item ">
-                    <a class="nav-link" href="/logout">Logout</a>
+                <li class="nav-item p-2 ">
+                    <a class="nav-link btn-connect px-4 py-3 text-white" href="/logout">Logout</a>
                 </li>
             {% endif %}
+              {% endif %}
         </ul>
     </div>
 </nav>

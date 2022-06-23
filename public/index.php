@@ -30,6 +30,7 @@ use App\Routing\Router;
 use App\Session\Session;
 use App\Utils\Hydrator;
 use Symfony\Component\Dotenv\Dotenv;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
 
 // Env vars - Possibilité d'utiliser le pattern Adapter
@@ -65,7 +66,11 @@ $session->ensureStarted();
 $twigEnvironment = new TwigEnvironment();
 $twig = $twigEnvironment->init();
 $twig->addGlobal('session_utilisateur_id', $session->get('id'));
+$twig->addGlobal('path_logo', "http://localhost:8000/image");
 
+//Request
+$request = Request::createFromGlobals();
+$container->set(Request::class, $request);
 // Service Container
 $container->set(Environment::class, $twig);
 $container->set(Session::class, $session);
@@ -80,6 +85,7 @@ $container->set(CategoriesRepository::class, $categoriesRepository);
 $container->set(AppartientRepository::class, $appartientRepository);
 $container->set(AdressesRepository::class, $adressesRepository);
 $container->set(PromotionsRepository::class, $promotionsRepository);
+
 
 // Routage
 $router = new Router($container, new ArgumentResolver());
