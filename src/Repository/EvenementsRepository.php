@@ -136,6 +136,21 @@ final class EvenementsRepository extends AbstractRepository
     /**
      * @throws ReflectionException
      */
+    public function selectAllEvenementNotPast(): array
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM evenements as e JOIN statuts as s ON e.id_statut = s.id_statut WHERE s.libelle_statut != 'Passé'");
+        $stmt->execute();
+        $results = $stmt->fetchAll();;
+        if ($results) {
+            return $this->setHydrate($results);
+        }
+        return [];
+    }
+
+
+    /**
+     * @throws ReflectionException
+     */
     public function verifContraintsUtilisateursParticipes($id): ?array
     {
         $statement = $this->pdo->prepare("SELECT * FROM participe as p WHERE p.id_evenement = :id");
