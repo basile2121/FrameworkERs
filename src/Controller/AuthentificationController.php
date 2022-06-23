@@ -230,7 +230,7 @@ class AuthentificationController extends AbstractController
         }
     }
 
-    private function _verifRegister(UtilisateursRepository $utilisateursRepository)
+    public function _verifRegister(UtilisateursRepository $utilisateursRepository)
     {
         $errors = [];
         $verifPassword = $this->_verifPassword($_POST["password"], $_POST["password_confirm"]);
@@ -258,6 +258,5 @@ class AuthentificationController extends AbstractController
              return true;
          }
         return $errors;
-        
     }
 }

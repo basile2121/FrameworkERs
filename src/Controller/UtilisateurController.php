@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Utilisateurs;
 use DateTime;
 use App\Session\Session;
 use ReflectionException;
@@ -89,6 +90,62 @@ class UtilisateurController extends AbstractController
             'utilisateurs' => $utilisateurs,
             'filtres' => $filtres
         ]);
+    }
+
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
+    #[Route(path: "/admin/create/utilisateurs", name: "admin_create_utilisateurs",)]
+    public function createUtilisateurs(PromotionsRepository $promotionsRepository, RolesRepository $rolesRepository, EcolesRepository $ecolesRepository)
+    {
+        $roles = $rolesRepository->selectAll();
+        $ecoles = $ecolesRepository->selectAll();
+        $promotions = $promotionsRepository->selectAll();
+
+        echo $this->twig->render('admin/utilisateurs/admin_form_create_utilisateur.html.twig', [
+            'ecoles' => $ecoles,
+            'promotions' => $promotions,
+            'roles' => $roles,
+        ]);
+    }
+
+
+    /**
+     * @throws \Exception
+     */
+    #[Route(path: "/admin/add/utilisateurs", httpMethod: 'POST', name: "admin_add_utilisateurs",)]
+    public function addUtilisateurs(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository)
+    {
+        $authController = new AuthentificationController($this->twig);
+        $verifRegister = $authController->_verifRegister($utilisateursRepository);
+
+        if ($verifRegister !== true ) {
+            $promotions = $promotionsRepository->selectAll();
+            $roles = $rolesRepository->selectAll();
+            $ecoles = $ecolesRepository->selectAll();
+            echo $this->twig->render("admin/utilisateurs/admin_form_create_utilisateur.html.twig", [
+                'ecoles' => $ecoles,
+                'promotions' => $promotions,
+                'roles' => $roles,
+                'errors' => $verifRegister
+            ]);
+        } else {
+            $user = new Utilisateurs();
+            $user->setNom(trim($_POST["nom"]));
+            $user->setPrenom(trim($_POST["prenom"]));
+            $user->setDateNaissance(new DateTime($_POST['date_naissance']));
+            $user->setIdPromotion(intval($_POST["promotions"]));
+            $user->setTelephone(trim($_POST["telephone"]));
+            $user->setDateInscription(new DateTime());
+            $user->setMail(trim($_POST["email"]));
+            $user->setPassword(trim($_POST['password']));
+            $user->setIdRole(intval($_POST["roles"]));
+            $utilisateursRepository->save($user);
+
+            header("Location: /admin/utilisateurs");
+        }
     }
 
     /**
@@ -234,7 +291,35 @@ class UtilisateurController extends AbstractController
                 $utilisateursRepository->update($user);
                 $session->set('successUpdate', 'Vos informations ont bien été modifiées !');
                 header("Location: http://localhost:8000/utilisateurs/profil");
-        
+    }
 
+    private function _verifRegister(UtilisateursRepository $utilisateursRepository)
+    {
+        $errors = [];
+        $verifPassword = $this->_verifPassword($_POST["password"], $_POST["password_confirm"]);
+        if ($verifPassword !== true) {
+            $errors["password"] = $verifPassword;
+        }
+
+        $verifEmpty = $this->_verifIfEmpty();
+        if ($verifEmpty !== true){
+            $errors["empty"] = $verifEmpty;
+        }
+
+        $verifMail = $this->_verifMail($_POST["email"]);
+        if($verifMail !== true){
+            $errors["mail"] = $verifMail;
+        }
+
+        //Vérifier que l'adresse ne soit pas déjà utilisée
+        $emailExist = $utilisateursRepository->selectOneByEmail($_POST["email"]);
+        if (isset($emailExist)) {
+            $errors["mail_existant"] = "L'adresse mail est déjà utilisée !";
+        }
+
+        if(empty($errors)) {
+            return true;
+        }
+        return $errors;
     }
 }
