@@ -31,4 +31,20 @@ final class ParticipeRepository extends AbstractRepository
             'idEvenement' => $idEvenement,
         ]);
     }
+
+    /**
+     * Suppresion d'un client dans un evenement
+     */
+    public function checkIfAlreadyParticipe(int $idUtilisateur, int $idEvenement): bool
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM participe WHERE id_utilisateur =:idUtilisateur AND id_evenement =:idEvenement");
+        $statement->bindValue('idUtilisateur', $idUtilisateur, \PDO::PARAM_INT);
+        $statement->bindValue('idEvenement', $idEvenement, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        if (empty($results)) {
+            return false;
+        }
+        return true;
+    }
 }

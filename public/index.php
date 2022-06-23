@@ -30,6 +30,7 @@ use App\Routing\Router;
 use App\Session\Session;
 use App\Utils\Hydrator;
 use Symfony\Component\Dotenv\Dotenv;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
 
 // Env vars - Possibilité d'utiliser le pattern Adapter
@@ -60,6 +61,10 @@ $adressesRepository = new AdressesRepository($pdoConnection->getPdoConnection(),
 //Session
 $session = new Session();
 $session->ensureStarted();
+
+// Request
+$request = Request::createFromGlobals();
+$container->set(Request::class, $request);
 
 // Twig - Vue
 $twigEnvironment = new TwigEnvironment();

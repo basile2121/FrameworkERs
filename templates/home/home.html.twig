@@ -34,7 +34,7 @@
 	{% for evenementAVenir in evenementsAVenir %}
 		<div>
 			<p>{{ evenementAVenir.idEvenement }}</p>
-			<form method="POST" action="/evenement">
+			<form method="GET" action="/evenement">
 				<button type="submit" name="id" class="btn btn-warning" value="{{ evenementAVenir.idEvenement }}">Acceder</button>
 			</form>
 		</div>
