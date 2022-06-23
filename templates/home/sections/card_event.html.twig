@@ -30,7 +30,7 @@
       Catégorie : {{ evenement.categories.libelleCategorie }}
     </span>
   </div>
-  <form method="POST" action="/evenement" class="p-3 text-center">
+  <form method="GET" action="/evenement?id={{ evenement.idEvenement }}" class="p-3 text-center">
     <button type="submit"
       name="id"
       class="btn-home text-light"

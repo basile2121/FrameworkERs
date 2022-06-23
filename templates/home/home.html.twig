@@ -22,33 +22,22 @@
 {% endblock %}
 
 {% block content %}
-	 {% if errorParticiper %}
-		<div class="alert alert-success m-auto col-3">
-			{{ sessionSuccess ~ '!' }}
-		</div>
-		{% endif %}
-		{% if errorParticiper %}
-		<div class="alert alert-warning m-auto mt-2 col-3">
-			{{ logout }}
-		</div>
-		{% endif %}
-    {% if sessionSuccess %}
-		<div class="alert alert-success m-auto col-3">
-			{{ sessionSuccess ~ '!' }}
-		</div>
-		{% endif %}
-		{% if logout %}
-		<div class="alert alert-warning m-auto mt-2 col-3">
-			{{ logout }}
-		</div>
-		{% endif %}
-		{% if connected %}
-		<div class="alert alert-warning m-auto mt-2 col-6">
-			{{  connected }}
-		</div>
-		{% endif %}
+  {% if sessionSuccess %}
+    <div class="alert alert-success m-auto col-3">
+      {{ sessionSuccess ~ '!' }}
+    </div>
+  {% endif %}
+  {% if logout %}
+    <div class="alert alert-warning m-auto mt-2 col-3">
+      {{ logout }}
+    </div>
+  {% endif %}
+  {% if connected %}
+    <div class="alert alert-warning m-auto mt-2 col-6">
+      {{ connected }}
+    </div>
+  {% endif %}
 
-    <h3>Bienvenue sur notre projet PHP MVC from Scratch</h3>
   <form class="form-admin text-center" method="POST" action="/evenements/filter">
     <div class="form-group ">
       <label for="filter_titre">Rechercher un évènement :</label>
