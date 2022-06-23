@@ -10,11 +10,11 @@
         <form class="form-admin" method="POST" action="/admin/adresses/filter">
             <div class="form-group">
                 <label for="filter_city">Rechercher une adresse par sa ville</label>
-                <input type="text" value="{{ filtres['filter_city'] }}" name="filter_city" class="form-control" id="filter_city" placeholder="Nom de la ville">
+                <input type="text" maxlength="255" value="{{ filtres['filter_city'] }}" name="filter_city" class="form-control" id="filter_city" placeholder="Nom de la ville">
             </div>
             <div class="form-group">
                 <label for="filter_cp">Rechercher une adresse par son code postal</label>
-                <input type="text" value="{{ filtres['filter_cp'] }}" name="filter_cp" class="form-control" id="filter_cp" placeholder="Code postal">
+                <input type="number" min="5" max="5" value="{{ filtres['filter_cp'] }}" name="filter_cp" class="form-control" id="filter_cp" placeholder="Le code postal doit mesurer 5 caractères">
             </div>
             <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
             <a href="/admin/adresses" class="btn btn-primary">Annuler</a>
@@ -44,7 +44,6 @@
                         <form method="POST" action="/admin/edit/adresses" >
                             <button type="submit" name="id" class="btn btn-warning" value="{{ adresse.idAdresse }}">Modifier</button>
                         </form>
-
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{adresse.idAdresse  }}">Supprimer</button>
                     </td>
                 </tr>

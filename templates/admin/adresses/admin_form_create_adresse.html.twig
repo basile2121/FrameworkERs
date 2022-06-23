@@ -9,15 +9,15 @@
         <form class="form-admin" method="POST" action="/admin/add/adresses">
               <div class="form-group">
                 <label for="adresse">Adresse</label>
-                <input type="text" name="adresse" class="form-control" id="adresse" placeholder="Adresse">
+                <input type="text" maxlength="255" name="adresse" class="form-control" id="adresse" placeholder="Adresse" required>
             </div>
             <div class="form-group">
                 <label for="ville">Ville</label>
-                <input type="text" name="ville" class="form-control" id="ville" placeholder="Nom de la ville">
+                <input type="text" maxlength="255" name="ville" class="form-control" id="ville" placeholder="Nom de la ville" required>
             </div>
             <div class="form-group">
                 <label for="codePostal">Code postal</label>
-                <input type="text" name="codePostal" class="form-control" id="codePostal" placeholder="Code postal">
+                <input type="number" min="5" max="5" name="codePostal" class="form-control" id="codePostal" placeholder="Le code postal doit mesurer 5 caractères" required>
             </div>
             <input type="hidden" name="redirect_create_adresse_url" class="form-control" id="redirect_create_adresse_url" value="{{ urlRedirection }}">
             <button type="submit" name="id" class="btn btn-primary" >Sauvegarder</button>

@@ -9,7 +9,7 @@
         <form class="form-admin" method="POST" action="/admin/update/categories">
             <div class="form-group">
                 <label for="categorie">Nom categorie</label>
-                <input type="text" name="categorie" class="form-control" id="categorie" value="{{ categorie.libelleCategorie }}" placeholder="Nom de la categorie">
+                <input type="text" maxlength="255" name="categorie" class="form-control" id="categorie" value="{{ categorie.libelleCategorie }}" placeholder="Nom de la categorie" required>
             </div>
             <button type="submit" name="id" class="btn btn-primary" value="{{ categorie.idCategorie }}">Sauvegarder</button>
             <a href="/admin/categories" class="btn btn-primary">Annuler</a>

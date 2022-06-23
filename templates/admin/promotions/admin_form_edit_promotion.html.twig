@@ -9,7 +9,7 @@
         <form class="form-admin" method="POST" action="/admin/update/promotions">
             <div class="form-group">
                 <label for="libellePromotion">Nom promotion</label>
-                <input type="text" name="libellePromotion" class="form-control" id="libellePromotion" value="{{ promotion.libellePromotion }}" placeholder="Nom de la promotion">
+                <input type="text" maxlength="255" name="libellePromotion" class="form-control" id="libellePromotion" value="{{ promotion.libellePromotion }}" placeholder="Nom de la promotion" required>
             </div>
              <div class="form-group">
                 <label for="idEcole">Nom école</label>

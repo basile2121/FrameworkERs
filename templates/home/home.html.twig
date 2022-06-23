@@ -52,7 +52,7 @@
   <form class="form-admin text-center" method="POST" action="/evenements/filter">
     <div class="form-group ">
       <label for="filter_titre">Rechercher un évènement :</label>
-      <input type="text"
+      <input type="text" maxlength="255"
         value="{{ filtres['filter_titre'] }}"
         name="filter_titre"
         id="filter_titre"

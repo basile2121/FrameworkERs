@@ -15,7 +15,7 @@
         <div class="row justify-content-between">
             <div class="form-group col-md-2 col-xs-12 d-flex align-items-center flex-column">
                 <label for="filter_titre">Evènement</label>
-                <input type="text" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control event-searchbar w-50" id="filter_titre" placeholder="Titre">
+                <input type="text" maxlength="255" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control event-searchbar w-50" id="filter_titre" placeholder="Titre">
             </div>
             <div class="form-group col-md-2 col-xs-12 d-flex align-items-center flex-column">
                 <label for="filtre_statut">Statut</label>
@@ -30,11 +30,11 @@
             </div>
             <div class="form-group col-md-2 col-xs-12 d-flex align-items-center flex-column">
                 <label for="filtre_city">Ville</label>
-                <input type="text" value="{{ filtres['filtre_city'] }}" name="filtre_city" class="form-control event-searchbar w-50" id="filtre_city" placeholder="Ville">
+                <input type="text" maxlength="255" value="{{ filtres['filtre_city'] }}" name="filtre_city" class="form-control event-searchbar w-50" id="filtre_city" placeholder="Ville">
             </div>
             <div class="form-group col-md-2 col-xs-12 d-flex align-items-center flex-column">
                 <label for="filtre_cp">Code postale</label>
-                <input type="text" value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control event-searchbar  w-50" id="filtre_cp" placeholder="Code postale">
+                <input type="number" min="5" max="5"  value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control event-searchbar  w-50" id="filtre_cp" placeholder="Le code postal doit mesurer 5 caractères">
             </div>
             <div class="form-group col-md-2 col-xs-12 d-flex align-items-center flex-column">
                 <label for="order_date">Date</label>

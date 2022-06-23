@@ -10,11 +10,11 @@
         <form class="form-admin" method="POST" action="/admin/utilisateurs/filter">
             <div class="form-group">
                 <label for="searchUserLastName">Rechercher un utilisateur par nom</label>
-                <input type="text" value="{{ filtres['filtre_lastName'] }}" name="filtre_lastName" class="form-control" id="searchUserLastName" placeholder="Nom de l'utilisateur">
+                <input type="text" maxlength="255" value="{{ filtres['filtre_lastName'] }}" name="filtre_lastName" class="form-control" id="searchUserLastName" placeholder="Nom de l'utilisateur">
             </div>
             <div class="form-group">
                 <label for="searchUserFirstName">Rechercher un utilisateur par son prénom</label>
-                <input type="text" value="{{ filtres['filtre_firstName'] }}" name="filtre_firstName" class="form-control" id="searchUserFirstName" placeholder="Prénom de l'utilisateur">
+                <input type="text" maxlength="255" value="{{ filtres['filtre_firstName'] }}" name="filtre_firstName" class="form-control" id="searchUserFirstName" placeholder="Prénom de l'utilisateur">
             </div>
             <div class="form-group">
                 <label for="ecoles">Ecoles</label>
@@ -29,7 +29,6 @@
                 <label for="promotions">Promotions</label>
                 <select class="form-select" name="filtre_promotion" class="form-control" id="promotions">
                     <option value='' selected>Selectioner une promotion</option>
-                   
                 </select>
             </div>
             <div class="form-group">

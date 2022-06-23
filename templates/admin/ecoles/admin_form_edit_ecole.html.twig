@@ -9,7 +9,7 @@
         <form class="form-admin" method="POST" action="/admin/update/ecoles">
             <div class="form-group">
                 <label for="nomEcole">Nom école</label>
-                <input type="text" name="nomEcole" class="form-control" id="nomEcole" value="{{ ecole.nomEcole }}" placeholder="Nom de l'école">
+                <input type="text" maxlength="255" name="nomEcole" class="form-control" id="nomEcole" value="{{ ecole.nomEcole }}" placeholder="Nom de l'école" required>
             </div>
             <button type="submit" name="id" class="btn btn-primary" value="{{ ecole.idEcole }}">Sauvegarder</button>
             <a href="/admin/ecoles" class="btn btn-primary">Annuler</a>

@@ -9,7 +9,7 @@
         <form class="form-admin" method="POST" action="/bde/evenements/filter">
             <div class="form-group">
                 <label for="filter_titre">Rechercher un evenement par son titre</label>
-                <input type="text" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control" id="filter_titre" placeholder="Titre">
+                <input type="text" maxlength="255" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control" id="filter_titre" placeholder="Titre">
             </div>
             <div class="form-group">
                 <label for="filtre_categorie">Categories</label>
@@ -31,11 +31,11 @@
             </div>
             <div class="form-group">
                 <label for="filtre_city">Ville</label>
-                <input type="text" value="{{ filtres['filtre_city'] }}" name="filtre_city" class="form-control" id="filtre_city" placeholder="Ville">
+                <input type="text" maxlength="255" value="{{ filtres['filtre_city'] }}" name="filtre_city" class="form-control" id="filtre_city" placeholder="Ville">
             </div>
             <div class="form-group">
                 <label for="filtre_cp">Code postale</label>
-                <input type="text" value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control" id="filtre_cp" placeholder="Code postale">
+                <input type="number" min="5" max="5" value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control" id="filtre_cp" placeholder="Le code postal doit mesurer 5 caractères">
             </div>
             <div class="form-group">
                 <label for="order_date">Date</label>
@@ -47,11 +47,7 @@
             </div>
             
             <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
-            
             <a href="/bde/evenements" class="btn btn-primary">Annuler</a>
-            
-            
-            
         </form>
 
         <h2>Liste des evenements</h2>

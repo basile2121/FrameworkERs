@@ -10,7 +10,7 @@
         <form class="form-admin" method="POST" action="/admin/promotions/filter">
             <div class="form-group">
                 <label for="filtre_name_promotion">Rechercher une promotion par nom</label>
-                <input type="text" value="{{ filtres['filtre_name_promotion'] }}" name="filtre_name_promotion" class="form-control" id="filtre_name_promotion" placeholder="Nom de la promotion">
+                <input type="text" maxlength="255" value="{{ filtres['filtre_name_promotion'] }}" name="filtre_name_promotion" class="form-control" id="filtre_name_promotion" placeholder="Nom de la promotion">
             </div>
                <div class="form-group">
                 <label for="filtre_ecole">Rechercher une école par nom</label>
