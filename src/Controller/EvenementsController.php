@@ -31,9 +31,105 @@ class EvenementsController extends AbstractController
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
+     * @throws ReflectionException
+     */
+    #[Route(path: "/evenements", httpMethod: 'GET', name: "evenements",)]
+    public function evenements(EvenementsRepository $evenementsRepository, CategoriesRepository $categoriesRepository, StatutsRepository $statutsRepository, AdressesRepository $adressesRepository)
+    {
+        $categories = $categoriesRepository->selectAll();
+        $statuts = $statutsRepository->selectAll();
+        $adresses = $adressesRepository->selectAll();
+
+        $evenementsOrderByCategories = $this->_orderEvenementsInCategories($categoriesRepository, $evenementsRepository->selectAllEvenementNotPast());
+
+        echo $this->twig->render('evenements/evenements.html.twig', [
+            'evenementsOrderByCategories' => $evenementsOrderByCategories,
+            'categories' => $categories,
+            'statuts' => $statuts,
+            'adresses' => $adresses,
+        ]);
+    }
+
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     * @throws ReflectionException
+     */
+    #[Route(path: "/evenements/filter", httpMethod: 'GET', name: "evenements_filter",)]
+    public function evenementsFilter(EvenementsRepository $evenementsRepository,CategoriesRepository $categoriesRepository, StatutsRepository $statutsRepository, AdressesRepository $adressesRepository, Request $request)
+    {
+
+        $categories = $categoriesRepository->selectAll();
+        $statuts = $statutsRepository->selectAll();
+        $adresses = $adressesRepository->selectAll();
+
+        $conditions = [];
+        $parameters = [];
+        $filtres = [];
+        $query = '';
+
+        // Filtres
+        $request->query->get('id');
+        $filtre_titre = $request->query->get('filter_titre');
+        $filtre_statut = $request->query->get('filtre_statut');
+        $filtre_city = $request->query->get('filtre_city');
+        $filtre_cp = $request->query->get('filtre_cp');
+        $filtre_order_date = $request->query->get('order_date');
+
+        if ($filtre_titre) {
+            $filtres['filter_titre'] = $filtre_titre;
+            $conditions[] = 'titre LIKE ?';
+            $parameters[] = '%'.$filtre_titre."%";
+        }
+
+        if ($filtre_statut) {
+            $filtres['filtre_statut'] = $filtre_statut;
+            $conditions[] = 'id_statut = ?';
+            $parameters[] = $filtre_statut;
+        }
+
+        if ($filtre_city || $filtre_cp) {
+            $query = 'JOIN adresses ON adresses.id_adresse = evenements.id_adresse';
+        }
+
+        if ($filtre_city) {
+            $filtres['filtre_city'] =$filtre_city;
+            $conditions[] = 'adresses.ville_libelle LIKE ?';
+            $parameters[] = '%'.$filtre_city."%";
+        }
+
+        if ($filtre_cp) {
+            $filtres['filtre_cp'] = $filtre_cp;
+            $conditions[] = 'adresses.cp_ville LIKE ?';
+            $parameters[] = '%'.$filtre_cp."%";
+        }
+
+        if ($filtre_order_date) {
+            $filtres['order_date'] = $filtre_order_date;
+            $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $filtre_order_date);
+        }
+        else {
+            $evenements = $evenementsRepository->filter($conditions, $parameters, $query);
+        }
+
+        $evenementsOrderByCategories = $this->_orderEvenementsInCategories($categoriesRepository, $evenements);
+        echo $this->twig->render('evenements/evenements.html.twig', [
+            'evenementsOrderByCategories' => $evenementsOrderByCategories,
+            'filtres' => $filtres,
+            'categories' => $categories,
+            'statuts' => $statuts,
+            'adresses' => $adresses,
+        ]);
+    }
+
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
      */
     #[Route(path: "/evenement", httpMethod: 'GET', name: "evenement",)]
-    public function evenements(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, Request $request, Session $session)
+    public function evenement(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, Request $request, Session $session)
     {
         $noConnectedMessage = null;
         $alreadyParticipe = null;
@@ -139,7 +235,7 @@ class EvenementsController extends AbstractController
      * @throws ReflectionException
      */
     #[Route(path: "/admin/evenements/filter", httpMethod: 'POST', name: "admin_evenements_filter",)]
-    public function evenementsFilter(EvenementsRepository $evenementsRepository,
+    public function adminEvenementsFilter(EvenementsRepository $evenementsRepository,
                                      CategoriesRepository $categoriesRepository,
                                      StatutsRepository $statutsRepository,
                                      AdressesRepository $adressesRepository,
@@ -459,6 +555,22 @@ class EvenementsController extends AbstractController
         }
 
         return $arrayParticipeUtilisateurs;
+    }
+
+    private function _orderEvenementsInCategories(CategoriesRepository $categoriesRepository, $evenements) {
+        $evenementsCategories = [];
+        $categories = $categoriesRepository->selectAll();
+        foreach ($categories as $category) {
+            $evenementsCategories[$category->getLibelleCategorie()] = [];
+        }
+        foreach ($categories as $category) {
+            foreach ($evenements as $evenement) {
+                if ($evenement->getIdCategorie() === $category->getIdCategorie()) {
+                    array_push($evenementsCategories[$category->getLibelleCategorie()], $evenement);
+                }
+            }
+        }
+        return $evenementsCategories;
     }
    
 }
