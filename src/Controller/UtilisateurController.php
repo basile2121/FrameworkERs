@@ -6,15 +6,13 @@ use App\Entity\Utilisateurs;
 use DateTime;
 use App\Session\Session;
 use ReflectionException;
-use App\Entity\Promotions;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 use Twig\Error\RuntimeError;
 use App\Routing\Attribute\Route;
-use App\Repository\UserRepository;
 use App\Repository\RolesRepository;
 use App\Repository\EcolesRepository;
-use App\Repository\EvenementsRepository;
 use App\Repository\PromotionsRepository;
 use App\Repository\UtilisateursRepository;
 
@@ -50,8 +48,8 @@ class UtilisateurController extends AbstractController
      * @throws LoaderError
      * @throws ReflectionException
      */
-    #[Route(path: "/admin/utilisateurs/filter", httpMethod: 'POST', name: "admin_utilisateurs_filter",)]
-    public function utilisateursFilter(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository)
+    #[Route(path: "/admin/utilisateurs/filter", httpMethod: 'GET', name: "admin_utilisateurs_filter",)]
+    public function utilisateursFilter(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository, Request $request)
     {
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
@@ -61,28 +59,33 @@ class UtilisateurController extends AbstractController
         $parameters = [];
         $filtres = [];
 
-        if (!empty($_POST['filtre_lastName'])) {
-            $filtres['filtre_lastName'] = $_POST['filtre_lastName'];
+        $filtre_lastName = $request->query->get('filtre_lastName');
+        $filtre_firstName = $request->query->get('filtre_firstName');
+        $filtre_role = $request->query->get('filtre_role');
+        $filtre_promotion = $request->query->get('filtre_promotion');
+
+        if ($filtre_lastName) {
+            $filtres['filtre_lastName'] = $filtre_lastName;
             $conditions[] = 'nom LIKE ?';
-            $parameters[] = '%'.$_POST['filtre_lastName']."%";
+            $parameters[] = '%'.$filtre_lastName."%";
         }
 
-        if (!empty($_POST['filtre_firstName'])) {
-            $filtres['filtre_firstName'] = $_POST['filtre_firstName'];
+        if ($filtre_firstName) {
+            $filtres['filtre_firstName'] = $filtre_firstName;
             $conditions[] = 'prenom LIKE ?';
-            $parameters[] = '%'.$_POST['filtre_firstName']."%";
+            $parameters[] = '%'.$filtre_firstName."%";
         }
 
-        if (!empty($_POST['filtre_role'])) {
-            $filtres['filtre_role'] = intval($_POST['filtre_role']);
+        if ($filtre_role) {
+            $filtres['filtre_role'] = $filtre_role;
             $conditions[] = 'id_role = ?';
-            $parameters[] = intval($_POST['filtre_role']);
+            $parameters[] = $filtre_role;
         }
 
-        if (!empty($_POST['filtre_promotion'])) {
-            $filtres['filtre_promotion'] = intval($_POST['filtre_promotion']);
+        if ($filtre_promotion) {
+            $filtres['filtre_promotion'] = $filtre_promotion;
             $conditions[] = 'id_promotion = ?';
-            $parameters[] = intval($_POST['filtre_promotion']);
+            $parameters[] = $filtre_promotion;
         }
 
         $utilisateurs = $utilisateursRepository->filter($conditions, $parameters);
@@ -156,10 +159,10 @@ class UtilisateurController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/admin/edit/utilisateurs", httpMethod: 'POST', name: "admin_edit_utilisateurs",)]
-    public function editUtilisateurs(PromotionsRepository $promotionsRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository)
+    #[Route(path: "/admin/edit/utilisateurs", httpMethod: 'GET', name: "admin_edit_utilisateurs",)]
+    public function editUtilisateurs(PromotionsRepository $promotionsRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository, Request $request)
     {
-        $id = intval($_POST['id']);
+        $id = $request->query->get('id');
         $utilisateur = $utilisateursRepository->selectOneById($id);
         $promotions = $promotionsRepository->selectAll();
         $roles = $rolesRepository->selectAll();
@@ -194,6 +197,9 @@ class UtilisateurController extends AbstractController
     }
 
 
+    /**
+     * @throws ReflectionException
+     */
     #[Route(path: "/admin/delete/utilisateurs", httpMethod: 'POST', name: "admin_delete_utilisateurs")]
     public function deleteUtilisateurs(UtilisateursRepository $utilisateursRepository , Session $session)
     {
@@ -202,25 +208,15 @@ class UtilisateurController extends AbstractController
         $evenementsCreatedByUser = $utilisateursRepository->verifContraintsEvenementCreate($id);
         $evenementsParticipeByUser = $utilisateursRepository->verifContraintsParticipeEvenement($id);
         if ($evenementsCreatedByUser !== null) {
-            // TODO POP UP
-            // Message pop-up Impossible de supprimer l'utilisateur car il a créer un  supprime pas
-          
             $rp[0]="utilisateurs" ; $rp[1]='null';
             $session->set('utilisateursPOP',$rp);
-            header('Location: /admin/utilisateurs');
-            
         } else if ($evenementsParticipeByUser !== null) {
-            // TODO POP UP
-            // Message pop-up Impossible de supprimer l'utilisateur car il participe à un evenement supprime
-          
             $rp[0]="ut";$rp[1]=$id;
             $session->set('utilisateursPOP',$rp);
-            header('Location: /admin/utilisateurs');
         } else {
             $utilisateursRepository->delete($id);
-            header('Location: /admin/utilisateurs');
-
         }
+        header('Location: /admin/utilisateurs');
     }
 
     #[Route(path: "/admin/delete/utilisateurs/cascade", httpMethod: 'POST', name: "admin_delete_utilisateurs_cascade")]
@@ -246,7 +242,7 @@ class UtilisateurController extends AbstractController
         $promotion = $promotionsRepository->selectOneById($idPromotion);        
         
         $ecole = $ecolesRepository->selectOneById($idPromotion);
-        
+
         echo $this->twig->render('utilisateur/profil_user.html.twig', [
             'user' => $user,
             'ecole' => $ecole,
@@ -282,15 +278,16 @@ class UtilisateurController extends AbstractController
             'promotions' => $promotions
         ]);
     }
-     /**
+
+    /**
      * Edit les informations du profil
      *
      * @return void
+     * @throws \Exception
      */
     #[Route(path: '/utilisateurs/profil/edit',httpMethod:"POST", name: "edit_user")]
     public function updateProfilUtilisateur(UtilisateursRepository $utilisateursRepository, RolesRepository $rolesRepository, Session $session, PromotionsRepository $promotionsRepository)
     {
-               
                 $id = $_SESSION['id'];
                 $user = $utilisateursRepository->selectOneById($id);
                 $user->setNom(trim($_POST["nom"]));

@@ -9,6 +9,7 @@ use App\Routing\Attribute\Route;
 use App\Session\Session;
 use Exception;
 use ReflectionException;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -40,8 +41,8 @@ class PromotionController extends AbstractController
      * @throws LoaderError
      * @throws ReflectionException
      */
-    #[Route(path: "/admin/promotions/filter", httpMethod: 'POST', name: "admin_promotions_filter",)]
-    public function promotionsFilter(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository)
+    #[Route(path: "/admin/promotions/filter", httpMethod: 'GET', name: "admin_promotions_filter",)]
+    public function promotionsFilter(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository, Request $request)
     {
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
@@ -50,15 +51,18 @@ class PromotionController extends AbstractController
         $parameters = [];
         $filtres = [];
 
-        if (!empty($_POST['filtre_name_promotion'])) {
-            $filtres['filtre_name_promotion'] = $_POST['filtre_name_promotion'];
+        $filtre_name_promotion = $request->query->get('filtre_name_promotion');
+        $filtre_ecole = $request->query->get('filtre_ecole');
+
+        if ($filtre_name_promotion) {
+            $filtres['filtre_name_promotion'] = $filtre_name_promotion;
             $conditions[] = 'libelle_promotion LIKE ?';
-            $parameters[] = $_POST['filtre_name_promotion'];
+            $parameters[] = $filtre_name_promotion;
         }
-        if (!empty($_POST['filtre_ecole'])) {
-            $filtres['filtre_ecole'] = intval($_POST['filtre_ecole']);
+        if ($filtre_ecole) {
+            $filtres['filtre_ecole'] = $filtre_ecole;
             $conditions[] = 'id_ecole = ?';
-            $parameters[] = intval($_POST['filtre_ecole']);
+            $parameters[] = $filtre_ecole;
         }
 
         $promotions = $promotionsRepository->filter($conditions, $parameters);
@@ -74,10 +78,10 @@ class PromotionController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/admin/edit/promotions", httpMethod: 'POST', name: "admin_edit_promotions",)]
-    public function editPromotions(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository)
+    #[Route(path: "/admin/edit/promotions", httpMethod: 'GET', name: "admin_edit_promotions",)]
+    public function editPromotions(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository, Request $request)
     {
-        $id = intval($_POST['id']);
+        $id = $request->query->get('id');
         $promotion = $promotionsRepository->selectOneById($id);
         $ecoles = $ecolesRepository->selectAll();
 
@@ -101,24 +105,6 @@ class PromotionController extends AbstractController
         $promotionsRepository->update($promotion);
 
         header('Location: /admin/promotions');
-    }
-
-
-    #[Route(path: "/admin/delete/promotions", httpMethod: 'POST', name: "admin_delete_promotions")]
-    public function deletePromotions(PromotionsRepository $promotionsRepository, Session $session)
-    {
-        $id = intval($_POST['idPromotion']);
-        $utilisateursContraintsPromotions = $promotionsRepository->verifContraintsPromotions($id);
-
-        if ($utilisateursContraintsPromotions !== null) {
-            // TODO POP UP
-            // Message pop-up Impossible de supprimer la promotion car des utilisateurs y sont habilite
-            $session->set('promotionpop',"promotionpop");
-            header('Location: /admin/promotions'); 
-        } else {
-            $promotionsRepository->delete($id);
-            header('Location: /admin/promotions');
-        } 
     }
 
     /**
@@ -155,6 +141,20 @@ class PromotionController extends AbstractController
         $promotions->setIdEcole(intval($_POST['idEcole']));
         
         $promotionsRepository->save($promotions);
+        header('Location: /admin/promotions');
+    }
+
+    #[Route(path: "/admin/delete/promotions", httpMethod: 'POST', name: "admin_delete_promotions")]
+    public function deletePromotions(PromotionsRepository $promotionsRepository, Session $session)
+    {
+        $id = intval($_POST['idPromotion']);
+        $utilisateursContraintsPromotions = $promotionsRepository->verifContraintsPromotions($id);
+
+        if ($utilisateursContraintsPromotions !== null) {
+            $session->set('promotionpop',"promotionpop");
+        } else {
+            $promotionsRepository->delete($id);
+        }
         header('Location: /admin/promotions');
     }
 }

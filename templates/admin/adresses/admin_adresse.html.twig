@@ -7,14 +7,14 @@
     <h1 class="display-1 text-center mt-5">Adresses</h1>
     <main>
         <a href="/admin/create/adresse">Ajouter une adresse</a>
-        <form class="form-admin" method="POST" action="/admin/adresses/filter">
+        <form class="form-admin" method="GET" action="/admin/adresses/filter">
             <div class="form-group">
                 <label for="filter_city">Rechercher une adresse par sa ville</label>
                 <input type="text" maxlength="255" value="{{ filtres['filter_city'] }}" name="filter_city" class="form-control" id="filter_city" placeholder="Nom de la ville">
             </div>
             <div class="form-group">
                 <label for="filter_cp">Rechercher une adresse par son code postal</label>
-                <input type="number" min="5" max="5" value="{{ filtres['filter_cp'] }}" name="filter_cp" class="form-control" id="filter_cp" placeholder="Le code postal doit mesurer 5 caractères">
+                <input type="text" minlength="5" maxlength="5" pattern="[0-9]+" value="{{ filtres['filter_cp'] }}" name="filter_cp" class="form-control" id="filter_cp" placeholder="Le code postal doit faire 5 caractères (uniquement des chiffres)">
             </div>
             <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
             <a href="/admin/adresses" class="btn btn-primary">Annuler</a>
@@ -41,9 +41,7 @@
                     <td>{{ adresse.coordonneeLongitude }}</td>
                     <td>{{ adresse.coordonneLatitude }}</td>
                     <td>
-                        <form method="POST" action="/admin/edit/adresses" >
-                            <button type="submit" name="id" class="btn btn-warning" value="{{ adresse.idAdresse }}">Modifier</button>
-                        </form>
+                        <a class="btn btn-warning" href="{{ '/admin/edit/adresses?id=' ~ adresse.idAdresse }}">Modifier</a>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{adresse.idAdresse  }}">Supprimer</button>
                     </td>
                 </tr>

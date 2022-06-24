@@ -7,7 +7,7 @@
     <h1 class="display-1 text-center mt-5">Ecoles</h1>
     <main>
      <a href="/admin/create/ecoles" class="btn btn-primary">Ajouter une école</a>
-        <form class="form-admin" method="POST" action="/admin/ecoles/filter">
+        <form class="form-admin" method="GET" action="/admin/ecoles/filter">
             <div class="form-group">
                 <label for="filtre_name_ecole">Rechercher une école par nom</label>
                 <input type="text" maxlength="255" value="{{ filtres['filtre_name_ecole'] }}" name="filtre_name_ecole" class="form-control" id="filtre_name_ecole" placeholder="Nom de l'école">
@@ -28,10 +28,7 @@
                 <tr>
                     <th scope="row">{{ ecole.nomEcole }}</th>
                     <td>
-                        <form method="POST" action="/admin/edit/ecoles" >
-                            <button type="submit" name="id" class="btn btn-warning" value="{{ ecole.idEcole }}">Modifier</button>
-                        </form>
-                       
+                        <a class="btn btn-warning" href="{{ '/admin/edit/ecoles?id=' ~ ecole.idEcole }}">Modifier</a>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ecole.idEcole }}">Supprimer</button>
                     </td>
                 </tr>

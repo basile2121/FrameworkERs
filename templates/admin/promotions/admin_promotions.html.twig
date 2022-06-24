@@ -7,7 +7,7 @@
     <h1 class="display-1 text-center mt-5">Promotions</h1>
     <main>
      <a href="/admin/create/promotions" class="btn btn-primary">Ajouter une promotion</a>
-        <form class="form-admin" method="POST" action="/admin/promotions/filter">
+        <form class="form-admin" method="GET" action="/admin/promotions/filter">
             <div class="form-group">
                 <label for="filtre_name_promotion">Rechercher une promotion par nom</label>
                 <input type="text" maxlength="255" value="{{ filtres['filtre_name_promotion'] }}" name="filtre_name_promotion" class="form-control" id="filtre_name_promotion" placeholder="Nom de la promotion">
@@ -15,7 +15,7 @@
                <div class="form-group">
                 <label for="filtre_ecole">Rechercher une école par nom</label>
                 <select name="filtre_ecole" id="filtre_ecole">
-                    <option disabled selected>Selectionner l'école</option>
+                    <option value="" disabled selected>Selectionner l'école</option>
                     {% for ecole in ecoles %}
                         <option {% if filtres['filtre_ecole'] is defined and ecole.idEcole == filtres['filtre_ecole'] %} selected {% endif %} value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
                     {% endfor %}
@@ -40,7 +40,7 @@
                     <th scope="row">{{ promotion.libellePromotion }}</th>
                     <td>{{ promotion.ecoles.nomEcole}}</td>
                     <td>
-                        <form method="POST" action="/admin/edit/promotions" >
+                        <form method="GET" action="/admin/edit/promotions" >
                             <button type="submit" name="id" class="btn btn-warning" value="{{promotion.idPromotion}}">Modifier</button>
                         </form>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{promotion.idPromotion  }}">Supprimer</button>

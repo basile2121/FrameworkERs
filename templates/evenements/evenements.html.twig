@@ -34,7 +34,7 @@
             </div>
             <div class="form-group col-md-2 col-xs-12 d-flex align-items-center flex-column">
                 <label for="filtre_cp">Code postale</label>
-                <input type="number" min="5" max="5"  value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control event-searchbar  w-50" id="filtre_cp" placeholder="Le code postal doit mesurer 5 caractères">
+                <input type="text" minlength="5" maxlength="5" pattern="[0-9]+"  value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control event-searchbar  w-50" id="filtre_cp" placeholder="Le code postal doit faire 5 caractères (uniquement des chiffres)">
             </div>
             <div class="form-group col-md-2 col-xs-12 d-flex align-items-center flex-column">
                 <label for="order_date">Date</label>
@@ -51,8 +51,6 @@
             <button type="submit" class="btn-home text-light">Rechercher</button>
            <button class="btn-home text-light"> <a href="/evenements">Annuler</button></a>
         </div>
-      
-        
     </form>
     
 
@@ -72,10 +70,7 @@
                {% include "home/sections/card_event.html.twig" %}
             {% endfor %}
             	</div>
-		
-		
 	</section>
-
     {% endfor %}
 {% endblock %}
 

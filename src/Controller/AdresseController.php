@@ -8,6 +8,7 @@ use App\Routing\Attribute\Route;
 use App\Session\Session;
 use Exception;
 use ReflectionException;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -39,23 +40,26 @@ class AdresseController extends AbstractController
      * @throws LoaderError
      * @throws ReflectionException
      */
-    #[Route(path: "/admin/adresses/filter", httpMethod: 'POST', name: "admin_adresses_filter",)]
-    public function adressesFilter(AdressesRepository $adressesRepository)
+    #[Route(path: "/admin/adresses/filter", httpMethod: 'GET', name: "admin_adresses_filter",)]
+    public function adressesFilter(AdressesRepository $adressesRepository, Request $request)
     {
         $conditions = [];
         $parameters = [];
         $filtres = [];
 
-        if (!empty($_POST['filter_city'])) {
-            $filtres['filter_city'] = $_POST['filter_city'];
+        $filter_city = $request->query->get('filter_city');
+        $filter_cp = $request->query->get('filter_cp');
+
+        if ($filter_city) {
+            $filtres['filter_city'] = $filter_city;
             $conditions[] = 'ville_libelle LIKE ?';
-            $parameters[] = '%'.$_POST['filter_city']."%";
+            $parameters[] = '%'.$filter_city."%";
         }
 
-        if (!empty($_POST['filter_cp'])) {
-            $filtres['filter_cp'] = $_POST['filter_cp'];
+        if ($filter_cp) {
+            $filtres['filter_cp'] = $filter_cp;
             $conditions[] = 'cp_ville LIKE ?';
-            $parameters[] = '%'.$_POST['filter_cp']."%";
+            $parameters[] = '%'.$filter_cp."%";
         }
 
         $adresses = $adressesRepository->filter($conditions, $parameters);
@@ -112,10 +116,10 @@ class AdresseController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/admin/edit/adresses", httpMethod: 'POST', name: "admin_edit_adresses",)]
-    public function editAdresses(AdressesRepository $adressesRepository)
+    #[Route(path: "/admin/edit/adresses", httpMethod: 'GET', name: "admin_edit_adresses",)]
+    public function editAdresses(AdressesRepository $adressesRepository, Request $request)
     {
-        $id = intval($_POST['id']);
+        $id = $request->query->get('id');
         $adresse = $adressesRepository->selectOneById($id);
 
         echo $this->twig->render('admin/adresses/admin_form_edit_adresse.html.twig', [
@@ -152,14 +156,11 @@ class AdresseController extends AbstractController
         $id = intval($_POST['idAdresse']);
         $evenementsCreatedByUser = $adressesRepository->verifContraintsAdresse($id);
         if ($evenementsCreatedByUser !== null) {
-            // TODO POP UP
-            // Message pop-up Impossible de supprimer l'adresse car elle est utiliser dans un evenement
             $session->set('Adressepop',"Adressepop");
-            header('Location: /admin/adresses'); 
         } else {
             $adressesRepository->delete($id);
-            header('Location: /admin/adresses'); 
-        } 
+        }
+        header('Location: /admin/adresses');
     }
 
     
