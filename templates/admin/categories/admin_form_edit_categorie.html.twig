@@ -1,7 +1,7 @@
 {% extends "base.html.twig" %}
 {% block head %}
-	{{ parent() }}
-	<link rel="stylesheet" href="/css/admin.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/admin.css"/>
 
 {% endblock %}
 {% block title %}Modifier une catégorie{% endblock %}
@@ -10,20 +10,23 @@
 {% block content %}
     <h1 class="text-center mt-5">Modifier une catégorie</h1>
     <main>
-    <section class="card event col-5 m-auto">
-        <form class="form-admin" method="GET" action="/admin/update/categories">
-        <div id="createEvent">
-            <div class="form-group">
-                <label for="categorie">Nom catégorie</label>
-                <input type="text" maxlength="255" name="categorie" class="form-control" id="categorie" value="{{ categorie.libelleCategorie }}" placeholder="Nom de la categorie" required>
-            </div>
-        </div>
-        <div id="bouton">
-            <button type="submit" name="id" class="btn btn-success mt-3" value="{{ categorie.idCategorie }}">Sauvegarder</button>
-            <a href="/admin/categories" class="btn btn-danger mt-3">Retour</a>
-        </div>
-            
-        </form>
-    </section>
+        <section class="card event col-5 m-auto">
+            <form class="form-admin" method="GET" action="/admin/update/categories">
+                <div id="createEvent">
+                    <div class="form-group">
+                        <label for="categorie">Nom catégorie</label>
+                        <input type="text" maxlength="255" name="categorie" class="form-control" id="categorie"
+                               value="{{ categorie.libelleCategorie }}" placeholder="Nom de la categorie" required>
+                    </div>
+                </div>
+                <div id="bouton">
+                    <button type="submit" name="id" class="btn btn-success mt-3" value="{{ categorie.idCategorie }}">
+                        Sauvegarder
+                    </button>
+                    <a href="/admin/categories" class="btn btn-danger mt-3">Retour</a>
+                </div>
+
+            </form>
+        </section>
     </main>
 {% endblock %}

@@ -1,72 +1,80 @@
 {% extends "base.html.twig" %}
 {% block head %}
-	{{ parent() }}
-	<link rel="stylesheet" href="/css/admin.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/admin.css"/>
 
 {% endblock %}
-{% block title %}Gestions des promotions{% endblock %}
 
+{% block title %}Gestions des promotions{% endblock %}
 
 {% block content %}
     <h1 class=" text-center mt-5">Filtrer les promotions :</h1>
     <main>
 
-     <a href="/admin/create/promotions" class="add btn btn-info">Ajouter une promotion</a>
-     {# Début formulaire des filtres #}
-     <section class="formFiltre">
-        <form class="form-admin" method="GET" action="/admin/promotions/filter">
-        <div id="filtres" class="cardFiltre">
-            <div class="form-group">
-                <label for="filtre_name_promotion">Rechercher une promotion par nom</label>
-                <input type="text" maxlength="255" value="{{ filtres['filtre_name_promotion'] }}" name="filtre_name_promotion" class="form-control" id="filtre_name_promotion" placeholder="Nom de la promotion">
+        <a href="/admin/create/promotions" class="add btn btn-info">Ajouter une promotion</a>
+        {# Début formulaire des filtres #}
+        <section class="formFiltre">
+            <form class="form-admin" method="GET" action="/admin/promotions/filter">
+                <div id="filtres" class="cardFiltre">
+                    <div class="form-group">
+                        <label for="filtre_name_promotion">Rechercher une promotion par nom</label>
+                        <input type="text" maxlength="255" value="{{ filtres['filtre_name_promotion'] }}"
+                               name="filtre_name_promotion" class="form-control" id="filtre_name_promotion"
+                               placeholder="Nom de la promotion">
 
-            </div>
-               <div class="form-group">
-                <label for="filtre_ecole">Par nom de l'école</label>
-                <select name="filtre_ecole" id="filtre_ecole">
-                    <option value="" disabled selected>Sélectionner l'école</option>
-                    {% for ecole in ecoles %}
-                        <option {% if filtres['filtre_ecole'] is defined and ecole.idEcole == filtres['filtre_ecole'] %} selected {% endif %} value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-        <div id="bouton"> 
-            <button type="submit" name="filtre" value="true" class="btn btn-success">Rechercher</button>
-            <a href="/admin/promotions" class="btn btn-danger">Annuler</a>
-        </div>
-        </form>
-    </section>
-    {# Fin formulaire des filtres #}
-    <section id="listEvent" class="container-fluid">
-		<h2>Liste des promotions selon l'école :</h2>
-        <table class="table table-bordered table-hover">
-            <thead class="thead-light">
+                    </div>
+                    <div class="form-group">
+                        <label for="filtre_ecole">Par nom de l'école</label>
+                        <select name="filtre_ecole" id="filtre_ecole">
+                            <option value="" disabled selected>Sélectionner l'école</option>
+                            {% for ecole in ecoles %}
+                                <option {% if filtres['filtre_ecole'] is defined and ecole.idEcole == filtres['filtre_ecole'] %} selected {% endif %}
+                                        value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div id="bouton">
+                    <button type="submit" name="filtre" value="true" class="btn btn-success">Rechercher</button>
+                    <a href="/admin/promotions" class="btn btn-danger">Annuler</a>
+                </div>
+            </form>
+        </section>
+        {# Fin formulaire des filtres #}
+        <section id="listEvent" class="container-fluid">
+            <h2>Liste des promotions selon l'école :</h2>
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
                 <tr>
                     <th scope="col">Nom de la promotion</th>
                     <th scope="col">Ecoles</th>
                     <th scope="col">Actions</th>
                 </tr>
-            </thead>
-            <tbody>
-            {% for promotion in promotions %}
-                <tr>
-                    <td scope="row">{{ promotion.libellePromotion }}</th>
-                    <td>{{ promotion.ecoles.nomEcole}}</td>
-                    <td id="actions">
-                        <form method="GET" action="/admin/edit/promotions" >
-                            <button type="submit" name="id" class="btn btn-warning" value="{{promotion.idPromotion}}"><img src="{{path_logo}}/edit.png" alt="edit" ></button>
+                </thead>
+                <tbody>
+                {% for promotion in promotions %}
+                    <tr>
+                        <td scope="row">
+                        {{ promotion.libellePromotion }}</th>
+                        <td>{{ promotion.ecoles.nomEcole }}</td>
+                        <td id="actions">
+                            <form method="GET" action="/admin/edit/promotions">
+                                <button type="submit" name="id" class="btn btn-warning"
+                                        value="{{ promotion.idPromotion }}"><img src="{{ path_logo }}/edit.png"
+                                                                                 alt="edit"></button>
 
-                        </form>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{promotion.idPromotion  }}"><img src="{{path_logo}}/trash.png" alt="delete" ></button>
-                    </td>
-                </tr>
-                {% include 'utils/pop-up/delete_promotion_model.html.twig'%}
-            {% endfor %}
-            </tbody>
+                            </form>
+                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                    data-target="#deleteModal{{ promotion.idPromotion }}"><img
+                                        src="{{ path_logo }}/trash.png" alt="delete"></button>
+                        </td>
+                    </tr>
+                    {% include 'utils/pop-up/delete_promotion_model.html.twig' %}
+                {% endfor %}
+                </tbody>
 
-            {% include 'utils/pop-up/delete_promotion_withcontraint_model.html.twig'%}
-            <tfoot>
+                {% include 'utils/pop-up/delete_promotion_withcontraint_model.html.twig' %}
+                <tfoot>
                 <tr>
                     {% if promotions is not empty %}
                         <th colspan="3">Total promotions {{ promotions | length }}</th>
@@ -74,14 +82,14 @@
                         <th colspan="3">Aucune promotion</th>
                     {% endif %}
                 </tr>
-            </tfoot>
-        </table>
-    </section>
-    </main> 
+                </tfoot>
+            </table>
+        </section>
+    </main>
 
-    {% if promotionpop == "promotionpop"  %}
-            <script type="text/javascript">
-                $('#deleteModalwithcontraintpromo').modal("show")
-            </script>
-        {% endif %}
+    {% if promotionpop == "promotionpop" %}
+        <script type="text/javascript">
+            $('#deleteModalwithcontraintpromo').modal("show")
+        </script>
+    {% endif %}
 {% endblock %}

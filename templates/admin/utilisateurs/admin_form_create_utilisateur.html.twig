@@ -1,155 +1,168 @@
 {% extends "base.html.twig" %}
 {% block head %}
-	{{ parent() }}
-	<link rel="stylesheet" href="/css/admin.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/admin.css"/>
 
 {% endblock %}
-{% block title %}
-	Ajouter un utilisateur
-{% endblock %}
+
+{% block title %}Ajouter un utilisateur{% endblock %}
 
 {% block content %}
-	{% if msg %}
-		<div class="alert alert-danger mt-2">
-			{{msg}}
-		</div>
-	{% endif %}
-	<div class="col m-auto">
-		<h1 class="text-center mt-5">Ajouter un utilisateur</h1>
-		<section class="card event col-5 m-auto">
-			<form method="POST" action="/admin/add/utilisateurs">
-				<div id="createEvent">
-					<div class="form-group">
-						<label for="nom">Nom</label>
-						<input type="text" maxlength="255" name="nom" class="form-control" id="nom" placeholder="Nom" required>
-					</div>
+    {% if msg %}
+        <div class="alert alert-danger mt-2">
+            {{ msg }}
+        </div>
+    {% endif %}
+    <div class="col m-auto">
+        <h1 class="text-center mt-5">Ajouter un utilisateur</h1>
+        <section class="card event col-5 m-auto">
+            <form method="POST" action="/admin/add/utilisateurs">
+                <div id="createEvent">
+                    <div class="form-group">
+                        <label for="nom">Nom</label>
+                        <input type="text" maxlength="255" name="nom" class="form-control" id="nom" placeholder="Nom"
+                               required>
+                    </div>
 
-					<div class="form-group">
-						<label for="prenom">Prénom</label>
-						<input type="text" maxlength="255" name="prenom" class="form-control" id="prenom" placeholder="Prénom" required>
-					</div>
-					<div class="form-group">
-						<label for="date_naissance">Date de naissance</label>
-						<input type="date" name="date_naissance" class="form-control" id="date_naissance" placeholder="Nom" required>
-					</div>
-					<div class="form-group">
-						<label for="telephone">Téléphone</label>
-						<input type="text" max="10" min="10" name="telephone" class="form-control" id="telephone" placeholder="Numéro de téléphone à 10 chiffres" required>
-					</div>
-					<div class="form-group">
-						<label for="ecoles">Ecoles</label>
-						<select name="ecoles" class="form-control" id="ecoles">
-							<option selected disabled>
-								Sélectionner une école</option>
-							{% for ecole in ecoles %}
-								<option value={{ecole.idEcole}}>
-									{{ecole.nomEcole}}</option>
-							{% endfor %}
-						</select>
-					</div>
-					<div class="form-group">
-						<label for="promotions">Promotions</label>
-						<select name="promotions" class="form-control" id="promotions">
-							<option selected disabled>
-								Sélectionner une promotion</option>
-						</select>
-					</div>
-					<div class="form-group">
-						<label for="roles">Roles</label>
-						<select name="roles" class="form-control" id="roles" required>
-							<option value="" selected disabled>
-								Sélectionner un role</option>
-							{% for role in roles %}
-								<option value={{ role.idRole }}>
-									{{ role.libelleRole }}</option>
-							{% endfor %}
-						</select>
-					</div>
-					<div class="form-group">
-						<label for="email">Email
-						</label>
-						<input type="text" maxlength="255" name="email" class="form-control" id="email" placeholder="email@example.com" required>
-					</div>
-					{% if errors %}
-						{% if errors['mail_existant'] %}
-							<div class="alert alert-danger m-auto mt-2">
-								{{ errors['mail_existant'] }}
-							</div>
-						{% endif %}
-					{% endif %}
-					{% if errors %}
-						{% if errors['mail'] %}
-							<div class="alert alert-danger m-auto mt-2">
-								{{ errors['mail'] }}
-							</div>
-						{% endif %}
-					{% endif %}
-					<div class="form-group">
-						<label for="password">Password
-						</label>
-						<input type="password" name="password" class="form-control" id="password" placeholder="Mot de passe" required>
-					</div>
-					<div class="form-group">
-						<label for="password_confirm">Confirmation Password
-						</label>
-						<input type="password" name="password_confirm" class="form-control" id="password_confirm" placeholder="Confirmation mot de passe" required>
-					</div>
-					{% if errors %}
-						{% if errors['password'] %}
-							<div class="alert alert-danger m-auto mt-2">
-								<h5>Erreur
-									{% if errors['password'] | length > 1 %}s
-									{% endif %}
-									du mot de passe :</h5>
-								<ul>
-									{% for error in errors['password'] %}
-										<li>{{ error }}</li>
-									{% endfor %}
-								</ul>
-							</div>
-						{% endif %}
-					{% endif %}
-					{% if errors %}
-						{% if errors['empty'] %}
-							<div class="alert alert-danger m-auto mt-2">
-								{{ errors['empty'] }}
-							</div>
-						{% endif %}
-					{% endif %}
+                    <div class="form-group">
+                        <label for="prenom">Prénom</label>
+                        <input type="text" maxlength="255" name="prenom" class="form-control" id="prenom"
+                               placeholder="Prénom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="date_naissance">Date de naissance</label>
+                        <input type="date" name="date_naissance" class="form-control" id="date_naissance"
+                               placeholder="Nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telephone">Téléphone</label>
+                        <input type="text" max="10" min="10" name="telephone" class="form-control" id="telephone"
+                               placeholder="Numéro de téléphone à 10 chiffres" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ecoles">Ecoles</label>
+                        <select name="ecoles" class="form-control" id="ecoles">
+                            <option selected disabled>
+                                Sélectionner une école
+                            </option>
+                            {% for ecole in ecoles %}
+                                <option value={{ ecole.idEcole }}>
+                                    {{ ecole.nomEcole }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="promotions">Promotions</label>
+                        <select name="promotions" class="form-control" id="promotions">
+                            <option selected disabled>
+                                Sélectionner une promotion
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="roles">Roles</label>
+                        <select name="roles" class="form-control" id="roles" required>
+                            <option value="" selected disabled>
+                                Sélectionner un role
+                            </option>
+                            {% for role in roles %}
+                                <option value={{ role.idRole }}>
+                                    {{ role.libelleRole }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email
+                        </label>
+                        <input type="text" maxlength="255" name="email" class="form-control" id="email"
+                               placeholder="email@example.com" required>
+                    </div>
+                    {% if errors %}
+                        {% if errors['mail_existant'] %}
+                            <div class="alert alert-danger m-auto mt-2">
+                                {{ errors['mail_existant'] }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    {% if errors %}
+                        {% if errors['mail'] %}
+                            <div class="alert alert-danger m-auto mt-2">
+                                {{ errors['mail'] }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="password">Password
+                        </label>
+                        <input type="password" name="password" class="form-control" id="password"
+                               placeholder="Mot de passe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password_confirm">Confirmation Password
+                        </label>
+                        <input type="password" name="password_confirm" class="form-control" id="password_confirm"
+                               placeholder="Confirmation mot de passe" required>
+                    </div>
+                    {% if errors %}
+                        {% if errors['password'] %}
+                            <div class="alert alert-danger m-auto mt-2">
+                                <h5>Erreur
+                                    {% if errors['password'] | length > 1 %}
+										s
+                                    {% endif %}
+                                    du mot de passe :</h5>
+                                <ul>
+                                    {% for error in errors['password'] %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                    {% if errors %}
+                        {% if errors['empty'] %}
+                            <div class="alert alert-danger m-auto mt-2">
+                                {{ errors['empty'] }}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div id="bouton">
+                    <button type="submit" class="btn btn-success mt-3">Ajouter l'utilisateur</button>
+                    <a href="/admin/utilisateurs" class="btn btn-danger mt-3">Retour</a>
 				</div>
-				<div id="bouton">
-					<button type="submit" class="btn btn-success mt-3">Ajouter l'utilisateur</button>
-					<a href="/admin/utilisateurs" class="btn btn-danger mt-3">Retour</a>
-
-					<div></form>
-				</section>
-			</div>
-		{% endblock %}
+            </form>
+        </section>
+    </div>
+{% endblock %}
 
 
 {% block script %}
-	<script defer>
-		console.log('ici');
-let listeEcole = document.getElementById('ecoles');
-let listePromotions = document.querySelector('#promotions');
-function ajaxPromotions() {
+    <script defer>
+        console.log('ici');
+        let listeEcole = document.getElementById('ecoles');
+        let listePromotions = document.querySelector('#promotions');
+
+        function ajaxPromotions() {
 
 
-let listeEcole = document.getElementById('ecoles');
-let listePromotions = document.querySelector('#promotions');
-function ajaxPromotions() {
+            let listeEcole = document.getElementById('ecoles');
+            let listePromotions = document.querySelector('#promotions');
 
-let valueSelected = listeEcole.value;
+            function ajaxPromotions() {
 
-fetch('http://localhost:8000/json/promotions/' + valueSelected).then(response => response.json()).then(datas => insertOption(datas))
-}
-}
-function insertOption(datas) {
-listePromotions.innerHTML = '<option selected disabled>Sélectionner votre promotion</option>'
-datas.forEach(element => listePromotions.innerHTML += '<option value=' + element[0] + '> ' + element[1] + '</option>')
-}
+                let valueSelected = listeEcole.value;
 
-document.querySelector("#ecoles").addEventListener('change', ajaxPromotions);
-</script>
+                fetch('http://localhost:8000/json/promotions/' + valueSelected).then(response => response.json()).then(datas => insertOption(datas))
+            }
+        }
+
+        function insertOption(datas) {
+            listePromotions.innerHTML = '<option selected disabled>Sélectionner votre promotion</option>'
+            datas.forEach(element => listePromotions.innerHTML += '<option value=' + element[0] + '> ' + element[1] + '</option>')
+        }
+
+        document.querySelector("#ecoles").addEventListener('change', ajaxPromotions);
+    </script>
 {% endblock %}
 

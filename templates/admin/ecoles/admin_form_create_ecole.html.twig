@@ -1,7 +1,7 @@
 {% extends "base.html.twig" %}
 {% block head %}
-	{{ parent() }}
-	<link rel="stylesheet" href="/css/admin.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/admin.css"/>
 
 {% endblock %}
 {% block title %}Ajouter une école{% endblock %}
@@ -10,23 +10,22 @@
 {% block content %}
     <h1 class="text-center mt-5">Ajouter une école</h1>
     <main>
-    <section class="card event col-5 m-auto">
-        <form class="form-admin" method="POST" action="/admin/add/ecoles" >
-        <div id="createEvent">
-            <div class="form-group">
-                <label for="nomEcole">Nom école</label>
-                <input type="text" maxlength="255" name="nomEcole" class="form-control" id="nomEcole" placeholder="Nom de l'école" required>
-            </div>
-            <input type="hidden" name="redirect_create_adresse_url" value="{{ urlRedirection }}">
-        </div>
+        <section class="card event col-5 m-auto">
+            <form class="form-admin" method="POST" action="/admin/add/ecoles">
+                <div id="createEvent">
+                    <div class="form-group">
+                        <label for="nomEcole">Nom école</label>
+                        <input type="text" maxlength="255" name="nomEcole" class="form-control" id="nomEcole"
+                               placeholder="Nom de l'école" required>
+                    </div>
+                    <input type="hidden" name="redirect_create_adresse_url" value="{{ urlRedirection }}">
+                </div>
 
-        <div id="bouton">
-            <button type="submit" name="id" class="btn btn-success mt-3" >Sauvegarder</button>
-            <a href="/admin/ecoles" class="btn btn-danger mt-3">Annuler</a>
-        </div>
-            
-        
-        </form>
-    </section>
+                <div id="bouton">
+                    <button type="submit" name="id" class="btn btn-success mt-3">Sauvegarder</button>
+                    <a href="/admin/ecoles" class="btn btn-danger mt-3">Annuler</a>
+                </div>
+            </form>
+        </section>
     </main>
 {% endblock %}

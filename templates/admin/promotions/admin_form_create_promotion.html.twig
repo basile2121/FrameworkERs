@@ -1,39 +1,44 @@
 {% extends "base.html.twig" %}
 {% block head %}
-	{{ parent() }}
-	<link rel="stylesheet" href="/css/admin.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/admin.css"/>
 
 {% endblock %}
-{% block title %}Modifier la promotion{% endblock %}
 
+{% block title %}Modifier la promotion{% endblock %}
 
 {% block content %}
     <h1 class="text-center mt-5">Modifier la promotion</h1>
     <main>
-    <section class="card event col-5 m-auto">
-        <form class="form-admin" method="POST" action="/admin/add/promotions">
-        <div id="createEvent">
-            <div class="form-group">
-                <label for="libellePromotion">Nom promotion</label>
-                <input type="text" maxlength="255" name="libellePromotion" class="form-control" id="libellePromotion"  placeholder="Nom de la promotion" required>
-            </div>
-             <div class="form-group">
-                <label for="idEcole">Nom école</label>
-                <select name="idEcole" id="idEcole" required>
-                <option value="" disabled selected>Sélectionner l'école</option>
-                    {% for ecole in ecoles %}
-                        <option {% if filtres['filtre_Ecole'] is defined and ecole.idEcole == filtres['filtre_Ecole'] %} selected {% endif %} value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
-                    {% endfor %}
-                </select>
-                <p>La promotion que vous voulez créer n'a pas encore d'école ? <a href="/admin/create/ecoles" class="add btn btn-info mt-3" style="color:white">Créer une école</a> </p>
-            </div>
-        </div>
-        <div id="bouton">
-             <button type="submit" name="id" class="btn btn-success mt-3" value="{{ promotion.idPromotion }}">Ajouter</button>
-            <a href="/admin/promotions" class="btn btn-danger mt-3">Retour</a>
-        </div> 
-           
-        </form>
-    </section>
+        <section class="card event col-5 m-auto">
+            <form class="form-admin" method="POST" action="/admin/add/promotions">
+                <div id="createEvent">
+                    <div class="form-group">
+                        <label for="libellePromotion">Nom promotion</label>
+                        <input type="text" maxlength="255" name="libellePromotion" class="form-control"
+                               id="libellePromotion" placeholder="Nom de la promotion" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="idEcole">Nom école</label>
+                        <select name="idEcole" id="idEcole" required>
+                            <option value="" disabled selected>Sélectionner l'école</option>
+                            {% for ecole in ecoles %}
+                                <option {% if filtres['filtre_Ecole'] is defined and ecole.idEcole == filtres['filtre_Ecole'] %} selected {% endif %}
+                                        value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
+                            {% endfor %}
+                        </select>
+                        <p>La promotion que vous voulez créer n'a pas encore d'école ?
+                            <a href="/admin/create/ecoles" class="add btn btn-info mt-3" style="color:white">Créer une école</a>
+                        </p>
+                    </div>
+                </div>
+                <div id="bouton">
+                    <button type="submit" name="id" class="btn btn-success mt-3" value="{{ promotion.idPromotion }}">
+                        Ajouter
+                    </button>
+                    <a href="/admin/promotions" class="btn btn-danger mt-3">Retour</a>
+                </div>
+            </form>
+        </section>
     </main>
 {% endblock %}

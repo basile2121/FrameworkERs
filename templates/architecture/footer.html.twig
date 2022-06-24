@@ -1,26 +1,25 @@
-
-    {% block footer %}
+{% block footer %}
     <footer class="container-fluid">
         <div class="row ">
             <div class="col-md-4 col-xs-12">
-                <img src="{{path_logo}}/logoText.png" alt="BDE"  width="180">
-                <p>© 2022 All Rights Reserved.</p>  
+                <img src="{{ path_logo }}/logoText.png" alt="Logo" width="180">
+                <p>© 2022 All Rights Reserved.</p>
             </div>
             <div class="social col-md-4 col-xs-12 ">
-                <h2 class="mb-5">Nos réseaux</h3>
-                <div>
-                    <img src="{{path_logo}}/instagram.png" alt="" width="40">
-                    <img src="{{path_logo}}/facebook.png" alt="" width="40">
-                    <img src="{{path_logo}}/twitter.png" alt="" width="40">
-                </div>
+                <h2 class="mb-5">Nos réseaux</h2>
+                    <div>
+                        <img src="{{ path_logo }}/instagram.png" alt="" width="40">
+                        <img src="{{ path_logo }}/facebook.png" alt="" width="40">
+                        <img src="{{ path_logo }}/twitter.png" alt="" width="40">
+                    </div>
             </div>
             <div class="contact col-md-4 col-xs-12 ">
-                <h2 class="mb-5">Nous contacter</h3>
-                <p>Email : contact@frameworkers.com</p>
-                <p>Tel : 06 78 90 12 34</p>
-                <p class="pt-5">Site by Frameworkers</p>
+                <h2 class="mb-5">Nous contacter</h2>
+                    <p>Email : contact@frameworkers.com</p>
+                    <p>Tel : 06 78 90 12 34</p>
+                    <p class="pt-5">Site by Frameworkers</p>
             </div>
         </div>
 
     </footer>
-    {% endblock %}
+{% endblock %}

@@ -1,107 +1,108 @@
 {% extends "base.html.twig" %}
 {% block head %}
-	{{ parent() }}
-	<link rel="stylesheet" href="/css/profilUser.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/profilUser.css"/>
 {% endblock %}
 
-{% block title %}
-	Etudiant
-	{{user.prenom}}
-{% endblock %}
+{% block title %}Etudiant{{ user.prenom }}{% endblock %}
 
 {% block content %}
 
-	<section id='profil'>
-		<div class="card">
-			<img class="card-img-top" src="http://localhost:8000/image/user.png" alt="Card image cap">
-			<form method="POST" action="/utilisateurs/profil/edit">
-				<ul class="list-group list-group-flush">
+    <section id='profil'>
+        <div class="card">
+            <img class="card-img-top" src="http://localhost:8000/image/user.png" alt="Card image cap">
+            <form method="POST" action="/utilisateurs/profil/edit">
+                <ul class="list-group list-group-flush">
 
-					<li class="list-group-item">
-						<div class="form-group">
-							<label for="nom">Nom :</label>
-							<input type="text" name="nom" class="form-control" id="nom" value="{{user.nom}}" required>
-						</div>
-					</li>
-					<li class="list-group-item">
-						<div class="form-group">
-							<label for="prenom">Prénom :</label>
-							<input type="text" name="prenom" class="form-control" id="prenom" value="{{user.prenom}}" required>
-						</div>
-					</li>
-					<li class="list-group-item">
-						<div class="form-group">
-							<label for="prenom">Date de naissance :</label>
-							<input type="date" name="date" class="form-control" id="date" value="{{user.dateNaissance|date("Y-m-d")}}" required>
-						</div>
-					</li>
-					<li class="list-group-item">
-						<div class="form-group">
-							<label for="email">Mail :</label>
-							<input type="email" name="email" class="form-control" id="email" value="{{user.mail}}" required>
-						</div>
-					</li>
-					<li class="list-group-item">
-						<div class="form-group">
-							<label for="telephone">Téléphone :</label>
-							<input type="text" name="telephone" class="form-control" id="telephone" value="{{user.telephone}}"required>
-						</div>
-					</li>
-					<li class="list-group-item">
-					<div class="form-group">
-						<label for="ecoles">Ecoles</label>
-						<select name="ecoles" class="form-control" id="ecoles" >
-
-							{% for ecoleList in ecoles %}
-								<option {% if ecoleList.nomEcole == user.nomEcole %} selected {% endif %} value={{ecoleList.idEcole}}>
-									{{ecoleList.nomEcole}}</option>
-
-							{% endfor %}
-						</select>
-					</div>
+                    <li class="list-group-item">
+                        <div class="form-group">
+                            <label for="nom">Nom :</label>
+                            <input type="text" name="nom" class="form-control" id="nom" value="{{ user.nom }}" required>
+                        </div>
                     </li>
                     <li class="list-group-item">
-					<div class="form-group">
-						<label for="promotions">Promotions</label>
-						<select name="promotions" class="form-control" id="promotions" >
-							<option selected value="{{promotion.idPromotion}}">
-								{{promotion.libellePromotion}}</option>
-
-						</select>
-					</div>
+                        <div class="form-group">
+                            <label for="prenom">Prénom :</label>
+                            <input type="text" name="prenom" class="form-control" id="prenom" value="{{ user.prenom }}"
+                                   required>
+                        </div>
                     </li>
-				</ul>
-				
-					<div id="bouton">
-						<button type="submit" class="btn btn-success mt-3 mb-3">S'enregistrer</button>
-                        <button class="btn btn-danger mt-3 mb-3"> <a href="/utilisateurs/profil" > Annuler </a></button>
-					</div>
-				
-			</form>
+                    <li class="list-group-item">
+                        <div class="form-group">
+                            <label for="prenom">Date de naissance :</label>
+                            <input type="date" name="date" class="form-control" id="date"
+                                   value="{{ user.dateNaissance|date("Y-m-d") }}" required>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-group">
+                            <label for="email">Mail :</label>
+                            <input type="email" name="email" class="form-control" id="email" value="{{ user.mail }}"
+                                   required>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-group">
+                            <label for="telephone">Téléphone :</label>
+                            <input type="text" name="telephone" class="form-control" id="telephone"
+                                   value="{{ user.telephone }}" required>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-group">
+                            <label for="ecoles">Ecoles</label>
+                            <select name="ecoles" class="form-control" id="ecoles">
 
-		</div>
-	</section>
+                                {% for ecoleList in ecoles %}
+                                    <option {% if ecoleList.nomEcole == user.nomEcole %} selected {% endif %}
+                                            value={{ ecoleList.idEcole }}>
+                                        {{ ecoleList.nomEcole }}</option>
+
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="form-group">
+                            <label for="promotions">Promotions</label>
+                            <select name="promotions" class="form-control" id="promotions">
+                                <option selected value="{{ promotion.idPromotion }}">
+                                    {{ promotion.libellePromotion }}</option>
+
+                            </select>
+                        </div>
+                    </li>
+                </ul>
+
+                <div id="bouton">
+                    <button type="submit" class="btn btn-success mt-3 mb-3">S'enregistrer</button>
+                    <button class="btn btn-danger mt-3 mb-3"><a href="/utilisateurs/profil"> Annuler </a></button>
+                </div>
+            </form>
+        </div>
+    </section>
 
 
 {% endblock %}
 
 {% block script %}
-	<script>
-		let listeEcole = document.querySelector('#ecoles');
-let listePromotions = document.querySelector('#promotions');
-function ajaxPromotions() {
+    <script>
+        let listeEcole = document.querySelector('#ecoles');
+        let listePromotions = document.querySelector('#promotions');
 
-let valueSelected = listeEcole.value;
+        function ajaxPromotions() {
 
-fetch('http://localhost:8000/json/promotions/' + valueSelected).then(response => response.json()).then(datas => insertOption(datas))
-}
+            let valueSelected = listeEcole.value;
 
-function insertOption(datas) {
-listePromotions.innerHTML = '<option selected disabled>Sélectionner votre promotion</option>'
-datas.forEach(element => listePromotions.innerHTML += '<option value=' + element[0] + '> ' + element[1] + '</option>')
-}
+            fetch('http://localhost:8000/json/promotions/' + valueSelected).then(response => response.json()).then(datas => insertOption(datas))
+        }
 
-document.querySelector("#ecoles").addEventListener('change', ajaxPromotions);
-	</script>
+        function insertOption(datas) {
+            listePromotions.innerHTML = '<option selected disabled>Sélectionner votre promotion</option>'
+            datas.forEach(element => listePromotions.innerHTML += '<option value=' + element[0] + '> ' + element[1] + '</option>')
+        }
+
+        document.querySelector("#ecoles").addEventListener('change', ajaxPromotions);
+    </script>
 {% endblock %}
 

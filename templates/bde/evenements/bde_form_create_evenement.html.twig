@@ -1,70 +1,76 @@
 {% extends "base.html.twig" %}
 {% block head %}
-	{{ parent() }}
-	<link rel="stylesheet" href="/css/admin.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/admin.css"/>
 
 {% endblock %}
-{% block title %}Créer un évenement{% endblock %}
 
+{% block title %}Créer un évenement{% endblock %}
 
 {% block content %}
     <h1 class="text-center mt-5">Créer un évenement</h1>
     <main>
-    <section class="card event col-5 m-auto">
-        <form class="form-admin" method="POST" action="/bde/add/evenements" enctype="multipart/form-data">
-        <div id="createEvent">
-            <div class="form-group">
-                <label for="evenementTitle">Titre</label>
-                <input type="text" maxlength="255" name="evenementTitle" class="form-control" id="evenementTitle" placeholder="Titre" required>
-            </div>
-            <div class="form-group">
-                <label for="evenementSubTitle">Sous titre</label>
-                <input type="text" maxlength="255" name="evenementSubTitle" class="form-control" id="evenementSubTitle" placeholder="Sous titre" required>
-            </div>
-            <div class="form-group">
-                <label for="evenementDate">Date de l'événement</label>
-                <input type="datetime-local" name="evenementDate" class="form-control" id="evenementDate" placeholder="Date de l'événement" required>
-            </div>
-            <div class="form-group">
-                <label for="nbParticipantMax">Nombre de participant max</label>
-                <input type="text" maxlength="255" pattern="[0-9]+" name="nbParticipantMax" class="form-control" id="nbParticipantMax" placeholder="Nombre de participants max" required>
-            </div>
-            <div class="form-group">
-                <label for="prix">Prix</label>
-                <input type="number" step="0.01" maxlength="255" class="form-control" name="prix" id="prix" placeholder="Prix" required>
-            </div>
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea name="description" maxlength="40000" class="form-control" id="description" placeholder="Description" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="categorieSelect">Categorie</label>
-                <select name="categorieSelect" id="categorieSelect" required>
-                    <option value="" disabled selected>Selectioner une categorie</option>
-                    {% for categorie in categories %}
-                        <option value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="adresseSelect">Adresse</label>
-                <select name="adresseSelect" id="adresseSelect" required>
-                    <option value="" disabled selected>Selectioner une adresse</option>
-                    {% for adresse in adresses %}
-                        <option value="{{ adresse.idAdresse }}">{{ adresse.cpVille }} {{ adresse.villeLibelle }} {{ adresse.libelleAdresse }}</option>
-                    {% endfor %}
-                </select>
-                <a href="/admin/create/adresse" class="add btn btn-info mt-3">Ajouter une adresse</a>
-            </div>
-            <div class="form-group">
-            <input type="file" name="imageEvent"/>
-            </div>
-        </div>
-        <div id="bouton">
-            <button type="submit" name="id" class="btn btn-success mt-3">Sauvegarder</button>
-            <a href="/bde/evenements" class="btn btn-danger mt-3">Annuler</a>
-        </div>
-        </form>
-    </section>
+        <section class="card event col-5 m-auto">
+            <form class="form-admin" method="POST" action="/bde/add/evenements" enctype="multipart/form-data">
+                <div id="createEvent">
+                    <div class="form-group">
+                        <label for="evenementTitle">Titre</label>
+                        <input type="text" maxlength="255" name="evenementTitle" class="form-control"
+                               id="evenementTitle" placeholder="Titre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="evenementSubTitle">Sous titre</label>
+                        <input type="text" maxlength="255" name="evenementSubTitle" class="form-control"
+                               id="evenementSubTitle" placeholder="Sous titre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="evenementDate">Date de l'événement</label>
+                        <input type="datetime-local" name="evenementDate" class="form-control" id="evenementDate"
+                               placeholder="Date de l'événement" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nbParticipantMax">Nombre de participant max</label>
+                        <input type="text" maxlength="255" pattern="[0-9]+" name="nbParticipantMax" class="form-control"
+                               id="nbParticipantMax" placeholder="Nombre de participants max" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prix">Prix</label>
+                        <input type="number" step="0.01" maxlength="255" class="form-control" name="prix" id="prix"
+                               placeholder="Prix" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea name="description" maxlength="40000" class="form-control" id="description"
+                                  placeholder="Description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="categorieSelect">Categorie</label>
+                        <select name="categorieSelect" id="categorieSelect" required>
+                            <option value="" disabled selected>Selectioner une categorie</option>
+                            {% for categorie in categories %}
+                                <option value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="adresseSelect">Adresse</label>
+                        <select name="adresseSelect" id="adresseSelect" required>
+                            <option value="" disabled selected>Selectioner une adresse</option>
+                            {% for adresse in adresses %}
+                                <option value="{{ adresse.idAdresse }}">{{ adresse.cpVille }} {{ adresse.villeLibelle }} {{ adresse.libelleAdresse }}</option>
+                            {% endfor %}
+                        </select>
+                        <a href="/admin/create/adresse" class="add btn btn-info mt-3">Ajouter une adresse</a>
+                    </div>
+                    <div class="form-group">
+                        <input type="file" name="imageEvent"/>
+                    </div>
+                </div>
+                <div id="bouton">
+                    <button type="submit" name="id" class="btn btn-success mt-3">Sauvegarder</button>
+                    <a href="/bde/evenements" class="btn btn-danger mt-3">Annuler</a>
+                </div>
+            </form>
+        </section>
     </main>
 {% endblock %}

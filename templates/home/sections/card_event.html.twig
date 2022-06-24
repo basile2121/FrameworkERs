@@ -1,42 +1,36 @@
 <div class="event-resp col-md-4 col-sm-6 col-xs-12 my-3">
-<div class="event-card ">
-  <div class="head">
-    <div class="img-container">
-      <img src="{{ path_logo }}{{ evenement.medias.path }}" alt="" />
+    <div class="event-card ">
+        <div class="head">
+            <div class="img-container">
+                <img src="{{ path_logo }}{{ evenement.medias.path }}" alt=""/>
+            </div>
+            <div class="desc">
+                <h2 class="event-title px-3">
+                    {{ evenement.titre }}
+                </h2>
+                <span class="event-date px-3">{{ evenement.date|date('d/m/Y H:i') }}</span>
+            </div>
+        </div>
+        <div class="tags d-flex align-items-center justify-content-around py-4">
+          <span class="tags-items px-3 py-1 mx-2">Capacité : {{ evenement.nbParticipantsMax }}</span>
+          <span class="tags-items px-3 py-1 mx-2">Prix : {{ evenement.prix }}€</span>
+          <span class="tags-items px-3 py-1 mx-2 status" style="border:1px solid {{ evenement.statuts.couleurStatus }}">
+            {{ evenement.statuts.libelleStatut }}
+          </span>
+        </div>
+        <div class="footer px-3">
+            <p class="event-desc">
+                {{ evenement.sousTitre }}
+            </p>
+            <span class="category">Catégorie : {{ evenement.categories.libelleCategorie }}</span>
+        </div>
+        <form method="GET" action="/evenement?id={{ evenement.idEvenement }}" class="p-3 text-center">
+            <button type="submit"
+                    name="id"
+                    class="btn-home text-light"
+                    value="{{ evenement.idEvenement }}">
+                Accéder
+            </button>
+        </form>
     </div>
-    <div class="desc">
-      <h2 class="event-title px-3">
-        {{ evenement.titre }}
-      </h2>
-      <span class="event-date px-3">{{ evenement.date|date('d/m/Y H:i') }}</span>
-    </div>
-  </div>
-  <div class="tags d-flex align-items-center justify-content-around py-4">
-    <span class="tags-items px-3 py-1 mx-2">
-      Capacité : {{ evenement.nbParticipantsMax }}
-    </span>
-    <span class="tags-items px-3 py-1 mx-2">
-      Prix : {{ evenement.prix }}€
-    </span>
-    <span class="tags-items px-3 py-1 mx-2 status" style="border:1px solid {{evenement.statuts.couleurStatus}}">
-      {{ evenement.statuts.libelleStatut }}
-    </span>
-  </div>
-  <div class="footer px-3">
-    <p class="event-desc">
-      {{ evenement.sousTitre }}
-    </p>
-    <span class="category">
-      Catégorie : {{ evenement.categories.libelleCategorie }}
-    </span>
-  </div>
-  <form method="GET" action="/evenement?id={{ evenement.idEvenement }}" class="p-3 text-center">
-    <button type="submit"
-      name="id"
-      class="btn-home text-light"
-      value="{{ evenement.idEvenement }}">
-      Accéder
-    </button>
-  </form>
-</div>
 </div>

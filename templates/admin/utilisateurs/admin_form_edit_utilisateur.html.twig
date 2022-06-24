@@ -1,63 +1,73 @@
 {% extends "base.html.twig" %}
 {% block head %}
-	{{ parent() }}
-	<link rel="stylesheet" href="/css/admin.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/admin.css"/>
 
 {% endblock %}
-{% block title %}Modifier l'utilisateur{% endblock %}
 
+{% block title %}Modifier l'utilisateur{% endblock %}
 
 {% block content %}
     <h1 class="text-center mt-5">Modifier l'utilisateur</h1>
     <main>
-    <section class="card event col-5 m-auto">
-        <form class="form-admin" method="POST" action="/admin/update/utilisateurs">
-        <div id="createEvent">
-            <div class="form-group">
-                <label for="userName">Nom</label>
-                <input type="text" maxlength="255" name="nom" class="form-control" id="userName" value="{{ utilisateur.nom }}" placeholder="Nom" required>
-            </div>
-            <div class="form-group">
-                <label for="userFirstName">Prenom</label>
-                <input type="text" maxlength="255" name="prenom" class="form-control" id="userFirstName" value="{{ utilisateur.prenom }}" placeholder="Prénom" required>
-            </div>
-            <div class="form-group">
-                <label for="userBirthDate">Date de naissance</label>
-                <input type="date" name="dateNaissance" class="form-control" id="userBirthDate" value="{{ utilisateur.dateNaissance | date('Y-m-d') }}" placeholder="Date de naissance" required>
-            </div>
-            <div class="form-group">
-                <label for="userMail">Mail</label>
-                <input type="email" maxlength="255" name="mail" class="form-control" id="userMail" value="{{ utilisateur.mail }}" placeholder="Adresse mail" required>
-            </div>
-            <div class="form-group">
-                <label for="userPhoneNumber">Téléphone</label>
-                <input type="text" min="10" max="10" name="telephone" class="form-control" id="userPhoneNumber" value="{{ utilisateur.telephone }}" placeholder="Numéro de téléphone à 10 chiffres" required>
-            </div>
-            <div class="form-group">
-                <label for="promotionSelect">Promotions</label>
-                <select name="promotion" id="promotionSelect">
-                    <option disabled selected>Sélectionner une promotion</option>
-                    {% for promotion in promotions %}
-                        <option {% if promotion.idPromotion == utilisateur.promotions.idPromotion %} selected {% endif %} value="{{ promotion.idPromotion }}">{{ promotion.libellePromotion }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="rolesSelect">Rôles</label>
-                <select name="role" id="rolesSelect" required>
-                    <option value="" disabled selected>Sélectionner un rôle</option>
-                    {% for role in roles %}
-                        <option  {% if role.idRole == utilisateur.roles.idRole %} selected {% endif %} value="{{ role.idRole }}">{{ role.libelleRole }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            </div>
-            <div id="bouton">
-                <button type="submit" name="id" class="btn btn-success mt-3" value="{{ utilisateur.idUtilisateur }}">Sauvegarder</button>
-            <a href="/admin/utilisateurs" class="btn btn-danger mt-3">Retour</a>
-            </div>
-            
-        </form>
-    </section>
+        <section class="card event col-5 m-auto">
+            <form class="form-admin" method="POST" action="/admin/update/utilisateurs">
+                <div id="createEvent">
+                    <div class="form-group">
+                        <label for="userName">Nom</label>
+                        <input type="text" maxlength="255" name="nom" class="form-control" id="userName"
+                               value="{{ utilisateur.nom }}" placeholder="Nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userFirstName">Prenom</label>
+                        <input type="text" maxlength="255" name="prenom" class="form-control" id="userFirstName"
+                               value="{{ utilisateur.prenom }}" placeholder="Prénom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userBirthDate">Date de naissance</label>
+                        <input type="date" name="dateNaissance" class="form-control" id="userBirthDate"
+                               value="{{ utilisateur.dateNaissance | date('Y-m-d') }}" placeholder="Date de naissance"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userMail">Mail</label>
+                        <input type="email" maxlength="255" name="mail" class="form-control" id="userMail"
+                               value="{{ utilisateur.mail }}" placeholder="Adresse mail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPhoneNumber">Téléphone</label>
+                        <input type="text" min="10" max="10" name="telephone" class="form-control" id="userPhoneNumber"
+                               value="{{ utilisateur.telephone }}" placeholder="Numéro de téléphone à 10 chiffres"
+                               required>
+                    </div>
+                    <div class="form-group">
+                        <label for="promotionSelect">Promotions</label>
+                        <select name="promotion" id="promotionSelect">
+                            <option disabled selected>Sélectionner une promotion</option>
+                            {% for promotion in promotions %}
+                                <option {% if promotion.idPromotion == utilisateur.promotions.idPromotion %} selected {% endif %}
+                                        value="{{ promotion.idPromotion }}">{{ promotion.libellePromotion }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="rolesSelect">Rôles</label>
+                        <select name="role" id="rolesSelect" required>
+                            <option value="" disabled selected>Sélectionner un rôle</option>
+                            {% for role in roles %}
+                                <option {% if role.idRole == utilisateur.roles.idRole %} selected {% endif %}
+                                        value="{{ role.idRole }}">{{ role.libelleRole }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div id="bouton">
+                    <button type="submit" name="id" class="btn btn-success mt-3"
+                            value="{{ utilisateur.idUtilisateur }}">Sauvegarder
+                    </button>
+                    <a href="/admin/utilisateurs" class="btn btn-danger mt-3">Retour</a>
+                </div>
+            </form>
+        </section>
     </main>
 {% endblock %}

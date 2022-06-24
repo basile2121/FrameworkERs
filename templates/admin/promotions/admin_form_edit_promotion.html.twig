@@ -1,44 +1,47 @@
 {% extends "base.html.twig" %}
 {% block head %}
-	{{ parent() }}
-	<link rel="stylesheet" href="/css/admin.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/admin.css"/>
 
 {% endblock %}
-{% block title %}Modifier la promotion
-{% endblock %}
 
+{% block title %}Modifier la promotion{% endblock %}
 
 {% block content %}
 
-	<h1 class="text-center mt-5">Modifier la promotion</h1>
-	<main>
-		<section class="card event col-5 m-auto">
-			<form class="form-admin" method="GET" action="/admin/update/promotions">
-				<div id="createEvent">
-					<div class="form-group">
-						<label for="libellePromotion">Nom promotion</label>
-                		<input type="text" maxlength="255" name="libellePromotion" class="form-control" id="libellePromotion" value="{{ promotion.libellePromotion }}" placeholder="Nom de la promotion" required>
-					</div>
-					<div class="form-group">
-						<label for="idEcole">Nom école</label>
-						<select name="idEcole" id="idEcole" required>
-							{% for ecole in ecoles %}
-								<option {% if promotion.idEcole == ecole.idEcole %} selected {% endif %} value="{{ promotion.idEcole }}">{{ ecole.nomEcole }}</option>
-							{% endfor %}
-						</select>
-					</div>
-					<div class="form-group">
-						<a href="/admin/create/ecoles" class="add btn btn-info">Créer une école</a>
-					</div>
-				</div>
-				<div id="bouton">
-					<button type="submit" name="id" class="btn btn-success mt-3" value="{{ promotion.idPromotion }}">Sauvegarder</button>
-					<a href="/admin/promotions" class="btn btn-danger mt-3">
-						Retour</a>
-				</div>
+    <h1 class="text-center mt-5">Modifier la promotion</h1>
+    <main>
+        <section class="card event col-5 m-auto">
+            <form class="form-admin" method="GET" action="/admin/update/promotions">
+                <div id="createEvent">
+                    <div class="form-group">
+                        <label for="libellePromotion">Nom promotion</label>
+                        <input type="text" maxlength="255" name="libellePromotion" class="form-control"
+                               id="libellePromotion" value="{{ promotion.libellePromotion }}"
+                               placeholder="Nom de la promotion" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="idEcole">Nom école</label>
+                        <select name="idEcole" id="idEcole" required>
+                            {% for ecole in ecoles %}
+                                <option {% if promotion.idEcole == ecole.idEcole %} selected {% endif %}
+                                        value="{{ promotion.idEcole }}">{{ ecole.nomEcole }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <a href="/admin/create/ecoles" class="add btn btn-info">Créer une école</a>
+                    </div>
+                </div>
+                <div id="bouton">
+                    <button type="submit" name="id" class="btn btn-success mt-3" value="{{ promotion.idPromotion }}">
+                        Sauvegarder
+                    </button>
+                    <a href="/admin/promotions" class="btn btn-danger mt-3">Retour</a>
+                </div>
 
-			</form>
-		</section>
-	</main>
+            </form>
+        </section>
+    </main>
 
 {% endblock %}

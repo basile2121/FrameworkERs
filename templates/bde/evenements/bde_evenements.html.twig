@@ -1,129 +1,140 @@
 {% extends "base.html.twig" %}
 {% block head %}
-	{{ parent() }}
-	<link rel="stylesheet" href="/css/admin.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/admin.css"/>
 
 {% endblock %}
-{% block title %}Gestions des evenements{% endblock %}
 
+{% block title %}Gestions des evenements{% endblock %}
 
 {% block content %}
     <h1 class="display-1 text-center mt-5">Evenements</h1>
     <main>
-    <section class="formFiltre">
-        <form class="form-admin" method="GET" action="/bde/evenements/filter">
-        <div id="filtres" class="cardFiltre">
-            <div class="form-group">
-                <label for="filter_titre">Titre</label>
-                <input type="text" maxlength="255" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control" id="filter_titre" placeholder="Titre">
-            </div>
-            <div class="form-group">
-                <label for="filtre_categorie">Catégories</label>
-                <select name="filtre_categorie" id="filtre_categorie">
-                    <option value='' selected>Sélectioner une catégorie</option>
-                    {% for categorie in categories %}
-                        <option {% if filtres['filtre_categorie'] is defined and categorie.idCategorie == filtres['filtre_categorie'] %} selected {% endif %} value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="filtre_statut">Statuts</label>
-                <select name="filtre_statut" id="filtre_statut">
-                    <option value='' selected>Selectioner un statut</option>
-                    {% for statut in statuts %}
-                        <option {% if filtres['filtre_statut'] is defined and statut.idStatut == filtres['filtre_statut'] %} selected {% endif %} value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="filtre_city">Ville</label>
-                <input type="text" maxlength="255" value="{{ filtres['filtre_city'] }}" name="filtre_city" class="form-control" id="filtre_city" placeholder="Ville">
-            </div>
-            <div class="form-group">
-                <label for="filtre_cp">Code postal</label>
-                <input type="text" minlength="5" maxlength="5" pattern="[0-9]+" value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control" id="filtre_cp" placeholder="Le code postal doit faire 5 caractères (uniquement des chiffres)">
-            </div>
-            <div class="form-group">
-                <label for="order_date">Date</label>
-                <select class="form-select" name="order_date" id="order_date">
-                    <option value='' selected>Sélectionner un ordre d'affichage</option>
-                    <option value="ASC">Croissant</option>
-                    <option value="DESC">Décroissant</option>
-                </select>
-            </div>
-            </div>
-            <div id="bouton">
-            <button type="submit" name="filtre" value="true" class="btn btn-success mt-3">Rechercher</button>
-            <a href="/bde/evenements" class="btn btn-danger mt-3">Annuler</a>
-            </div>
-        </form>
-    </section>
-    <section id="listEvent" class="container-fluid">
-        <h2>Liste des évènements</h2>
-        <table class="table table-bordered table-hover">
-            <thead class="thead-light">
-            <tr>
-                <th scope="col">Titre</th>
-                <th scope="col">Sous-titre</th>
-                <th scope="col">Prix</th>
-                <th scope="col">Date</th>
-                <th scope="col">Capacité</th>
-                <th scope="col">Statut</th>
-                <th scope="col">Catégorie</th>
-                <th scope="col">Ville</th>
-                <th scope="col">Adresse</th>
-                <th scope="col">Acceder à l'évènement</th>
-                <th scope="col">Gérer les utilisateurs</th>
-                <th scope="col">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-                {% for evenement in evenements %}
-                    <tr>
-                        <th scope="row">{{ evenement.titre }}</th>
-                        <td>{{ evenement.sousTitre }}</td>
-                        <td>{{ evenement.prix }} €</td>
-                        <td>{{ evenement.date | date('d/m/Y H:i') }}</td>
-                        <td>{{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }} / {{ evenement.nbParticipantsMax }}</td>
-                        <td>{{ evenement.statuts.libelleStatut }}</td>
-                        <td>{{ evenement.categories.libelleCategorie }}</td>
-                        <td>{{ evenement.adresses.cpVille }} {{ evenement.adresses.villeLibelle }}</td>
-                        <td>{{ evenement.adresses.libelleAdresse }}</td>
-                        <td>
-                            <a class="btn btn-primary" href="{{ '/evenement?id=' ~ evenement.idEvenement }}">Acceder</a>
-                        </td>
-                        <td>
-                            <a class="btn btn-warning" href="{{ '/bde/evenements/list/utilisateurs?id=' ~ evenement.idEvenement }}">Acceder</a>
-                        </td>
-                        <td id="actions">
-                            <a class="btn btn-warning" href="{{ '/bde/edit/evenements?id=' ~ evenement.idEvenement }}"><img src="{{path_logo}}/edit.png" alt="edit"></a>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModalBde{{ evenement.idEvenement }}"><img src="{{path_logo}}/trash.png" alt="delete"></button>
-                        </td>
-                    </tr>
-
-                    {% include 'utils/pop-up/delete_evenement_bde_withcontraint_model.html.twig'%}
-                    {% include 'utils/pop-up/delete_evenement_bde_model.html.twig'%}
-
-                {% endfor %}
-            </tbody>
-            <tfoot>
+        <section class="formFiltre">
+            <form class="form-admin" method="GET" action="/bde/evenements/filter">
+                <div id="filtres" class="cardFiltre">
+                    <div class="form-group">
+                        <label for="filter_titre">Titre</label>
+                        <input type="text" maxlength="255" value="{{ filtres['filter_titre'] }}" name="filter_titre"
+                               class="form-control" id="filter_titre" placeholder="Titre">
+                    </div>
+                    <div class="form-group">
+                        <label for="filtre_categorie">Catégories</label>
+                        <select name="filtre_categorie" id="filtre_categorie">
+                            <option value='' selected>Sélectioner une catégorie</option>
+                            {% for categorie in categories %}
+                                <option {% if filtres['filtre_categorie'] is defined and categorie.idCategorie == filtres['filtre_categorie'] %} selected {% endif %}
+                                        value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filtre_statut">Statuts</label>
+                        <select name="filtre_statut" id="filtre_statut">
+                            <option value='' selected>Selectioner un statut</option>
+                            {% for statut in statuts %}
+                                <option {% if filtres['filtre_statut'] is defined and statut.idStatut == filtres['filtre_statut'] %} selected {% endif %}
+                                        value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filtre_city">Ville</label>
+                        <input type="text" maxlength="255" value="{{ filtres['filtre_city'] }}" name="filtre_city"
+                               class="form-control" id="filtre_city" placeholder="Ville">
+                    </div>
+                    <div class="form-group">
+                        <label for="filtre_cp">Code postal</label>
+                        <input type="text" minlength="5" maxlength="5" pattern="[0-9]+"
+                               value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control" id="filtre_cp"
+                               placeholder="Le code postal doit faire 5 caractères (uniquement des chiffres)">
+                    </div>
+                    <div class="form-group">
+                        <label for="order_date">Date</label>
+                        <select class="form-select" name="order_date" id="order_date">
+                            <option value='' selected>Sélectionner un ordre d'affichage</option>
+                            <option value="ASC">Croissant</option>
+                            <option value="DESC">Décroissant</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="bouton">
+                    <button type="submit" name="filtre" value="true" class="btn btn-success mt-3">Rechercher</button>
+                    <a href="/bde/evenements" class="btn btn-danger mt-3">Annuler</a>
+                </div>
+            </form>
+        </section>
+        <section id="listEvent" class="container-fluid">
+            <h2>Liste des évènements</h2>
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
                 <tr>
-                    {% if evenements is not empty %}
-                        <th colspan="12">Total évènements {{ evenements | length }}</th>
-                    {% else %}
-                        <th colspan="12">Aucun évènement</th>
-                    {% endif %}
+                    <th scope="col">Titre</th>
+                    <th scope="col">Sous-titre</th>
+                    <th scope="col">Prix</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Capacité</th>
+                    <th scope="col">Statut</th>
+                    <th scope="col">Catégorie</th>
+                    <th scope="col">Ville</th>
+                    <th scope="col">Adresse</th>
+                    <th scope="col">Acceder à l'évènement</th>
+                    <th scope="col">Gérer les utilisateurs</th>
+                    <th scope="col">Actions</th>
                 </tr>
-            </tfoot>
-        </table>
-    </section>
+                </thead>
+                <tbody>
+                    {% for evenement in evenements %}
+                        <tr>
+                            <th scope="row">{{ evenement.titre }}</th>
+                            <td>{{ evenement.sousTitre }}</td>
+                            <td>{{ evenement.prix }} €</td>
+                            <td>{{ evenement.date | date('d/m/Y H:i') }}</td>
+                            <td>{{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }} / {{ evenement.nbParticipantsMax }}</td>
+                            <td>{{ evenement.statuts.libelleStatut }}</td>
+                            <td>{{ evenement.categories.libelleCategorie }}</td>
+                            <td>{{ evenement.adresses.cpVille }} {{ evenement.adresses.villeLibelle }}</td>
+                            <td>{{ evenement.adresses.libelleAdresse }}</td>
+                            <td>
+                                <a class="btn btn-primary" href="{{ '/evenement?id=' ~ evenement.idEvenement }}">Acceder</a>
+                            </td>
+                            <td>
+                                <a class="btn btn-warning"
+                                   href="{{ '/bde/evenements/list/utilisateurs?id=' ~ evenement.idEvenement }}">Acceder</a>
+                            </td>
+                            <td id="actions">
+                                <a class="btn btn-warning"
+                                   href="{{ '/bde/edit/evenements?id=' ~ evenement.idEvenement }}"><img
+                                            src="{{ path_logo }}/edit.png" alt="edit"></a>
+                                <button type="button" class="btn btn-danger" data-toggle="modal"
+                                        data-target="#deleteModalBde{{ evenement.idEvenement }}"><img
+                                            src="{{ path_logo }}/trash.png" alt="delete"></button>
+                            </td>
+                        </tr>
+
+                        {% include 'utils/pop-up/delete_evenement_bde_withcontraint_model.html.twig' %}
+                        {% include 'utils/pop-up/delete_evenement_bde_model.html.twig' %}
+
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        {% if evenements is not empty %}
+                            <th colspan="12">Total évènements {{ evenements | length }}</th>
+                        {% else %}
+                            <th colspan="12">Aucun évènement</th>
+                        {% endif %}
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
     </main>
 
-    {% if popup[0] == "participantBde"  %}
-        <input id='popup' type="hidden" value={{ popup[1]}} >
+    {% if popup[0] == "participantBde" %}
+        <input id='popup' type="hidden" value={{ popup[1] }}>
         <script type="text/javascript">
             let id = document.querySelector("#popup").value
-            $('#deleteModalwithcontraintBde'+parseInt(id)).modal("show")
+            $('#deleteModalwithcontraintBde' + parseInt(id)).modal("show")
         </script>
     {% endif %}
 {% endblock %}

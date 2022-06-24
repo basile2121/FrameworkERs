@@ -1,11 +1,11 @@
 {% extends "base.html.twig" %}
 {% block head %}
-	{{ parent() }}
-	<link rel="stylesheet" href="/css/admin.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/admin.css"/>
 
 {% endblock %}
-{% block title %}Gestions des utilisateurs{% endblock %}
 
+{% block title %}Gestions des utilisateurs{% endblock %}
 
 {% block content %}
     <h1 class="text-center mt-5">Filtrer les utilisateurs :</h1>
@@ -14,56 +14,62 @@
 
         {# Début formulaire des filtres #}
         <section class="formFiltre">
-        <form class="form-admin" method="GET" action="/admin/utilisateurs/filter">
-        <div id="filtres" class="cardFiltre">
-            <div class="form-group">
-                <label for="searchUserLastName">Nom</label>
-                <input type="text" maxlength="255" value="{{ filtres['filtre_lastName'] }}" name="filtre_lastName" class="form-control" id="searchUserLastName" placeholder="Nom de l'utilisateur">
-            </div>
-            <div class="form-group">
-                <label for="searchUserFirstName">Prénom</label>
-                <input type="text" maxlength="255" value="{{ filtres['filtre_firstName'] }}" name="filtre_firstName" class="form-control" id="searchUserFirstName" placeholder="Prénom de l'utilisateur">
+            <form class="form-admin" method="GET" action="/admin/utilisateurs/filter">
+                <div id="filtres" class="cardFiltre">
+                    <div class="form-group">
+                        <label for="searchUserLastName">Nom</label>
+                        <input type="text" maxlength="255" value="{{ filtres['filtre_lastName'] }}"
+                               name="filtre_lastName" class="form-control" id="searchUserLastName"
+                               placeholder="Nom de l'utilisateur">
+                    </div>
+                    <div class="form-group">
+                        <label for="searchUserFirstName">Prénom</label>
+                        <input type="text" maxlength="255" value="{{ filtres['filtre_firstName'] }}"
+                               name="filtre_firstName" class="form-control" id="searchUserFirstName"
+                               placeholder="Prénom de l'utilisateur">
 
-            </div>
-            <div class="form-group">
-                <label for="ecoles">Ecole :</label>
-                <select class="form-select" name="filtre_ecole" id="ecoles">
-                    <option value='' selected>Sélectionner une école</option>
-                    {% for ecole in ecoles %}
-                        <option  {% if filtres['filtre_ecole'] is defined and ecole.idEcole == filtres['filtre_ecole'] %} selected {% endif %} value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="promotions">Promotion :</label>
-                <select class="form-select" name="filtre_promotion" class="form-control" id="promotions">
+                    </div>
+                    <div class="form-group">
+                        <label for="ecoles">Ecole :</label>
+                        <select class="form-select" name="filtre_ecole" id="ecoles">
+                            <option value='' selected>Sélectionner une école</option>
+                            {% for ecole in ecoles %}
+                                <option {% if filtres['filtre_ecole'] is defined and ecole.idEcole == filtres['filtre_ecole'] %} selected {% endif %}
+                                        value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="promotions">Promotion :</label>
+                        <select class="form-select" name="filtre_promotion" class="form-control" id="promotions">
 
-                    <option value='' selected>Sélectionner une promotion</option>
+                            <option value='' selected>Sélectionner une promotion</option>
 
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="rolesSelect">Rôle :</label>
-                <select class="form-select" name="filtre_role" id="rolesSelect">
-                    <option value='' selected>Sélectionner un rôle</option>
-                    {% for role in roles %}
-                        <option {% if filtres['filtre_role'] is defined and role.idRole == filtres['filtre_role'] %} selected {% endif %} value="{{ role.idRole }}">{{ role.libelleRole }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </div>
-        <div id="bouton">
-            <button type="submit" name="filtre" value="true" class="btn btn-success">Rechercher</button>
-            <a href="/admin/utilisateurs" class="btn btn-danger">Annuler</a>
-        </div>
-        </form>
-    </section>
-    {# Fin formulaire des filtres #}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="rolesSelect">Rôle :</label>
+                        <select class="form-select" name="filtre_role" id="rolesSelect">
+                            <option value='' selected>Sélectionner un rôle</option>
+                            {% for role in roles %}
+                                <option {% if filtres['filtre_role'] is defined and role.idRole == filtres['filtre_role'] %} selected {% endif %}
+                                        value="{{ role.idRole }}">{{ role.libelleRole }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div id="bouton">
+                    <button type="submit" name="filtre" value="true" class="btn btn-success">Rechercher</button>
+                    <a href="/admin/utilisateurs" class="btn btn-danger">Annuler</a>
+                </div>
+            </form>
+        </section>
+        {# Fin formulaire des filtres #}
 
-    <section id="listEvent" class="container-fluid">
-        <h2>Liste des utilisateurs :</h2>
-        <table class="table table-bordered table-hover">
-            <thead class="thead-light">
+        <section id="listEvent" class="container-fluid">
+            <h2>Liste des utilisateurs :</h2>
+            <table class="table table-bordered table-hover">
+                <thead class="thead-light">
                 <tr>
                     <th scope="col">Nom</th>
                     <th scope="col">Prénom</th>
@@ -75,37 +81,40 @@
                     <th scope="col">Ecole</th>
                     <th scope="col">Actions</th>
                 </tr>
-            </thead>
-            <tbody>
-            {% for utilisateur in utilisateurs %}
-                <tr>
-                    <td scope="row">{{ utilisateur.nom }}</th>
-                    <td>{{ utilisateur.prenom }}</td>
-                    <td>{{ utilisateur.dateNaissance | date('d-m-Y') }}</td>
-                    <td>{{ utilisateur.dateInscription | date('d-m-Y')}}</td>
-                    <td>{{ utilisateur.mail }}</td>
-                    <td>{{ utilisateur.telephone }}</td>
-                    <td>{{ utilisateur.roles.libelleRole }}</td>
-                    <td>{{ utilisateur.promotions.ecoles.nomEcole }}</td>
+                </thead>
+                <tbody>
+                {% for utilisateur in utilisateurs %}
+                    <tr>
+                        <td scope="row">{{ utilisateur.nom }}</td>
+                        <td>{{ utilisateur.prenom }}</td>
+                        <td>{{ utilisateur.dateNaissance | date('d-m-Y') }}</td>
+                        <td>{{ utilisateur.dateInscription | date('d-m-Y') }}</td>
+                        <td>{{ utilisateur.mail }}</td>
+                        <td>{{ utilisateur.telephone }}</td>
+                        <td>{{ utilisateur.roles.libelleRole }}</td>
+                        <td>{{ utilisateur.promotions.ecoles.nomEcole }}</td>
 
 
+                        <td id="actions">
+                            <form method="GET" action="/admin/edit/utilisateurs">
+                                <button type="submit" name="id" class="btn btn-warning"
+                                        value="{{ utilisateur.idUtilisateur }}"><img src="{{ path_logo }}/edit.png"
+                                                                                     alt="edit"></button>
+                            </form>
+                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                    data-target="#deleteModal{{ utilisateur.idUtilisateur }}"><img
+                                        src="{{ path_logo }}/trash.png" alt="delete"></button>
 
-                    <td id="actions">
-                        <form method="GET" action="/admin/edit/utilisateurs" >
-                            <button type="submit" name="id" class="btn btn-warning" value="{{ utilisateur.idUtilisateur}}"><img src="{{path_logo}}/edit.png" alt="edit" ></button>
-                        </form>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{utilisateur.idUtilisateur }}"><img src="{{path_logo}}/trash.png" alt="delete" ></button>
+                        </td>
+                    </tr>
+                    {% include 'utils/pop-up/delete_utilisateur_model.html.twig' %}
+                    {% include 'utils/pop-up/delete_utilisateur_withparticipe_model.html.twig' %}
+                {% endfor %}
 
-                    </td>
-                </tr>
-                {% include 'utils/pop-up/delete_utilisateur_model.html.twig'%}
-                {% include 'utils/pop-up/delete_utilisateur_withparticipe_model.html.twig'%}
-            {% endfor %}
+                </tbody>
+                {% include 'utils/pop-up/delete_utilisateur_withcontraint_model.html.twig' %}
 
-            </tbody>
-                {% include 'utils/pop-up/delete_utilisateur_withcontraint_model.html.twig'%}
-
-            <tfoot>
+                <tfoot>
                 <tr>
                     {% if utilisateurs is not empty %}
                         <th colspan="9">Total utilisateurs : {{ utilisateurs | length }}</th>
@@ -113,48 +122,50 @@
                         <th colspan="9">Aucun utilisateur</th>
                     {% endif %}
                 </tr>
-            </tfoot>
-        </table>
+                </tfoot>
+            </table>
         </section>
     </main>
 
-     {% if utilisateursPOP[0] == "ut"  %}
-           <input id='popup' type="hidden" value={{ utilisateursPOP[1]}} >
-            <script type="text/javascript">
-              let id = document.querySelector("#popup").value
-              console.log(id);
-                $('#deleteModalwithcontraint'+parseInt(id)).modal("show")
-            </script>
-        {% endif %}
+    {% if utilisateursPOP[0] == "ut" %}
+        <input id='popup' type="hidden" value={{ utilisateursPOP[1] }}>
+        <script type="text/javascript">
+            let id = document.querySelector("#popup").value
+            console.log(id);
+            $('#deleteModalwithcontraint' + parseInt(id)).modal("show")
+        </script>
+    {% endif %}
 
-        {% if utilisateursPOP[1] == 'null'  %}
-            <script type="text/javascript">
-                console.log('sdddsd');
-               $("#deleteModalwithcontraintuser").modal("show")
-            </script>
-        {% endif %}
+    {% if utilisateursPOP[1] == 'null' %}
+        <script type="text/javascript">
+            console.log('sdddsd');
+            $("#deleteModalwithcontraintuser").modal("show")
+        </script>
+    {% endif %}
 
 {% endblock %}
 
 {% block script %}
-<script>
-		let listeEcole = document.querySelector('#ecoles');
-		let listePromotions = document.querySelector('#promotions');
-	function ajaxPromotions(){
-		
-		let valueSelected = listeEcole.value;
-		
-    fetch('http://localhost:8000/json/promotions/' + valueSelected)
-            .then(response => response.json())
-			.then(datas =>insertOption(datas) 
-			)
-    }
+    <script>
+        let listeEcole = document.querySelector('#ecoles');
+        let listePromotions = document.querySelector('#promotions');
 
-	function insertOption(datas){
-		listePromotions.innerHTML ='<option selected value=''>Sélectionner votre promotion</option>'
-		datas.forEach(element=> listePromotions.innerHTML += '<option value='+element[0]+'> '+element[1]+'</option>')
-	}
+        function ajaxPromotions() {
 
-	document.querySelector("#ecoles").addEventListener('change',ajaxPromotions);
-</script>
+            let valueSelected = listeEcole.value;
+
+            fetch('http://localhost:8000/json/promotions/' + valueSelected)
+                .then(response => response.json())
+                .then(datas => insertOption(datas)
+                )
+        }
+
+        function insertOption(datas) {
+            listePromotions.innerHTML = '<option selected value='
+            '>Sélectionner votre promotion</option>'
+            datas.forEach(element => listePromotions.innerHTML += '<option value=' + element[0] + '> ' + element[1] + '</option>')
+        }
+
+        document.querySelector("#ecoles").addEventListener('change', ajaxPromotions);
+    </script>
 {% endblock %}

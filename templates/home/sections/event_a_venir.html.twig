@@ -1,12 +1,9 @@
 <section class="events-inc my-5 container">
-	<h1 class="text-center">Evènements à venir</h1>
-	<hr>
-	<div class="all-events-inc row">
-		{% for evenement in evenementsAVenir %} 
-		 {% include 'home/sections/card_event.html.twig' %}
-		{% endfor %}
-		
-		</div>
-		
-		
-	</section>
+    <h1 class="text-center">Evènements à venir</h1>
+    <hr>
+    <div class="all-events-inc row">
+        {% for evenement in evenementsAVenir %}
+            {% include 'home/sections/card_event.html.twig' %}
+        {% endfor %}
+    </div>
+</section>

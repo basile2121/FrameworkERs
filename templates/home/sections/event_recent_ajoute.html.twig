@@ -1,12 +1,9 @@
 <section class="events-recent-added my-5 container">
-	<h1 class="text-center">Evènements récemment ajouté</h1>
-	<hr>
-	<div class="all-events-recent-added row">
-		{% for evenement in evenementsRecentAjoute %} 
-			{% include 'home/sections/card_event.html.twig' %}
-		{% endfor %}
-		
-		</div>
-		
-		
-	</section>
+    <h1 class="text-center">Evènements récemment ajouté</h1>
+    <hr>
+    <div class="all-events-recent-added row">
+        {% for evenement in evenementsRecentAjoute %}
+            {% include 'home/sections/card_event.html.twig' %}
+        {% endfor %}
+    </div>
+</section>

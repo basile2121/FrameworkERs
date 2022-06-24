@@ -1,31 +1,32 @@
 {% extends "base.html.twig" %}
 {% block head %}
-	{{ parent() }}
-	<link rel="stylesheet" href="/css/admin.css"/>
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/admin.css"/>
+{% endblock %}
 
-{% endblock %}
-{% block title %}Ajouter une catégorie
-{% endblock %}
+{% block title %}Ajouter une catégorie{% endblock %}
 
 
 {% block content %}
 
-	<h1 class="text-center mt-5">Ajouter une catégorie</h1>
-	<main>
-		<section class="card event col-5 m-auto">
-			<form class="form-admin" method="POST" action="/admin/add/categories">
-				<div id="createEvent">
-					<div class="form-group">
-                		<label for="categorie">Nom catégorie</label>
-                		<input type="text" maxlength="255" name="categorie" class="form-control" id="categorie" placeholder="Nom de la categorie" required>
-            		</div>
-					<input type="hidden" name="redirect_create_categorie_url" class="form-control" id="redirect_create_categorie_url" value="{{ urlRedirection }}">
-				</div>
-				<div id="bouton">
-					<button type="submit" name="id" class="btn btn-success mt-3">Ajouter</button>
+    <h1 class="text-center mt-5">Ajouter une catégorie</h1>
+    <main>
+        <section class="card event col-5 m-auto">
+            <form class="form-admin" method="POST" action="/admin/add/categories">
+                <div id="createEvent">
+                    <div class="form-group">
+                        <label for="categorie">Nom catégorie</label>
+                        <input type="text" maxlength="255" name="categorie" class="form-control" id="categorie"
+                               placeholder="Nom de la categorie" required>
+                    </div>
+                    <input type="hidden" name="redirect_create_categorie_url" class="form-control"
+                           id="redirect_create_categorie_url" value="{{ urlRedirection }}">
+                </div>
+                <div id="bouton">
+                    <button type="submit" name="id" class="btn btn-success mt-3">Ajouter</button>
                     <a href="/admin/categories" class="btn btn-danger mt-3">Annuler</a>
-				</div>
-			</form>
-		</section>
-	</main>
+                </div>
+            </form>
+        </section>
+    </main>
 {% endblock %}
