@@ -12,6 +12,7 @@ use Twig\Error\SyntaxError;
 class AdminHomeController extends AbstractController
 {
     /**
+     * Route de connexion pour les administrateurs et les membres du BDE
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError

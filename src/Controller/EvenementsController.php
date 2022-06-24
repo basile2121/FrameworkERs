@@ -641,9 +641,7 @@ class EvenementsController extends AbstractController
     private function _changeStatutEvenement(int $nbParticipant, int $nbParticipantMax, Evenements $evenement, StatutsRepository $statutsRepository, EvenementsRepository $evenementsRepository) {
         $pourcent = ($nbParticipant / $nbParticipantMax) * 100;
 
-
         if ($pourcent >= 0 && $pourcent < 80) {
-
             $statut = $statutsRepository->selectOneByLibelle('A venir');
             $evenement->setIdStatut($statut[0]->getIdStatut());
         } else if ($pourcent >= 80 && $pourcent < 100) {
