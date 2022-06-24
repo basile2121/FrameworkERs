@@ -10,11 +10,6 @@
 
 
 {% block content %}
-	{% if errorParticiper %}
-		<div class="alert alert-success m-auto col-3">
-			{{ errorParticiper ~ '!' }}
-		</div>
-	{% endif %}
 	{% if desinscription %}
 		<div class="alert alert-success m-auto col-3">
 			{{ desinscription  ~ '!' }}
@@ -35,6 +30,9 @@
 				{% if evenement.statuts.libelleStatut ==  "Passé" %}
 					<button type="button" class="btn btn-warning participer" data-toggle="modal" data-target="#Modal{{ evenement.idEvenement }}" disabled>Participer</button>
 					<p>L'évènement est déjà passé</p>
+				{% elseif completEvent =="complet" %}
+					<button type="button" class="btn btn-warning participer" data-toggle="modal" data-target="#Modal{{ evenement.idEvenement }}" disabled>Participer</button>
+					<p>L'évènement est complet</p>
 				{% else %}
 					<button type="button" class="btn btn-warning participer" data-toggle="modal" data-target="#Modal{{ evenement.idEvenement }}" >Participer</button>
 				{% endif %}
@@ -59,7 +57,7 @@
 					{{ evenement.categories.libelleCategorie }}
 				</span>
 
-				<span class="tags-items px-3 py-1 mx-2 status">
+				<span class="tags-items px-3 py-1 mx-2 status" style="border:1px solid {{evenement.statuts.couleurStatus}}">
 					Statut :
 					{{ evenement.statuts.libelleStatut }}
 				</span>

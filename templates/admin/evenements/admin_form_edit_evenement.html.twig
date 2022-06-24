@@ -9,6 +9,7 @@
 
 
 {% block content %}
+<<<<<<< HEAD
 	<h1 class="text-center mt-5">Modifier un évènement</h1>
 	<main>
 		<section class="card event col-5 m-auto">
@@ -31,9 +32,9 @@
 							{{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }}</label>
 					</div>
 					<div class="form-group">
-						<label for="nbParticipantMax">Nombre de participant max</label>
-						<input type="text" maxlength="255" pattern="[0-9]+" name="nbParticipantMax" class="form-control" id="nbParticipantMax" value="{{ evenement.nbParticipantsMax }}" placeholder="Nombre de participants max" required>
-					</div>
+                        <label for="nbParticipantMax">Nombre de participant max</label>
+                        <input type="number" pattern="[0-9]+" name="nbParticipantMax" class="form-control" id="nbParticipantMax" value="{{ evenement.nbParticipantsMax }}" placeholder="Nombre de participants max" required min="{{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }}">
+                    </div>
 					<div class="form-group">
 						<label for="prix">Prix</label>
 						<input type="number" step="0.01" maxlength="255" name="prix" class="form-control" id="prix" value="{{ evenement.prix }}" placeholder="Prix" required>

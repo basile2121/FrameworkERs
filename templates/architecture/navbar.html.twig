@@ -44,9 +44,16 @@
                  <li class="nav-item p-2 ">
                                     <div class="btn-group">
                     <a href="/admin" class="nav-link text-white">Administration</a>
-                    <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" style="background-color:#000000!important;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if whiteNavbar %}
+                    <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" style="background-color:transparent!important;border:none" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
+                    {% else %}
+                    <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" style="background-color:#000000!important;border:none" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    {% endif %}
+                    
                     <div class="dropdown-menu">
                         <a class="dropdown-item py-3 text-dropdown" href="/admin/create/evenements">Creer un evenement</a>
                         <a class="dropdown-item py-3 text-dropdown" href="/admin/evenements">Gerer les evenements</a>
