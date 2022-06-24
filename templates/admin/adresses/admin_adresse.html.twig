@@ -15,14 +15,14 @@
 		<a href="/admin/create/adresse" class="add btn btn-info">Ajouter une adresse</a>
 		{# Début formulaire des filtres #}
 		<section class="formFiltre">
-			<form class="form-admin" method="POST" action="/admin/adresses/filter">
+			<form class="form-admin" method="GET" action="/admin/adresses/filter">
 				<div id="filtres" class="cardFiltre">
 					<div class="form-group">
-                <label for="filter_city">Rechercher une adresse par sa ville</label>
+                <label for="filter_city">Ville</label>
                 <input type="text" maxlength="255" value="{{ filtres['filter_city'] }}" name="filter_city" class="form-control" id="filter_city" placeholder="Nom de la ville">
             </div>
             <div class="form-group">
-                <label for="filter_cp">Rechercher une adresse par son code postal</label>
+                <label for="filter_cp">Code postal</label>
                 <input type="text" minlength="5" maxlength="5" pattern="[0-9]+" value="{{ filtres['filter_cp'] }}" name="filter_cp" class="form-control" id="filter_cp" placeholder="Le code postal doit faire 5 caractères (uniquement des chiffres)">
             </div>
 				</div>
@@ -58,10 +58,10 @@
 						<td>{{ adresse.coordonneLatitude }}</td>
 						<td id="actions">
 							<form method="GET" action="/admin/edit/adresses">
-								<button type="submit" name="id" class="btn btn-warning" value="{{ adresse.idAdresse }}"><img src="http://localhost:8000/image/edit.png" alt="edit" ></button>
+								<button type="submit" name="id" class="btn btn-warning" value="{{ adresse.idAdresse }}"><img src="{{path_logo}}/edit.png" alt="edit" ></button>
 							</form>
 
-							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{adresse.idAdresse  }}"><img src="http://localhost:8000/image/trash.png" alt="delete" ></button>
+							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{adresse.idAdresse  }}"><img src="{{path_logo}}/trash.png" alt="delete" ></button>
 						</td>
 					</tr>
 					{% include 'utils/pop-up/delete_adresse_model.html.twig'%}

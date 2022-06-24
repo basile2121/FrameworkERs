@@ -14,7 +14,7 @@
 		<a href="/admin/create/ecoles" class="add btn btn-info">Ajouter une école</a>
 		{# Début formulaire des filtres #}
 		<section class="formFiltre">
-			<form class="form-admin" method="POST" action="/admin/ecoles/filter">
+			<form class="form-admin" method="GET" action="/admin/ecoles/filter">
 				<div id="filtres" class="cardFiltre">
 					<div class="form-group">
                 		<label for="filtre_name_ecole">Rechercher une école par nom</label>
@@ -44,11 +44,11 @@
 					<tr>
 						<td scope="row">{{ ecole.nomEcole }}</th>
 						<td id="actions">
-							<form method="POST" action="/admin/edit/ecoles">
-								<button type="submit" name="id" class="btn btn-warning" value="{{ ecole.idEcole }}"><img src="http://localhost:8000/image/edit.png" alt="edit" ></button>
+							<form method="GET" action="/admin/edit/ecoles">
+								<button type="submit" name="id" class="btn btn-warning" value="{{ ecole.idEcole }}"><img src="{{path_logo}}/edit.png" alt="edit" ></button>
 							</form>
 
-							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ecole.idEcole }}"><img src="http://localhost:8000/image/trash.png" alt="delete" ></button>
+							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ecole.idEcole }}"><img src="{{path_logo}}/trash.png" alt="delete" ></button>
 						</td>
 					</tr>
 

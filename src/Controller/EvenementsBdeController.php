@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Evenements;
 use App\Entity\Medias;
 use App\Entity\Participe;
+use App\Entity\Statuts;
 use App\Repository\AdressesRepository;
 use App\Repository\CategoriesRepository;
 use App\Repository\EcolesRepository;
@@ -176,7 +177,7 @@ class EvenementsBdeController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: "/bde/add/evenements", httpMethod: 'POST', name: "bde_add_evenements",)]
-    public function addEvenements(EvenementsRepository $evenementsRepository, MediasRepository $mediasRepository)
+    public function addEvenements(EvenementsRepository $evenementsRepository, MediasRepository $mediasRepository, StatutsRepository $statutsRepository)
     {
         if (!isset($_FILES['imageEvent'])) {
             echo "Erreur : pas d'image";
@@ -198,6 +199,7 @@ class EvenementsBdeController extends AbstractController
             $mediasRepository->save($media);
 
             $idmedia = $mediasRepository->getLastId();
+            $statut = $statutsRepository->selectOneByLibelle('A venir');
 
             $evenement = new Evenements();
             $evenement->setTitre($_POST['evenementTitle']);
@@ -207,7 +209,7 @@ class EvenementsBdeController extends AbstractController
             $evenement->setPrix($_POST['prix']);
             $evenement->setDescription($_POST['description']);
             $evenement->setIdCategorie(($_POST['categorieSelect']));
-            $evenement->setIdStatut(intval($_POST['statutSelect']));
+            $evenement->setIdStatut($statut[0]->getIdStatut());
             $evenement->setIdAdresse(intval($_POST['adresseSelect']));
             $evenement->setCreatedAt(new DateTime());
             $evenement->setUpdatedAt(new DateTime());

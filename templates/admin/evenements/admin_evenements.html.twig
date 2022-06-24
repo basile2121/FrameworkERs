@@ -13,21 +13,20 @@
 	<h1 class=" text-center mt-5">Filtrer les évènements :</h1>
 	<main>
 		<a href="/admin/create/evenements" class="add btn btn-info">Ajouter un évènement</a>
-		<section
-			class="formFiltre">
+		<section class="formFiltre">
 			{# Début formulaire des filtres #}
 			<form class="form-admin" method="GET" action="/admin/evenements/filter">
 
 				<div id="filtres" class="cardFiltre">
 
 					<div class="form-group">
-						<label for="filter_titre">Rechercher un evenement par son titre</label>
+						<label for="filter_titre">Titre</label>
 						<input type="text" maxlength="255" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control" id="filter_titre" placeholder="Titre">
 					</div>
 					<div class="form-group">
-						<label for="filtre_categorie">Categories</label>
+						<label for="filtre_categorie">Catégories</label>
 						<select name="filtre_categorie" id="filtre_categorie">
-							<option value='' selected>Selectioner une categorie</option>
+							<option value='' selected>Sélectionner une catégorie</option>
 							{% for categorie in categories %}
 								<option {% if filtres['filtre_categorie'] is defined and categorie.idCategorie == filtres['filtre_categorie'] %} selected {% endif %} value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
 							{% endfor %}
@@ -36,7 +35,7 @@
 					<div class="form-group">
 						<label for="filtre_statut">Statuts</label>
 						<select name="filtre_statut" id="filtre_statut">
-							<option value='' selected>Selectioner un statut</option>
+							<option value='' selected>Sélectionner un statut</option>
 							{% for statut in statuts %}
 								<option {% if filtres['filtre_statut'] is defined and statut.idStatut == filtres['filtre_statut'] %} selected {% endif %} value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
 							{% endfor %}
@@ -47,13 +46,13 @@
 						<input type="text" maxlength="255" value="{{ filtres['filtre_city'] }}" name="filtre_city" class="form-control" id="filtre_city" placeholder="Ville">
 					</div>
 					<div class="form-group">
-						<label for="filtre_cp">Code postale</label>
+						<label for="filtre_cp">Code postal</label>
 						<input type="text" minlength="5" maxlength="5" pattern="[0-9]+" value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control" id="filtre_cp" placeholder="Le code postal doit faire 5 caractères (uniquement des chiffres)">
 					</div>
 					<div class="form-group">
 						<label for="order_date">Date</label>
 						<select class="form-select" name="order_date" id="order_date">
-							<option value='' selected>Selectioner un ordre d'affichage</option>
+							<option value='' selected>Sélectionner un ordre d'affichage</option>
 							<option value="ASC">Croissant</option>
 							<option value="DESC">Décroissant</option>
 						</select>
@@ -70,7 +69,7 @@
 
 		<section id="listEvent" class="container-fluid">
 			<h2>Liste des évènements :</h2>
-			<table class="table table-bordered table-hover table-responsive ">
+			<table class="table table-bordered table-hover">
 				<thead class="thead-light">
 					<tr>
 						<th scope="col">Titre</th>
@@ -89,57 +88,60 @@
 				</thead>
 				<tbody>
 					{% for evenement in evenements %}
-						<tr>
-							<td style="font-weight: bolder">{{ evenement.titre }}</td>
-						</tr>
-					</th>
-					<td>{{ evenement.sousTitre }}</td>
-					<td>{{ evenement.prix }}
-						€</td>
-					<td>{{ evenement.date | date('d-m-Y') }}</td>
-					<td>{{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }}
-						/
-						{{ evenement.nbParticipantsMax }}</td>
-					<td>{{ evenement.statuts.libelleStatut }}</td>
-					<td>{{ evenement.categories.libelleCategorie }}</td>
-					<td>{{ evenement.adresses.cpVille }}
-						{{ evenement.adresses.villeLibelle }}</td>
-					<td>{{ evenement.adresses.libelleAdresse }}</td>
-					<td>
-						<form method="GET" action="/evenement">
-							<button type="submit" name="id" class="btn btn-info" value="{{ evenement.idEvenement }}">Acceder</button>
-						</form>
-					</td>
-					<td>
-						<form method="GET" action="/admin/evenements/list/utilisateurs">
-							<button type="submit" name="id" class="btn btn-info" value="{{ evenement.idEvenement }}">Acceder</button>
-						</form>
-					</td>
-					<td id="actions">
-						<form method="GET" action="/admin/edit/evenements">
-							<button type="submit" name="id" class="btn btn-warning" value="{{ evenement.idEvenement }}"><img src="http://localhost:8000/image/edit.png" alt="edit"></button>
-						</form>
+					<tr>
+						<td style="font-weight: bolder">{{ evenement.titre }}</td>
+				
+						
+						<td>{{ evenement.sousTitre }}</td>
+						<td>{{ evenement.prix }} €</td>
+						<td>{{ evenement.date | date('d-m-Y') }}</td>
+						<td>{{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }}/{{ evenement.nbParticipantsMax }}</td>
+						<td>{{ evenement.statuts.libelleStatut }}</td>
+						<td>{{ evenement.categories.libelleCategorie }}</td>
+						<td>{{ evenement.adresses.cpVille }} {{ evenement.adresses.villeLibelle }}</td>
+						<td>{{ evenement.adresses.libelleAdresse }}</td>
+						<td>
+							<form method="GET" action="/evenement">
+								<button type="submit" name="id" class="btn btn-info" value="{{ evenement.idEvenement }}">Accéder</button>
+							</form>
+						</td>
+						<td>
+							<form method="GET" action="/admin/evenements/list/utilisateurs">
+								<button type="submit" name="id" class="btn btn-info" value="{{ evenement.idEvenement }}">Accéder</button>
+							</form>
+						</td>
+						<td id="actions">
+							<form method="GET" action="/admin/edit/evenements">
+								<button type="submit" name="id" class="btn btn-warning" value="{{ evenement.idEvenement }}"><img src="{{path_logo}}/edit.png" alt="edit"></button>
+							</form>
 
-						<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{evenement.idEvenement }}"><img src="http://localhost:8000/image/trash.png" alt="delete"></button>
-					</td>
-				</tbody>
-			</tr>
+							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{evenement.idEvenement }}"><img src="{{path_logo}}/trash.png" alt="delete"></button>
+						</td>
+				
+					</tr>
 
-			{% include 'utils/pop-up/delete_evenement_withcontraint_model.html.twig'%}
-			{% include 'utils/pop-up/delete_evenement_model.html.twig'%}
+					{% include 'utils/pop-up/delete_evenement_withcontraint_model.html.twig'%}
+						{% include 'utils/pop-up/delete_evenement_model.html.twig'%}
 
-		{% endfor %}
+				{% endfor %}
 	</tbody>
-	<tfoot>
-		<tr>
-			{% if evenements is not empty %}
-				<th colspan="12">Total évènements :
-					{{ evenements | length }}</th>
-			{% else %}
-				<th colspan="12">Aucun évènement</th>
-			{% endif %}
-		</tr>
-	</tfoot>
-</table></section></main>{% if popup[0] == "participant"  %}<input id='popup' type="hidden" value={{ popup[1]}}><script type="text/javascript">
+			<tfoot>
+				<tr>
+					{% if evenements is not empty %}
+						<th colspan="12">Total évènements :
+							{{ evenements | length }}</th>
+					{% else %}
+						<th colspan="12">Aucun évènement</th>
+					{% endif %}
+				</tr>
+			</tfoot>
+</table>
+</section>
+</main>
+{% if popup[0] == "participant"  %}
+<input id='popup' type="hidden" value={{ popup[1]}}>
+
+<script type="text/javascript">
 let id = document.querySelector("#popup").value
-$('#deleteModalwithcontraint' + parseInt(id)).modal("show")</script>{% endif %}{% endblock %}
+$('#deleteModalwithcontraint' + parseInt(id)).modal("show")</script>{% endif %}
+{% endblock %}

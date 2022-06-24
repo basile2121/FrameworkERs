@@ -21,6 +21,27 @@ a.btn.btn-danger {
     box-shadow:0 0 0.5em black;
     cursor: pointer;
 }
+.bg-vert {
+    background-color: #28a745!important;
+}
+.bg-bleu {
+    background-color: #007bff !important;
+}
+.bgInfo {
+    background-color: #17a2b8!important;
+}
+.bgWarning {
+    background-color: #ffc107!important;
+}
+.bgSecondary {
+    background-color: #6c757d!important;
+}
+.bgDanger {
+    background-color: #dc3545!important;
+}
+.bgDark {
+    background-color: #343a40!important;
+}
 
 #menu {
     display: flex;

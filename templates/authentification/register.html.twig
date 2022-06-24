@@ -1,5 +1,9 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/profilUser.css"/>
 
+{% endblock %}
 {% block title %}
 	Registration
 {% endblock %}
@@ -10,10 +14,10 @@
 			{{msg}}
 		</div>
 	{% endif %}
-	<div class="col-4 m-auto py-5">
-		<h1>Veuillez vous enregistrer</h1>
+	<section class="card event col-5 py-2" style="margin: 20px auto;">
+		<h1 class="m-auto">Veuillez vous enregistrer</h1>
 		<form method="POST" action="/register" class="py-5">
-            
+            <div id="createEvent">
 			<div class="form-group">
 				<label for="nom">Nom</label>
 				<input type="text" maxlength="255" name="nom" class="form-control" id="nom" placeholder="Nom" required>
@@ -93,11 +97,13 @@
 					</div>
 				{% endif %}
 			{% endif %}
-            
-			<div class="form-group">
-				<button type="submit" class="btn btn-primary mt-3">S'enregistrer</button>
+        </div>
+			<div id="bouton">
+				<button type="submit" class="btn btn-success mt-3">S'enregistrer</button>
+				<a href="/" class="btn btn-danger mt-3 text-white">Retour</a>
 			</div>
 		</form>
+		</section>
 	</div>
 </div>
 {% endblock %}
