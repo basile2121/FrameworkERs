@@ -22,7 +22,7 @@
             <p>Nombre de participant : {{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }}</p>
             <div class="form-group">
                 <label for="nbParticipantMax">Nombre de participant max</label>
-                <input type="text" maxlength="255" pattern="[0-9]+" name="nbParticipantMax" class="form-control" id="nbParticipantMax" value="{{ evenement.nbParticipantsMax }}" placeholder="Nombre de participants max" required>
+                <input type="number" pattern="[0-9]+" name="nbParticipantMax" class="form-control" id="nbParticipantMax" value="{{ evenement.nbParticipantsMax }}" placeholder="Nombre de participants max" required min="{{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }}">
             </div>
             <div class="form-group">
                 <label for="prix">Prix</label>

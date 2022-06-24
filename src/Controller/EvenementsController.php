@@ -138,6 +138,15 @@ class EvenementsController extends AbstractController
     #[Route(path: "/evenement", httpMethod: 'GET', name: "evenement",)]
     public function evenement(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, Request $request, Session $session)
     {
+
+        $idEvent = $request->query->get('id');
+
+        $event = $evenementsRepository->selectOneById($idEvent);
+        // Récuperation du nombre de participant actuel et le nombre de participant maximum accepté
+        $arrayParticipe = $this->getNbParticipants($idEvent, $event, $evenementsRepository, $participeRepository);
+        $nbParticipant = $arrayParticipe[0];
+        $nbParticipantMax = $arrayParticipe[1];
+        $completEvent = "";
         $noConnectedMessage = null;
         $alreadyParticipe = null;
 
@@ -149,6 +158,13 @@ class EvenementsController extends AbstractController
         } else {
             $noConnectedMessage = 'Vous devez vous connecter pour vous inscrire à un évènement';
         }
+
+        if ($nbParticipant +1 >= $nbParticipantMax) {
+            $completEvent = "complet";
+        }
+          
+    
+
         
 
         echo $this->twig->render('evenements/evenement.html.twig', [
@@ -158,7 +174,8 @@ class EvenementsController extends AbstractController
             'errorParticiper' => $session->get('errorParticiper'),
             'alreadyParticipe' => $alreadyParticipe,
             'noConnectedMessage' => $noConnectedMessage,
-            'place' => $place
+            'place' => $place,
+            'completEvent' => $completEvent
         ]);
 
         $session->delete('successParticiper');
