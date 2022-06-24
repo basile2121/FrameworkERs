@@ -59,7 +59,6 @@ class EvenementsController extends AbstractController
     #[Route(path: "/evenements/filter", httpMethod: 'GET', name: "evenements_filter",)]
     public function evenementsFilter(EvenementsRepository $evenementsRepository,CategoriesRepository $categoriesRepository, StatutsRepository $statutsRepository, AdressesRepository $adressesRepository, Request $request)
     {
-
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
         $adresses = $adressesRepository->selectAll();
@@ -166,9 +165,7 @@ class EvenementsController extends AbstractController
     }
 
     /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
+     * @throws ReflectionException
      */
     #[Route(path: "/evenement/participe", name: "evenement_participe")]
     public function participeEvenement(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository ,Session $session, Request $request, StatutsRepository $statutsRepository)
@@ -176,29 +173,17 @@ class EvenementsController extends AbstractController
         $id = $request->query->get('idEvenement');
 
         $evenement = $evenementsRepository->selectOneById($id);
-        $participes = $participeRepository->selectAll();
-        
+        // Récuperation du nombre de participant actuel et le nombre de participant maximum accepté
+        $arrayParticipe = $this->getNbParticipants($id, $evenement, $evenementsRepository, $participeRepository);
+        $nbParticipant = $arrayParticipe[0];
+        $nbParticipantMax = $arrayParticipe[1];
 
-        $nbParticipantMax = $evenement->getNbParticipantsMax();
-        $nbParticipants = $this->_getNbParticipants([], $participes, $id);
-        $nbParticipant = count($nbParticipants[$id]);
         if ($nbParticipant < $nbParticipantMax) {
             // Ajout de la participation
-            $participe = new Participe();
-            $participe->setIdEvenement($id);
-            $participe->setIdUtilisateur(intval($_SESSION['id']));
-            $participeRepository->save($participe);
+            $this->_addUtilisateurEvenement($id, $participeRepository);
+            // Mise à jour du statut
+            $this->_changeStatutEvenement($nbParticipant + 1, $nbParticipantMax, $evenement, $statutsRepository, $evenementsRepository);
 
-
-            $pourcent = (($nbParticipant + 1) / $nbParticipantMax) * 100;
-
-            if ($pourcent > 80) {
-                $statut = $statutsRepository->selectOneByLibelle('Presque complet');
-                $evenement->setStatuts($statut);
-            } else if ($pourcent === 100) {
-                $statut = $statutsRepository->selectOneByLibelle('Complet');
-                $evenement->setStatuts($statut);
-            }
             $session->set('successParticiper', 'Participation pris en compte');
         } else {
             $session->set('errorParticiper', 'Evenement complet impossible d\'y participer');
@@ -208,16 +193,20 @@ class EvenementsController extends AbstractController
     }
 
     /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
+     * @throws ReflectionException
      */
     #[Route(path: "/evenement/desincription", name: "evenement_ne_plus_participe")]
-    public function deleteParticipation(ParticipeRepository $participeRepository , Session $session, Request $request)
+    public function deleteParticipation(ParticipeRepository $participeRepository, EvenementsRepository $evenementsRepository, StatutsRepository $statutsRepository, Session $session, Request $request)
     {
         $idUser = $_SESSION['id'];
         $idEvent= $request->query->get('idEvenement');
         $participeRepository->deleteUtilisateur($idUser, $idEvent);
+        $evenement = $evenementsRepository->selectOneById($idEvent);
+
+        // Récuperation du nombre de participant actuel et le nombre de participant maximum accepté
+        $arrayParticipe = $this->getNbParticipants($idEvent, $evenement, $evenementsRepository, $participeRepository);
+        // Mise à jour du statut
+        $this->_changeStatutEvenement($arrayParticipe[0] - 1, $arrayParticipe[1], $evenement, $statutsRepository, $evenementsRepository);
         
         $session->set('desinscription', 'Vous êtes bien désinscrit de l\'évènement');
         header("Location: /evenement?id=" . $idEvent );
@@ -596,6 +585,55 @@ class EvenementsController extends AbstractController
             }
         }
         return $evenementsCategories;
+    }
+
+    /**
+     * Ajout de la participation
+     * @param int $id
+     * @param ParticipeRepository $participeRepository
+     */
+    private function _addUtilisateurEvenement(int $id,ParticipeRepository $participeRepository ) {
+        $participe = new Participe();
+        $participe->setIdEvenement($id);
+        $participe->setIdUtilisateur(intval($_SESSION['id']));
+        $participeRepository->save($participe);
+    }
+
+    /**
+     * Changer le statut de l'evenement lors d'une participation ou d'une désincription
+     * @param int $nbParticipant
+     * @param int $nbParticipantMax
+     * @param Evenements $evenement
+     * @param StatutsRepository $statutsRepository
+     * @param EvenementsRepository $evenementsRepository
+     * @throws ReflectionException
+     */
+    private function _changeStatutEvenement(int $nbParticipant, int $nbParticipantMax, Evenements $evenement, StatutsRepository $statutsRepository, EvenementsRepository $evenementsRepository) {
+        $pourcent = ($nbParticipant / $nbParticipantMax) * 100;
+        if ($pourcent > 80 && $pourcent < 100) {
+            $statut = $statutsRepository->selectOneByLibelle('Presque complet');
+            $evenement->setIdStatut($statut[0]->getIdStatut());
+        } else if ($pourcent === 100) {
+            $statut = $statutsRepository->selectOneByLibelle('Complet');
+            $evenement->setIdStatut($statut[0]->getIdStatut());
+        }
+        $evenementsRepository->update($evenement);
+    }
+
+    /**
+     * @param int $id
+     * @param Evenements $evenement
+     * @param EvenementsRepository $evenementsRepository
+     * @param ParticipeRepository $participeRepository
+     * @return array
+     */
+    private function getNbParticipants(int $id, Evenements $evenement, EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository): array{
+        $participes = $participeRepository->selectAll();
+        $nbParticipantMax = $evenement->getNbParticipantsMax();
+        $nbParticipantArray = $this->_getNbParticipants([], $participes, $id);
+        $nbParticipant = count($nbParticipantArray[$id]);
+
+        return [$nbParticipant,$nbParticipantMax];
     }
    
 }

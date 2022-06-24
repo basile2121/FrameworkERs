@@ -14,7 +14,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class IndexController extends AbstractController
+class HomeController extends AbstractController
 {
 
   
@@ -27,19 +27,16 @@ class IndexController extends AbstractController
     #[Route(path: "/", name: "accueil")]
     public function index(UtilisateursRepository $utilisateursRepository, EvenementsRepository $evenementsRepository, Session $session, StatutsRepository $statusRepository)
     {
-       $this->_setPastStatus($evenementsRepository, $statusRepository);
+        $this->_setPastStatus($evenementsRepository, $statusRepository);
         $whiteNavbar = true;
         $evenementsAVenir = $evenementsRepository->getEvenementAVenir();
         $evenementsProchain = $evenementsRepository->getEvenementProchain();
-        //Résultat permettant de récupérer trois évenèments récemment ajouté
+        // Résultat permettant de récupérer trois évenèments récemment ajouté
         $conditions = [];
         $conditions[] = "s.libelle_statut != ?";
         $parameters = [];
         $parameters[] = 'Passé';
         $evenementsRecentAjoute = $evenementsRepository->filter($conditions, $parameters ,'JOIN statuts as s ON evenements.id_statut = s.id_statut','created_at', 'DESC', 'LIMIT 3');
-
-
-
 
         if(!empty($_SESSION)){
             $user = $utilisateursRepository->selectOneById($_SESSION["id"]);
@@ -77,7 +74,6 @@ class IndexController extends AbstractController
     #[Route(path: "/home/evenements/filter", httpMethod: "GET", name: "filtre_evenement_accueil")]
     public function evenementFilter(EvenementsRepository $evenementsRepository, Request $request)
     {
-        $this->_setPastStatus($evenementsRepository, $statusRepository);
         $evenementError= "";
         $conditions = [];
         $parameters = [];
@@ -110,22 +106,19 @@ class IndexController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function _setPastStatus(EvenementsRepository $evenementsRepository, StatutsRepository $statusRepository)
     {
         $statut = $statusRepository->selectOneByLibelle("Passé");
         
         $date = new DateTime();
-        // var_dump("Voici l'objet Date :" );
-        // var_dump( $date);
         $evenements = $evenementsRepository->selectAll();
         foreach($evenements as $event){
             if($event->getDate() <= $date && $event->getStatuts()->getIdStatut() !== $statut[0]->getIdStatut()){
-                // var_dump($event);
                 $event->setIdStatut($statut[0]->getIdStatut());
-            
                 $evenementsRepository->update($event);
- 
-
             }
         }
     }
