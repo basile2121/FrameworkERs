@@ -6,6 +6,7 @@ use App\Entity\Adresses;
 use App\Entity\Categories;
 use App\Repository\AdressesRepository;
 use App\Repository\CategoriesRepository;
+use App\Repository\UtilisateursRepository;
 use App\Routing\Attribute\Route;
 use App\Session\Session;
 use Exception;
@@ -23,8 +24,9 @@ class CategoriesController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/categories", name: "admin_categories",)]
-    public function categories(CategoriesRepository $categoriesRepository, Session $session)
+    public function categories(CategoriesRepository $categoriesRepository, Session $session, UtilisateursRepository $utilisateursRepository)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $categories = $categoriesRepository->selectAll();
 
         echo $this->twig->render('admin/categories/admin_categorie.html.twig', [
@@ -41,8 +43,9 @@ class CategoriesController extends AbstractController
      * @throws ReflectionException
      */
     #[Route(path: "/admin/categories/filter", httpMethod: 'GET', name: "admin_categories_filter",)]
-    public function categoriesFilter(CategoriesRepository $categoriesRepository, Request $request)
+    public function categoriesFilter(CategoriesRepository $categoriesRepository, Request $request, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $conditions = [];
         $parameters = [];
         $filtres = [];
@@ -68,8 +71,9 @@ class CategoriesController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/create/categorie", name: "admin_create_categories",)]
-    public function createCategorie()
+    public function createCategorie(UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $urlRedirection = $_SERVER['HTTP_REFERER'];
         } else {
@@ -85,8 +89,9 @@ class CategoriesController extends AbstractController
      * @throws Exception
      */
     #[Route(path: "/admin/add/categories", httpMethod: 'POST', name: "admin_add_categories",)]
-    public function addCategorie(CategoriesRepository $categoriesRepository)
+    public function addCategorie(CategoriesRepository $categoriesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $categorie = new Categories();
         $categorie->setLibelleCategorie($_POST['categorie']);
 
@@ -99,9 +104,10 @@ class CategoriesController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/admin/edit/categories", httpMethod: 'GET', name: "admin_edit_categories",)]
-    public function editCategorie(CategoriesRepository $categoriesRepository, Request $request)
+    #[Route(path: "/admin/edit/categories", httpMethod: 'GET', name: "admin_edit_categories")]
+    public function editCategorie(CategoriesRepository $categoriesRepository, Request $request, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = $request->query->get('id');
         $categorie = $categoriesRepository->selectOneById($id);
 
@@ -115,8 +121,9 @@ class CategoriesController extends AbstractController
      * @throws Exception
      */
     #[Route(path: "/admin/update/categories", httpMethod: 'POST', name: "admin_update_categories",)]
-    public function updateCategorie(CategoriesRepository $categoriesRepository)
+    public function updateCategorie(CategoriesRepository $categoriesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $categorie = $categoriesRepository->selectOneById(intval($_POST['id']));
         $categorie->setLibelleCategorie($_POST['categorie']);
 
@@ -127,8 +134,9 @@ class CategoriesController extends AbstractController
 
 
     #[Route(path: "/admin/delete/categories", httpMethod: 'POST', name: "admin_delete_categories")]
-    public function deleteCategorie(CategoriesRepository $categoriesRepository ,Session $session)
+    public function deleteCategorie(CategoriesRepository $categoriesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = intval($_POST['id']);
 
         $evenementsWithCategorie = $categoriesRepository->verifContraintsEvenementCategories($id);

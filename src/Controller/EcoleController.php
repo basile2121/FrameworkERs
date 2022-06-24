@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\EcolesRepository;
 use App\Repository\PromotionsRepository;
 use App\Entity\Ecoles;
+use App\Repository\UtilisateursRepository;
 use App\Routing\Attribute\Route;
 use App\Session\Session;
 use PHPUnit\Util\Exception;
@@ -22,8 +23,9 @@ class EcoleController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/ecoles", httpMethod: 'GET',  name: "admin_ecoles",)]
-    public function ecoles(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository , Session $session)
+    public function ecoles(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
 
@@ -43,8 +45,9 @@ class EcoleController extends AbstractController
      * @throws ReflectionException
      */
     #[Route(path: "/admin/ecoles/filter", httpMethod: 'GET', name: "admin_ecoles_filter",)]
-    public function ecolesFilter(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository, Request $request)
+    public function ecolesFilter(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository, Request $request, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $promotions = $promotionsRepository->selectAll();
 
         $conditions = [];
@@ -73,8 +76,9 @@ class EcoleController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/create/ecoles", name: "admin_create_ecole",)]
-    public function createEcoles(EcolesRepository $ecolesRepository)
+    public function createEcoles(EcolesRepository $ecolesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $ecoles = $ecolesRepository->selectAll();
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $urlRedirection = $_SERVER['HTTP_REFERER'];
@@ -92,8 +96,9 @@ class EcoleController extends AbstractController
      * @throws Exception
      */
     #[Route(path: "/admin/add/ecoles", httpMethod: 'POST', name: "admin_add_ecoles",)]
-    public function addEcoles(EcolesRepository $ecolesRepository)
+    public function addEcoles(EcolesRepository $ecolesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $ecoles = new Ecoles();
         $ecoles->setNomEcole($_POST['nomEcole']);
 
@@ -107,8 +112,9 @@ class EcoleController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/edit/ecoles", httpMethod: 'GET', name: "admin_edit_ecoles",)]
-    public function editEcoles(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository, Request $request)
+    public function editEcoles(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository, Request $request, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = $request->query->get('id');
 
         $ecole = $ecolesRepository->selectOneById($id);
@@ -125,8 +131,9 @@ class EcoleController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: "/admin/update/ecoles", httpMethod: 'POST', name: "admin_update_ecoles",)]
-    public function updateEcoles(EcolesRepository $ecolesRepository)
+    public function updateEcoles(EcolesRepository $ecolesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $ecole = $ecolesRepository->selectOneById(intval($_POST['id']));
 
         $ecole->setNomEcole($_POST['nomEcole']);
@@ -137,8 +144,9 @@ class EcoleController extends AbstractController
 
 
     #[Route(path: "/admin/delete/ecoles", httpMethod: 'POST', name: "admin_delete_ecoles")]
-    public function deleteEcoles(EcolesRepository $ecolesRepository, Session $session)
+    public function deleteEcoles(EcolesRepository $ecolesRepository, Session $session, UtilisateursRepository $utilisateursRepository)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = intval($_POST['id']);
         $promotions = $ecolesRepository->verifContraintsPromotions($id);
         if ($promotions !== null) {

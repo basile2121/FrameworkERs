@@ -12,30 +12,40 @@
 	<h1 class="display-1 text-center mt-5">Espace administration Frameworkers</h1>
 	<main>
 		<section id="menu">
-			<div class="card py-5 bg-success" style="width: 18rem;">
-				<a href="/admin/create/evenements">Créer un évènement</a>
-			</div>
-			<div class="card py-5 bg-primary" style="width: 18rem;">
-				<a href="/admin/evenements">Gestion évènements</a>
-			</div>
-			<div class="card py-5 bg-info" style="width: 18rem;">
-				<a href="/admin/utilisateurs">Gestion utilisateurs</a>
-			</div>
-			<div class="card py-5 bg-warning" style="width: 18rem;">
-				<a href="/admin/ecoles">Gestion écoles</a>
-			</div>
-			<div class="card py-5 bg-secondary" style="width: 18rem;">
-				<a href="/admin/adresses">Gestion adresses</a>
-			</div>
-			<div class="card py-5 bg-danger" style="width: 18rem;">
-				<a href="/admin/promotions">Gestion promotions</a>
-			</div>
-			<div class="card py-5 bg-dark" style="width: 18rem;">
-				<a href="/admin/categories">Gestion catégories</a>
-			</div>
+			{% if libelle_role == 'BDE' %}
+				<div class="card bg-success" style="width: 18rem;">
+					<a href="/bde/create/evenements">Créer un évènement</a>
+				</div>
+				<div class="card py-5 bg-primary" style="width: 20rem;">
+					<a href="/bde/evenements">Gérer mes évènements</a>
+				</div>
+			{% elseif libelle_role == 'ADMIN' or libelle_role == 'SUPER_ADMIN' %}
+				<div class="card py-5 bg-success" style="width: 18rem;">
+					<a href="/admin/create/evenements">Créer un évènement</a>
+				</div>
+				<div class="card py-5 bg-primary" style="width: 20rem;">
+					<a href="/bde/evenements">Gérer mes évènements</a>
+				</div>
+				<div class="card py-5 bg-primary" style="width: 18rem;">
+					<a href="/admin/evenements">Gestion évènements</a>
+				</div>
+				<div class="card py-5 bg-info" style="width: 18rem;">
+					<a href="/admin/utilisateurs">Gestion utilisateurs</a>
+				</div>
+				<div class="card py-5 bg-warning" style="width: 18rem;">
+					<a href="/admin/ecoles">Gestion écoles</a>
+				</div>
+				<div class="card py-5 bg-secondary" style="width: 18rem;">
+					<a href="/admin/adresses">Gestion adresses</a>
+				</div>
+				<div class="card py-5 bg-danger" style="width: 18rem;">
+					<a href="/admin/promotions">Gestion promotions</a>
+				</div>
+				<div class="card py-5 bg-dark" style="width: 18rem;">
+					<a href="/admin/categories">Gestion catégories</a>
+				</div>
+			{% endif %}
 		</section>
-
-
 	</main>
 {% endblock %}
 
