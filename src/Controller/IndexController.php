@@ -77,7 +77,7 @@ class IndexController extends AbstractController
     #[Route(path: "/home/evenements/filter", httpMethod: "GET", name: "filtre_evenement_accueil")]
     public function evenementFilter(EvenementsRepository $evenementsRepository, Request $request)
     {
-        $this->_setPastStatus($evenementsRepository, $statusRepository);
+      
         $evenementError= "";
         $conditions = [];
         $parameters = [];
