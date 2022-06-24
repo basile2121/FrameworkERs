@@ -244,9 +244,10 @@ class EvenementsController extends AbstractController
                                     StatutsRepository $statutsRepository,
                                     AdressesRepository $adressesRepository,
                                     ParticipeRepository $participeRepository,
-                                    Session $session
+                                    Session $session, UtilisateursRepository $utilisateursRepository
     )
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $evenements = $evenementsRepository->selectAll('date', 'DESC');
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
@@ -277,9 +278,10 @@ class EvenementsController extends AbstractController
                                      StatutsRepository $statutsRepository,
                                      AdressesRepository $adressesRepository,
                                      ParticipeRepository $participeRepository,
-                                     Request $request,
+                                     Request $request, UtilisateursRepository $utilisateursRepository, Session $session
     )
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
         $adresses = $adressesRepository->selectAll();
@@ -359,9 +361,10 @@ class EvenementsController extends AbstractController
     public function createEvenements(CategoriesRepository $categoriesRepository,
                                    StatutsRepository $statutsRepository,
                                    AdressesRepository $adressesRepository,
-                                   ParticipeRepository $participeRepository
+                                    UtilisateursRepository $utilisateursRepository, Session $session
     )
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $adresses = $adressesRepository->selectAll();
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
@@ -380,8 +383,9 @@ class EvenementsController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: "/admin/add/evenements", httpMethod: 'POST', name: "admin_add_evenements",)]
-    public function addEvenements(EvenementsRepository $evenementsRepository , MediasRepository $mediasRepository)
+    public function addEvenements(EvenementsRepository $evenementsRepository , MediasRepository $mediasRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         if (!isset($_FILES['imageEvent'])) {
             echo "Erreur : pas d'image";
             return;
@@ -438,9 +442,10 @@ class EvenementsController extends AbstractController
                                    StatutsRepository $statutsRepository,
                                    AdressesRepository $adressesRepository,
                                    ParticipeRepository $participeRepository,
-                                   Request $request,
+                                   Request $request, UtilisateursRepository $utilisateursRepository, Session $session
     )
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = $request->query->get('id');
         $evenement = $evenementsRepository->selectOneById($id);
         $adresses = $adressesRepository->selectAll();
@@ -462,8 +467,9 @@ class EvenementsController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: "/admin/update/evenements", httpMethod: 'POST', name: "admin_update_evenements",)]
-    public function updateEvenements(EvenementsRepository $evenementsRepository, MediasRepository $mediasRepository)
+    public function updateEvenements(EvenementsRepository $evenementsRepository, MediasRepository $mediasRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $evenement = $evenementsRepository->selectOneById(intval($_POST['id']));
 
         $evenement->setTitre($_POST['evenementTitle']);
@@ -508,8 +514,9 @@ class EvenementsController extends AbstractController
      * @throws ReflectionException
      */
     #[Route(path: "/admin/delete/evenements", httpMethod: 'POST', name: "admin_delete_evenements")]
-    public function deleteEvenements(EvenementsRepository $evenementsRepository,Session $session)
+    public function deleteEvenements(EvenementsRepository $evenementsRepository,Session $session, UtilisateursRepository $utilisateursRepository)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $session->delete('popup');
         $id = intval($_POST['id']);
         $utilisateursParticipantEvenement = $evenementsRepository->verifContraintsUtilisateursParticipes($id);
@@ -524,8 +531,9 @@ class EvenementsController extends AbstractController
 
 
     #[Route(path: "/admin/delete/evenements/cascade", httpMethod: 'POST', name: "admin_delete_evenements_cascade")]
-    public function deleteEvenementsCascade(EvenementsRepository $evenementsRepository)
+    public function deleteEvenementsCascade(EvenementsRepository $evenementsRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = intval($_POST['id']);
         $evenementsRepository->deleteCascadeEvenementParticipe($id);
         header('Location: /admin/evenements');
@@ -539,8 +547,9 @@ class EvenementsController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/evenements/list/utilisateurs", httpMethod: 'GET', name: "admin_evenements_list_utilisateurs",)]
-    public function adminEvenementsListUtilisateurs(Request $request, EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, UtilisateursRepository $utilisateursRepository)
+    public function adminEvenementsListUtilisateurs(Request $request, EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = $request->query->get('id');
         $evenement = $evenementsRepository->selectOneById($id);
         $participes = $participeRepository->selectAll();
@@ -559,8 +568,9 @@ class EvenementsController extends AbstractController
     }
 
     #[Route(path: "/admin/delete/evenement/utilisateur", httpMethod: 'POST', name: "admin_delete_evenement_utilisateur")]
-    public function deleteUtilisateur(ParticipeRepository $participeRepository)
+    public function deleteUtilisateur(ParticipeRepository $participeRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $idUtilisateur = intval($_POST['idUtilisateur']);
         $idEvenement = intval($_POST['idEvenement']);
         $participeRepository->deleteUtilisateur($idUtilisateur, $idEvenement);

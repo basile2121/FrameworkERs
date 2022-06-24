@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\EcolesRepository;
 use App\Repository\PromotionsRepository;
 use App\Entity\Promotions;
+use App\Repository\UtilisateursRepository;
 use App\Routing\Attribute\Route;
 use App\Session\Session;
 use Exception;
@@ -22,8 +23,9 @@ class PromotionController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/promotions", name: "admin_promotions",)]
-    public function promotions(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository ,Session $session)
+    public function promotions(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository , UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
 
@@ -42,8 +44,9 @@ class PromotionController extends AbstractController
      * @throws ReflectionException
      */
     #[Route(path: "/admin/promotions/filter", httpMethod: 'GET', name: "admin_promotions_filter",)]
-    public function promotionsFilter(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository, Request $request)
+    public function promotionsFilter(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository, Request $request, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
 
@@ -79,8 +82,9 @@ class PromotionController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/edit/promotions", httpMethod: 'GET', name: "admin_edit_promotions",)]
-    public function editPromotions(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository, Request $request)
+    public function editPromotions(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository, Request $request, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = $request->query->get('id');
         $promotion = $promotionsRepository->selectOneById($id);
         $ecoles = $ecolesRepository->selectAll();
@@ -96,8 +100,9 @@ class PromotionController extends AbstractController
      * @throws Exception
      */
     #[Route(path: "/admin/update/promotions", httpMethod: 'POST', name: "admin_update_promotions")]
-    public function updatePromotions(PromotionsRepository $promotionsRepository)
+    public function updatePromotions(PromotionsRepository $promotionsRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $promotion = $promotionsRepository->selectOneById(intval($_POST['id']));
 
         $promotion->setLibellePromotion($_POST['libellePromotion']);
@@ -113,8 +118,9 @@ class PromotionController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/create/promotions", name: "admin_create_promotions",)]
-    public function createPromotions(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository)
+    public function createPromotions(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $promotions = $promotionsRepository->selectAll();
         $ecoles = $ecolesRepository->selectAll();
         if (!empty($_SERVER['HTTP_REFERER'])) {
@@ -134,8 +140,9 @@ class PromotionController extends AbstractController
      * @throws Exception
      */
     #[Route(path: "/admin/add/promotions", httpMethod: 'POST', name: "admin_add_promotions",)]
-    public function addEcoles(PromotionsRepository $promotionsRepository)
+    public function addEcoles(PromotionsRepository $promotionsRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $promotions = new Promotions();
         $promotions->setLibellePromotion($_POST['libellePromotion']);
         $promotions->setIdEcole(intval($_POST['idEcole']));
@@ -145,8 +152,9 @@ class PromotionController extends AbstractController
     }
 
     #[Route(path: "/admin/delete/promotions", httpMethod: 'POST', name: "admin_delete_promotions")]
-    public function deletePromotions(PromotionsRepository $promotionsRepository, Session $session)
+    public function deletePromotions(PromotionsRepository $promotionsRepository, Session $session, UtilisateursRepository $utilisateursRepository)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = intval($_POST['idPromotion']);
         $utilisateursContraintsPromotions = $promotionsRepository->verifContraintsPromotions($id);
 

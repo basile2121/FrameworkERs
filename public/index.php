@@ -87,6 +87,10 @@ $container->set(CategoriesRepository::class, $categoriesRepository);
 $container->set(AdressesRepository::class, $adressesRepository);
 $container->set(PromotionsRepository::class, $promotionsRepository);
 
+if ($session->get('id') !== null) {
+    $twig->addGlobal('libelle_role', $utilisateursRepository->selectOneById($session->get('id'))->getRoles()->getLibelleRole());
+}
+
 
 // Routage
 $router = new Router($container, new ArgumentResolver());

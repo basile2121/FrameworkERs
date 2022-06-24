@@ -16,8 +16,6 @@ use Twig\Error\SyntaxError;
 
 class HomeController extends AbstractController
 {
-
-  
     /**
      * @throws SyntaxError
      * @throws ReflectionException

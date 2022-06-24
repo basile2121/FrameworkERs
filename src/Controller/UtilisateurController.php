@@ -26,6 +26,7 @@ class UtilisateurController extends AbstractController
     #[Route(path: "/admin/utilisateurs", name: "admin_utilisateurs",)]
     public function utilisateurs(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository , Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
         $roles = $rolesRepository->selectAll();
@@ -49,8 +50,9 @@ class UtilisateurController extends AbstractController
      * @throws ReflectionException
      */
     #[Route(path: "/admin/utilisateurs/filter", httpMethod: 'GET', name: "admin_utilisateurs_filter",)]
-    public function utilisateursFilter(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository, Request $request)
+    public function utilisateursFilter(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository,Session $session, Request $request)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
         $roles = $rolesRepository->selectAll();
@@ -104,8 +106,9 @@ class UtilisateurController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/create/utilisateurs", name: "admin_create_utilisateurs",)]
-    public function createUtilisateurs(PromotionsRepository $promotionsRepository, RolesRepository $rolesRepository, EcolesRepository $ecolesRepository)
+    public function createUtilisateurs(PromotionsRepository $promotionsRepository, RolesRepository $rolesRepository,Session $session, UtilisateursRepository $utilisateursRepository, EcolesRepository $ecolesRepository)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $roles = $rolesRepository->selectAll();
         $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
@@ -122,8 +125,9 @@ class UtilisateurController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: "/admin/add/utilisateurs", httpMethod: 'POST', name: "admin_add_utilisateurs",)]
-    public function addUtilisateurs(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository)
+    public function addUtilisateurs(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository,Session $session, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $authController = new AuthentificationController($this->twig);
         $verifRegister = $authController->_verifRegister($utilisateursRepository);
 
@@ -160,8 +164,9 @@ class UtilisateurController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/edit/utilisateurs", httpMethod: 'GET', name: "admin_edit_utilisateurs",)]
-    public function editUtilisateurs(PromotionsRepository $promotionsRepository, RolesRepository $rolesRepository, UtilisateursRepository $utilisateursRepository, Request $request)
+    public function editUtilisateurs(PromotionsRepository $promotionsRepository, RolesRepository $rolesRepository,Session $session, UtilisateursRepository $utilisateursRepository, Request $request)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = $request->query->get('id');
         $utilisateur = $utilisateursRepository->selectOneById($id);
         $promotions = $promotionsRepository->selectAll();
@@ -179,8 +184,9 @@ class UtilisateurController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: "/admin/update/utilisateurs", httpMethod: 'POST', name: "admin_update_utilisateurs",)]
-    public function updateUtilisateurs(UtilisateursRepository $utilisateursRepository)
+    public function updateUtilisateurs(Session $session, UtilisateursRepository $utilisateursRepository)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $user = $utilisateursRepository->selectOneById(intval($_POST['id']));
 
         $user->setNom($_POST['nom']);
@@ -201,8 +207,9 @@ class UtilisateurController extends AbstractController
      * @throws ReflectionException
      */
     #[Route(path: "/admin/delete/utilisateurs", httpMethod: 'POST', name: "admin_delete_utilisateurs")]
-    public function deleteUtilisateurs(UtilisateursRepository $utilisateursRepository , Session $session)
+    public function deleteUtilisateurs(UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = intval($_POST['idUtilisateur']);
 
         $evenementsCreatedByUser = $utilisateursRepository->verifContraintsEvenementCreate($id);
@@ -220,8 +227,9 @@ class UtilisateurController extends AbstractController
     }
 
     #[Route(path: "/admin/delete/utilisateurs/cascade", httpMethod: 'POST', name: "admin_delete_utilisateurs_cascade")]
-    public function deleteEvenementsCascade(UtilisateursRepository $utilisateursRepository)
+    public function deleteEvenementsCascade(UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = intval($_POST['idUtilisateur']);
         $utilisateursRepository->deleteCascadeUtilisateur($id);
         header('Location: /admin/utilisateurs');

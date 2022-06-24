@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Adresses;
 use App\Repository\AdressesRepository;
+use App\Repository\UtilisateursRepository;
 use App\Routing\Attribute\Route;
 use App\Session\Session;
 use Exception;
@@ -21,8 +22,9 @@ class AdresseController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/adresses", name: "admin_adresses",)]
-    public function adresses(AdressesRepository $adressesRepository, Session $session)
+    public function adresses(AdressesRepository $adressesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $adresses = $adressesRepository->selectAll();
        
 
@@ -41,8 +43,9 @@ class AdresseController extends AbstractController
      * @throws ReflectionException
      */
     #[Route(path: "/admin/adresses/filter", httpMethod: 'GET', name: "admin_adresses_filter",)]
-    public function adressesFilter(AdressesRepository $adressesRepository, Request $request)
+    public function adressesFilter(AdressesRepository $adressesRepository, Request $request, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $conditions = [];
         $parameters = [];
         $filtres = [];
@@ -75,8 +78,9 @@ class AdresseController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/create/adresse", name: "admin_create_adresses",)]
-    public function createAdresses(AdressesRepository $adressesRepository)
+    public function createAdresses(AdressesRepository $adressesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $adresses = $adressesRepository->selectAll();
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $urlRedirection = $_SERVER['HTTP_REFERER'];
@@ -96,8 +100,9 @@ class AdresseController extends AbstractController
      * @throws LoaderError|Exception
      */
     #[Route(path: "/admin/add/adresses", httpMethod: 'POST', name: "admin_add_adresses",)]
-    public function addAdresses(AdressesRepository $adressesRepository)
+    public function addAdresses(AdressesRepository $adressesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $adresse = new Adresses();
         $adresse->setLibelleAdresse($_POST['adresse']);
         $adresse->setCpVille($_POST['codePostal']);
@@ -117,8 +122,9 @@ class AdresseController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/edit/adresses", httpMethod: 'GET', name: "admin_edit_adresses",)]
-    public function editAdresses(AdressesRepository $adressesRepository, Request $request)
+    public function editAdresses(AdressesRepository $adressesRepository, Request $request, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = $request->query->get('id');
         $adresse = $adressesRepository->selectOneById($id);
 
@@ -132,8 +138,9 @@ class AdresseController extends AbstractController
      * @throws Exception
      */
     #[Route(path: "/admin/update/adresses", httpMethod: 'POST', name: "admin_update_adresses",)]
-    public function updateAdresses(AdressesRepository $adressesRepository)
+    public function updateAdresses(AdressesRepository $adressesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $adresse = $adressesRepository->selectOneById(intval($_POST['id']));
 
         $adresse->setLibelleAdresse($_POST['adresse']);
@@ -151,8 +158,9 @@ class AdresseController extends AbstractController
 
 
     #[Route(path: "/admin/delete/adresses", httpMethod: 'POST', name: "admin_delete_adresses")]
-    public function deleteAdresses(AdressesRepository $adressesRepository, Session $session)
+    public function deleteAdresses(AdressesRepository $adressesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $id = intval($_POST['idAdresse']);
         $evenementsCreatedByUser = $adressesRepository->verifContraintsAdresse($id);
         if ($evenementsCreatedByUser !== null) {
