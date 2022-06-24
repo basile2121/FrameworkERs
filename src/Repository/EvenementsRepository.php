@@ -48,7 +48,6 @@ final class EvenementsRepository extends AbstractRepository
                         `id_media` = :idMedia,
                         `id_statut` = :idStatut
                         WHERE `id_evenement` = :idEvenement" );
-                        var_dump($stmt);
 
         return $stmt->execute([
             'idEvenement'=> $evenements->getIdEvenement(),
