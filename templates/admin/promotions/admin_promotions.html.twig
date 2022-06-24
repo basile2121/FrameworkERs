@@ -10,27 +10,21 @@
 {% block content %}
     <h1 class=" text-center mt-5">Filtrer les promotions :</h1>
     <main>
-<<<<<<< HEAD
-     <a href="/admin/create/promotions" class="btn btn-primary">Ajouter une promotion</a>
-        <form class="form-admin" method="GET" action="/admin/promotions/filter">
-            <div class="form-group">
-                <label for="filtre_name_promotion">Rechercher une promotion par nom</label>
-                <input type="text" maxlength="255" value="{{ filtres['filtre_name_promotion'] }}" name="filtre_name_promotion" class="form-control" id="filtre_name_promotion" placeholder="Nom de la promotion">
-=======
+
      <a href="/admin/create/promotions" class="add btn btn-info">Ajouter une promotion</a>
      {# Début formulaire des filtres #}
      <section class="formFiltre">
-        <form class="form-admin" method="POST" action="/admin/promotions/filter">
+        <form class="form-admin" method="GET" action="/admin/promotions/filter">
         <div id="filtres" class="cardFiltre">
             <div class="form-group">
-                <label for="filtre_name_promotion">Par nom</label>
-                <input type="text" value="{{ filtres['filtre_name_promotion'] }}" name="filtre_name_promotion" class="form-control" id="filtre_name_promotion" placeholder="Nom de la promotion">
->>>>>>> page_dashboard_admin
+                <label for="filtre_name_promotion">Rechercher une promotion par nom</label>
+                <input type="text" maxlength="255" value="{{ filtres['filtre_name_promotion'] }}" name="filtre_name_promotion" class="form-control" id="filtre_name_promotion" placeholder="Nom de la promotion">
+
             </div>
                <div class="form-group">
                 <label for="filtre_ecole">Par nom de l'école</label>
                 <select name="filtre_ecole" id="filtre_ecole">
-                    <option value="" disabled selected>Selectionner l'école</option>
+                    <option value="" disabled selected>Sélectionner l'école</option>
                     {% for ecole in ecoles %}
                         <option {% if filtres['filtre_ecole'] is defined and ecole.idEcole == filtres['filtre_ecole'] %} selected {% endif %} value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
                     {% endfor %}
@@ -59,17 +53,12 @@
                 <tr>
                     <td scope="row">{{ promotion.libellePromotion }}</th>
                     <td>{{ promotion.ecoles.nomEcole}}</td>
-<<<<<<< HEAD
-                    <td>
-                        <form method="GET" action="/admin/edit/promotions" >
-                            <button type="submit" name="id" class="btn btn-warning" value="{{promotion.idPromotion}}">Modifier</button>
-=======
                     <td id="actions">
-                        <form method="POST" action="/admin/edit/promotions" >
-                            <button type="submit" name="id" class="btn btn-warning" value="{{promotion.idPromotion}}"><img src="http://localhost:8000/image/edit.png" alt="edit" ></button>
->>>>>>> page_dashboard_admin
+                        <form method="GET" action="/admin/edit/promotions" >
+                            <button type="submit" name="id" class="btn btn-warning" value="{{promotion.idPromotion}}"><img src="{{path_logo}}/edit.png" alt="edit" ></button>
+
                         </form>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{promotion.idPromotion  }}"><img src="http://localhost:8000/image/trash.png" alt="delete" ></button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{promotion.idPromotion  }}"><img src="{{path_logo}}/trash.png" alt="delete" ></button>
                     </td>
                 </tr>
                 {% include 'utils/pop-up/delete_promotion_model.html.twig'%}

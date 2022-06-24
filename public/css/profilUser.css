@@ -59,3 +59,16 @@ label {
     transform: translateY(-5px)!important; 
     cursor: pointer;
 }
+a.add {
+    margin:0px!important;
+    font-size: 15px!important;
+    border-radius: 15px;
+    color:white;
+}
+
+a.add:hover {
+    transition: 0.3s;
+    background-color: white; 
+    color:#117a8b!important;
+    cursor: pointer;
+}

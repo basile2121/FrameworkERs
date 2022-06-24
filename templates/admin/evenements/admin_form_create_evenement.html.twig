@@ -20,12 +20,12 @@
                 <input type="text" maxlength="255" name="evenementTitle" class="form-control" id="evenementTitle" placeholder="Titre" required>
             </div>
             <div class="form-group">
-                <label for="evenementSubTitle">Sous titre</label>
+                <label for="evenementSubTitle">Sous-titre</label>
                 <input type="text" maxlength="255" name="evenementSubTitle" class="form-control" id="evenementSubTitle" placeholder="Sous titre" required>
             </div>
             <div class="form-group">
                 <label for="evenementDate">Date de l'événement</label>
-                <input type="datetime-local" name="evenementDate" class="form-control" id="evenementDate" placeholder="Date de l'événement" required>
+                <input type="datetime-local" name="evenementDate" class="form-control" id="evenementDate" placeholder="Date de l'événement"  required>
             </div>
             <div class="form-group">
                 <label for="nbParticipantMax">Nombre de participant max</label>
@@ -40,36 +40,28 @@
                 <textarea name="description" maxlength="40000" class="form-control" id="description" placeholder="Description" required></textarea>
             </div>
             <div class="form-group">
-                <label for="categorieSelect">Categorie</label>
+                <label for="categorieSelect">Catégorie</label>
                 <select name="categorieSelect" id="categorieSelect" required>
-                    <option value="" disabled selected>Selectioner une categorie</option>
+                    <option value="" disabled selected>Sélectionner une catégorie</option>
                     {% for categorie in categories %}
                         <option value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
                     {% endfor %}
                 </select>
-                <a href="/admin/create/categorie">Ajouter une categorie</a>
+                <a href="/admin/create/categorie" class="add btn btn-info">Ajouter une categorie</a>
             </div>
-            <div class="form-group">
-                <label for="statutSelect">Statut</label>
-                <select name="statutSelect" id="statutSelect" required>
-                    <option value="" disabled selected>Selectioner un statut</option>
-                    {% for statut in statuts %}
-                        <option value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+            
             <div class="form-group">
                 <label for="adresseSelect">Adresse</label>
                 <select name="adresseSelect" id="adresseSelect" required>
-                    <option value="" disabled selected>Selectioner une adresse</option>
+                    <option value="" disabled selected>Sélectionner une adresse</option>
                     {% for adresse in adresses %}
                         <option value="{{ adresse.idAdresse }}">{{ adresse.cpVille }} {{ adresse.villeLibelle }} {{ adresse.libelleAdresse }}</option>
                     {% endfor %}
                 </select>
-                <a href="/admin/create/adresse">Ajouter une adresse</a>
+                <a href="/admin/create/adresse" class="add btn btn-info">Ajouter une adresse</a>
             </div>
 					<input type="file" name="imageEvent"/>
-				</div>
+			</div>
 				<div id="bouton">
 					<button type="submit" name="id" class="btn btn-success">Sauvegarder</button>
 					<a href="/admin/evenements" class="btn btn-danger">Retour</a>

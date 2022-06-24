@@ -13,38 +13,29 @@
 	<main>
 		<section id="menu">
 			{% if libelle_role == 'BDE' %}
-				<div class="card bg-success" style="width: 18rem;">
-					<a href="/bde/create/evenements">Créer un évènement</a>
-				</div>
-				<div class="card py-5 bg-primary" style="width: 20rem;">
-					<a href="/bde/evenements">Gérer mes évènements</a>
-				</div>
+			
+				<a href="/bde/create/evenements" class="card py-5 bg-vert text-white" style="width: 18rem;">Créer un évènement</a>
+
+				<a href="/bde/evenements" class="card py-5 bg-bleu text-white" style="width: 18rem;">Gérer mes évènements</a>
+				
 			{% elseif libelle_role == 'ADMIN' or libelle_role == 'SUPER_ADMIN' %}
-				<div class="card py-5 bg-success" style="width: 18rem;">
-					<a href="/admin/create/evenements">Créer un évènement</a>
-				</div>
-				<div class="card py-5 bg-primary" style="width: 20rem;">
-					<a href="/bde/evenements">Gérer mes évènements</a>
-				</div>
-				<div class="card py-5 bg-primary" style="width: 18rem;">
-					<a href="/admin/evenements">Gestion évènements</a>
-				</div>
-				<div class="card py-5 bg-info" style="width: 18rem;">
-					<a href="/admin/utilisateurs">Gestion utilisateurs</a>
-				</div>
-				<div class="card py-5 bg-warning" style="width: 18rem;">
-					<a href="/admin/ecoles">Gestion écoles</a>
-				</div>
-				<div class="card py-5 bg-secondary" style="width: 18rem;">
-					<a href="/admin/adresses">Gestion adresses</a>
-				</div>
-				<div class="card py-5 bg-danger" style="width: 18rem;">
-					<a href="/admin/promotions">Gestion promotions</a>
-				</div>
-				<div class="card py-5 bg-dark" style="width: 18rem;">
-					<a href="/admin/categories">Gestion catégories</a>
-				</div>
-			{% endif %}
+				<a href="/admin/create/evenements" class="card py-5 bg-vert text-white" style="width: 18rem;">Créer un évènement</a>
+
+				<a href="/bde/evenements" class="card py-5 bg-bleu text-white" style="width: 18rem;">Gérer mes évènements</a>
+
+				<a href="/admin/evenements" class="card py-5 bg-bleu text-white" style="width: 18rem;">Gestion évènements</a>
+
+				<a href="/admin/utilisateurs" class="card py-5 bgInfo text-white" style="width: 18rem;">Gestion utilisateurs</a>
+				
+				<a href="/admin/ecoles" class="card py-5 bgWarning text-white" style="width: 18rem;">Gestion écoles</a>
+			
+				<a href="/admin/adresses" class="card py-5 bgSecondary text-white" style="width: 18rem;">Gestion adresses</a>
+				
+				<a href="/admin/promotions" class="card py-5 bgDanger text-white" style="width: 18rem;">Gestion promotions</a>
+			
+				<a href="/admin/categories" class="card py-5 bgDark text-white" style="width: 18rem;">Gestion catégories</a>
+		
+			{% endif %}	
 		</section>
 	</main>
 {% endblock %}

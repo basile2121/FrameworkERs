@@ -383,7 +383,7 @@ class EvenementsController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: "/admin/add/evenements", httpMethod: 'POST', name: "admin_add_evenements",)]
-    public function addEvenements(EvenementsRepository $evenementsRepository , MediasRepository $mediasRepository, UtilisateursRepository $utilisateursRepository, Session $session)
+    public function addEvenements(EvenementsRepository $evenementsRepository , MediasRepository $mediasRepository,StatutsRepository $statutsRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
         $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         if (!isset($_FILES['imageEvent'])) {
@@ -406,6 +406,7 @@ class EvenementsController extends AbstractController
             $mediasRepository->save($media);
 
             $idmedia= $mediasRepository->getLastId();
+            $statut = $statutsRepository->selectOneByLibelle('A venir');
 
             $evenement = new Evenements();
             $evenement->setTitre($_POST['evenementTitle']);
@@ -415,7 +416,7 @@ class EvenementsController extends AbstractController
             $evenement->setPrix($_POST['prix']);
             $evenement->setDescription($_POST['description']);
             $evenement->setIdCategorie(($_POST['categorieSelect']));
-            $evenement->setIdStatut(intval($_POST['statutSelect']));
+            $evenement->setIdStatut($statut[0]->getIdStatut());
             $evenement->setIdAdresse(intval($_POST['adresseSelect']));
             $evenement->setCreatedAt(new DateTime());
             $evenement->setUpdatedAt(new DateTime());

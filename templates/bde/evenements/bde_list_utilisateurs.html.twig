@@ -1,21 +1,40 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/admin.css"/>
 
+{% endblock %}
 {% block title %}Gestions des evenements{% endblock %}
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Les utilisateurs inscrits</h1>
+    <h1 class="text-center mt-5">Les utilisateurs inscrits</h1>
     <main>
-        <div>
+    <section class="formFiltre" style="margin:20px">
+        <div id="filtres" class="cardFiltre">
+            <div class="form-group">
             <p>Titre : {{ evenement.titre }}</p>
+            </div>
+            <div class="form-group">
             <p>Date : {{ evenement.date | date('d-m-Y') }}</p>
+            </div>
+            <div class="form-group">
             <p>Statut : {{ evenement.statuts.libelleStatut }}</p>
+            </div>
+            <div class="form-group">
             <p>Prix : {{ evenement.prix }} €</p>
+            </div>
+            <div class="form-group">
             <p>Inscrits : {{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }} / {{ evenement.nbParticipantsMax }}</p>
-            <a href="/bde/evenements" class="btn btn-primary">Revenir aux evenements</a>
+            </div>
+            <div id="bouton">
+            <a href="/bde/evenements" class="btn btn-success text-white mt-3" style="margin:auto">Revenir aux évènements</a>
+            </div>
         </div>
-        <table class="table table-striped">
-            <thead>
+        </section>
+    <section id="listEvent" class="container-fluid">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
             <tr>
                 <th scope="col">Nom</th>
                 <th scope="col">Prénom</th>
@@ -23,7 +42,7 @@
                 <th scope="col">Date d'inscription</th>
                 <th scope="col">Mail</th>
                 <th scope="col">Téléphone</th>
-                <th scope="col">Role</th>
+                <th scope="col">Rôle</th>
                 <th scope="col">Ecole</th>
                 <th scope="col">Actions</th>
             </tr>
@@ -39,15 +58,17 @@
                     <td>{{ utilisateur.telephone }}</td>
                     <td>{{ utilisateur.roles.libelleRole }}</td>
                     <td>{{ utilisateur.promotions.ecoles.nomEcole }}</td>
-                    <td>
+                    <td id="actions">
+
                         <form method="POST" action="/bde/delete/evenement/utilisateur">
                             <input type="hidden" name="idEvenement" value="{{ evenement.idEvenement }}" />
-                            <button type="submit" name="idUtilisateur" class="btn btn-danger" value="{{ utilisateur.idUtilisateur }}">Supprimer de cet evenement</button>
+                            <button type="submit" name="idUtilisateur" class="btn btn-danger mt-3" value="{{ utilisateur.idUtilisateur }}">Supprimer de cet evenement</button>
                         </form>
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+        </section>
     </main>
 {% endblock %}

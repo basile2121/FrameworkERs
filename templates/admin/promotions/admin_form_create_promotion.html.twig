@@ -20,7 +20,7 @@
              <div class="form-group">
                 <label for="idEcole">Nom école</label>
                 <select name="idEcole" id="idEcole" required>
-                <option value="" disabled selected>Selectionner l'école</option>
+                <option value="" disabled selected>Sélectionner l'école</option>
                     {% for ecole in ecoles %}
                         <option {% if filtres['filtre_Ecole'] is defined and ecole.idEcole == filtres['filtre_Ecole'] %} selected {% endif %} value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
                     {% endfor %}

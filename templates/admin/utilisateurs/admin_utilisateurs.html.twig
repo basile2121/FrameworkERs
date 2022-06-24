@@ -10,31 +10,20 @@
 {% block content %}
     <h1 class="text-center mt-5">Filtrer les utilisateurs :</h1>
     <main>
-<<<<<<< HEAD
-        <a href="/admin/create/utilisateurs">Ajouter un utilisateur</a>
-        <form class="form-admin" method="GET" action="/admin/utilisateurs/filter">
-            <div class="form-group">
-                <label for="searchUserLastName">Rechercher un utilisateur par nom</label>
-                <input type="text" maxlength="255" value="{{ filtres['filtre_lastName'] }}" name="filtre_lastName" class="form-control" id="searchUserLastName" placeholder="Nom de l'utilisateur">
-            </div>
-            <div class="form-group">
-                <label for="searchUserFirstName">Rechercher un utilisateur par son prénom</label>
-                <input type="text" maxlength="255" value="{{ filtres['filtre_firstName'] }}" name="filtre_firstName" class="form-control" id="searchUserFirstName" placeholder="Prénom de l'utilisateur">
-=======
         <a href="/admin/create/utilisateurs" class="add btn btn-info">Ajouter un utilisateur</a>
 
         {# Début formulaire des filtres #}
         <section class="formFiltre">
-        <form class="form-admin" method="POST" action="/admin/utilisateurs/filter">
+        <form class="form-admin" method="GET" action="/admin/utilisateurs/filter">
         <div id="filtres" class="cardFiltre">
             <div class="form-group">
-                <label for="searchUserLastName">Nom :</label>
-                <input type="text" value="{{ filtres['filtre_lastName'] }}" name="filtre_lastName" class="form-control" id="searchUserLastName" placeholder="Nom de l'utilisateur">
+                <label for="searchUserLastName">Nom</label>
+                <input type="text" maxlength="255" value="{{ filtres['filtre_lastName'] }}" name="filtre_lastName" class="form-control" id="searchUserLastName" placeholder="Nom de l'utilisateur">
             </div>
             <div class="form-group">
-                <label for="searchUserFirstName">Prénom :</label>
-                <input type="text" value="{{ filtres['filtre_firstName'] }}" name="filtre_firstName" class="form-control" id="searchUserFirstName" placeholder="Prénom de l'utilisateur">
->>>>>>> page_dashboard_admin
+                <label for="searchUserFirstName">Prénom</label>
+                <input type="text" maxlength="255" value="{{ filtres['filtre_firstName'] }}" name="filtre_firstName" class="form-control" id="searchUserFirstName" placeholder="Prénom de l'utilisateur">
+
             </div>
             <div class="form-group">
                 <label for="ecoles">Ecole :</label>
@@ -48,12 +37,9 @@
             <div class="form-group">
                 <label for="promotions">Promotion :</label>
                 <select class="form-select" name="filtre_promotion" class="form-control" id="promotions">
-<<<<<<< HEAD
-                    <option value='' selected>Selectioner une promotion</option>
-=======
+
                     <option value='' selected>Sélectionner une promotion</option>
-                   
->>>>>>> page_dashboard_admin
+
                 </select>
             </div>
             <div class="form-group">
@@ -106,9 +92,9 @@
 
                     <td id="actions">
                         <form method="GET" action="/admin/edit/utilisateurs" >
-                            <button type="submit" name="id" class="btn btn-warning" value="{{ utilisateur.idUtilisateur}}"><img src="http://localhost:8000/image/edit.png" alt="edit" ></button>
+                            <button type="submit" name="id" class="btn btn-warning" value="{{ utilisateur.idUtilisateur}}"><img src="{{path_logo}}/edit.png" alt="edit" ></button>
                         </form>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{utilisateur.idUtilisateur }}"><img src="http://localhost:8000/image/trash.png" alt="delete" ></button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{utilisateur.idUtilisateur }}"><img src="{{path_logo}}/trash.png" alt="delete" ></button>
 
                     </td>
                 </tr>

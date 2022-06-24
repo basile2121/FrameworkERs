@@ -9,41 +9,19 @@
 
 
 {% block content %}
-<<<<<<< HEAD
-    <h1 class="display-1 text-center mt-5">Modifier la promotion</h1>
-    <main>
-        <form class="form-admin" method="POST" action="/admin/update/promotions">
-            <div class="form-group">
-                <label for="libellePromotion">Nom promotion</label>
-                <input type="text" maxlength="255" name="libellePromotion" class="form-control" id="libellePromotion" value="{{ promotion.libellePromotion }}" placeholder="Nom de la promotion" required>
-            </div>
-             <div class="form-group">
-                <label for="idEcole">Nom école</label>
-                <select name="idEcole" id="idEcole" required>
-                    <option value="" disabled selected>Selectionner l'école</option>
-                       {% for ecole in ecoles %}
-                           <option {% if promotion.idEcole == ecole.idEcole %} selected {% endif %} value="{{ promotion.idEcole }}">{{ ecole.nomEcole }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-             <a href="/admin/create/ecoles" class="btn btn-success">Créer une école</a>
-            <button type="submit" name="id" class="btn btn-primary" value="{{ promotion.idPromotion }}">Sauvegarder</button>
-            <a href="/admin/promotions" class="btn btn-primary">Annuler</a>
-        </form>
-    </main>
-=======
+
 	<h1 class="text-center mt-5">Modifier la promotion</h1>
 	<main>
 		<section class="card event col-5 m-auto">
-			<form class="form-admin" method="POST" action="/admin/update/promotions">
+			<form class="form-admin" method="GET" action="/admin/update/promotions">
 				<div id="createEvent">
 					<div class="form-group">
 						<label for="libellePromotion">Nom promotion</label>
-						<input type="text" name="libellePromotion" class="form-control" id="libellePromotion" value="{{ promotion.libellePromotion }}" placeholder="Nom de la promotion">
+                		<input type="text" maxlength="255" name="libellePromotion" class="form-control" id="libellePromotion" value="{{ promotion.libellePromotion }}" placeholder="Nom de la promotion" required>
 					</div>
 					<div class="form-group">
 						<label for="idEcole">Nom école</label>
-						<select name="idEcole" id="idEcole">
+						<select name="idEcole" id="idEcole" required>
 							{% for ecole in ecoles %}
 								<option {% if promotion.idEcole == ecole.idEcole %} selected {% endif %} value="{{ promotion.idEcole }}">{{ ecole.nomEcole }}</option>
 							{% endfor %}
@@ -62,5 +40,5 @@
 			</form>
 		</section>
 	</main>
->>>>>>> page_dashboard_admin
+
 {% endblock %}
