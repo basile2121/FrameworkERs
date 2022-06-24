@@ -7,17 +7,15 @@ use App\Entity\Medias;
 use App\Entity\Participe;
 use App\Repository\AdressesRepository;
 use App\Repository\CategoriesRepository;
-use App\Repository\EcolesRepository;
 use App\Repository\EvenementsRepository;
 use App\Repository\MediasRepository;
 use App\Repository\ParticipeRepository;
-use App\Repository\RolesRepository;
 use App\Repository\StatutsRepository;
 use App\Repository\UtilisateursRepository;
 use App\Routing\Attribute\Route;
 use App\Session\Session;
 use DateTime;
-use PhpParser\Node\Stmt\TryCatch;
+use Exception;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Error\LoaderError;
@@ -28,6 +26,7 @@ class EvenementsController extends AbstractController
 {
 
     /**
+     * Route pour afficher tout les évenements par catégories
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
@@ -40,6 +39,7 @@ class EvenementsController extends AbstractController
         $statuts = $statutsRepository->selectAll();
         $adresses = $adressesRepository->selectAll();
 
+        // Met en ordres les evenements par catégorie / Uniquement les évenement avec statuts non passé
         $evenementsOrderByCategories = $this->_orderEvenementsInCategories($categoriesRepository, $evenementsRepository->selectAllEvenementNotPast());
 
         echo $this->twig->render('evenements/evenements.html.twig', [
@@ -51,6 +51,7 @@ class EvenementsController extends AbstractController
     }
 
     /**
+     * Route de filtrage des evenements en GET
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
@@ -59,6 +60,7 @@ class EvenementsController extends AbstractController
     #[Route(path: "/evenements/filter", httpMethod: 'GET', name: "evenements_filter",)]
     public function evenementsFilter(EvenementsRepository $evenementsRepository,CategoriesRepository $categoriesRepository, StatutsRepository $statutsRepository, AdressesRepository $adressesRepository, Request $request)
     {
+        // Données pour les selects des filtres
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
         $adresses = $adressesRepository->selectAll();
@@ -66,10 +68,11 @@ class EvenementsController extends AbstractController
         $conditions = [];
         $parameters = [];
         $filtres = [];
+        // Query pour ne pas afficher les évenements avec le statut passé
         $query = 'JOIN statuts as s ON evenements.id_statut = s.id_statut ';
         $andWhereQuery = "s.libelle_statut != 'Passé'";
 
-        // Filtres
+        // Récupérations des attributs get de l'url
         $filtre_titre = $request->query->get('filter_titre');
         $filtre_statut = $request->query->get('filtre_statut');
         $filtre_city = $request->query->get('filtre_city');
@@ -110,16 +113,16 @@ class EvenementsController extends AbstractController
             $conditions[] = 'adresses.cp_ville LIKE ?';
             $parameters[] = '%'.$filtre_cp."%";
         }
-
+        // Filtrage, si date il faut changer le order
         if ($filtre_order_date) {
             $filtres['order_date'] = $filtre_order_date;
-
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $filtre_order_date, '', $andWhereQuery);
         }
         else {
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'','','', $andWhereQuery);
         }
 
+        // On remet les évenements par categorie après le filtrage
         $evenementsOrderByCategories = $this->_orderEvenementsInCategories($categoriesRepository, $evenements);
         echo $this->twig->render('evenements/evenements.html.twig', [
             'evenementsOrderByCategories' => $evenementsOrderByCategories,
@@ -131,6 +134,7 @@ class EvenementsController extends AbstractController
     }
 
     /**
+     * Voir un evenement
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
@@ -138,34 +142,33 @@ class EvenementsController extends AbstractController
     #[Route(path: "/evenement", httpMethod: 'GET', name: "evenement",)]
     public function evenement(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, Request $request, Session $session)
     {
+        // Selection de l'evenement
+        $id = $request->query->get('id');
+        $evenement = $evenementsRepository->selectOneById($id);
 
-        $idEvent = $request->query->get('id');
-
-        $event = $evenementsRepository->selectOneById($idEvent);
         // Récuperation du nombre de participant actuel et le nombre de participant maximum accepté
-        $arrayParticipe = $this->getNbParticipants($idEvent, $event, $evenementsRepository, $participeRepository);
+        $arrayParticipe = $this->getNbParticipants($id, $evenement, $participeRepository);
         $nbParticipant = $arrayParticipe[0];
         $nbParticipantMax = $arrayParticipe[1];
+
+        // Messages
         $completEvent = "";
         $noConnectedMessage = null;
         $alreadyParticipe = null;
 
-        $id = $request->query->get('id');
-        $evenement = $evenementsRepository->selectOneById($id);
+        // Nombre de place disponible
         $place = $evenementsRepository->nbPlaceDisponible($id);
+        // Check la participation
         if (!empty($_SESSION['id'])) {
             $alreadyParticipe = $participeRepository->checkIfAlreadyParticipe($_SESSION['id'], $id);
         } else {
             $noConnectedMessage = 'Vous devez vous connecter pour vous inscrire à un évènement';
         }
 
+        // Check si l'evenement est complet
         if ($nbParticipant  >= $nbParticipantMax) {
             $completEvent = "complet";
         }
-
-
-
-
 
         echo $this->twig->render('evenements/evenement.html.twig', [
             'evenement' => $evenement,
@@ -178,22 +181,25 @@ class EvenementsController extends AbstractController
             'completEvent' => $completEvent
         ]);
 
+        // Suppresion des messages
         $session->delete('successParticiper');
         $session->delete('errorParticiper');
         $session->delete('desinscription');
     }
 
     /**
+     * Participer à un évenement, met à jour le statut
      * @throws ReflectionException
      */
     #[Route(path: "/evenement/participe", name: "evenement_participe")]
     public function participeEvenement(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository ,Session $session, Request $request, StatutsRepository $statutsRepository)
     {
+        // Récupération de l'evenement
         $id = $request->query->get('idEvenement');
-
         $evenement = $evenementsRepository->selectOneById($id);
+
         // Récuperation du nombre de participant actuel et le nombre de participant maximum accepté
-        $arrayParticipe = $this->getNbParticipants($id, $evenement, $evenementsRepository, $participeRepository);
+        $arrayParticipe = $this->getNbParticipants($id, $evenement, $participeRepository);
         $nbParticipant = $arrayParticipe[0];
         $nbParticipantMax = $arrayParticipe[1];
 
@@ -203,6 +209,7 @@ class EvenementsController extends AbstractController
             // Mise à jour du statut
             $this->_changeStatutEvenement($nbParticipant + 1, $nbParticipantMax, $evenement, $statutsRepository, $evenementsRepository);
 
+            // Message
             $session->set('successParticiper', 'Participation pris en compte');
         } else {
             $session->set('errorParticiper', 'Evenement complet impossible d\'y participer');
@@ -212,6 +219,7 @@ class EvenementsController extends AbstractController
     }
 
     /**
+     * Ce desincrire d'un évenement, mets à jour le statut
      * @throws ReflectionException
      */
     #[Route(path: "/evenement/desincription", name: "evenement_ne_plus_participe")]
@@ -223,10 +231,10 @@ class EvenementsController extends AbstractController
         $evenement = $evenementsRepository->selectOneById($idEvent);
 
         // Récuperation du nombre de participant actuel et le nombre de participant maximum accepté
-        $arrayParticipe = $this->getNbParticipants($idEvent, $evenement, $evenementsRepository, $participeRepository);
+        $arrayParticipe = $this->getNbParticipants($idEvent, $evenement, $participeRepository);
         // Mise à jour du statut
         $this->_changeStatutEvenement($arrayParticipe[0], $arrayParticipe[1], $evenement, $statutsRepository, $evenementsRepository);
-
+        // Message
         $session->set('desinscription', 'Vous êtes bien désinscrit de l\'évènement');
         header("Location: /evenement?id=" . $idEvent );
     }
@@ -234,6 +242,7 @@ class EvenementsController extends AbstractController
 
 
     /**
+     *  Route admin pour lister tous les évenements
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
@@ -248,7 +257,10 @@ class EvenementsController extends AbstractController
     )
     {
         $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
+        // Selections des evenements
         $evenements = $evenementsRepository->selectAll('date', 'DESC');
+
+        // Données pour le filtrage
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
         $adresses = $adressesRepository->selectAll();
@@ -263,10 +275,13 @@ class EvenementsController extends AbstractController
             'popup' => $session->get('popup'),
             'arrayParticipeUtilisateurs' => $this->_getNbParticipants($evenements, $participes)
         ]);
+
+        // Suppresion pop-up
         $session->delete('popup');
     }
 
     /**
+     * Filtrage des evenements en GET
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
@@ -282,6 +297,8 @@ class EvenementsController extends AbstractController
     )
     {
         $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
+
+        // Pour les selects du filtrage
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
         $adresses = $adressesRepository->selectAll();
@@ -292,13 +309,13 @@ class EvenementsController extends AbstractController
         $filtres = [];
         $query = '';
 
+        // Récupérations des attributs get de l'url
         $filtre_titre = $request->query->get('filter_titre');
         $filtre_statut = $request->query->get('filtre_statut');
         $filtre_city = $request->query->get('filtre_city');
         $filtre_cp = $request->query->get('filtre_cp');
         $filtre_categorie = $request->query->get('filtre_categorie');
         $filtre_order_date = $request->query->get('order_date');
-
 
         if ($filtre_titre) {
             $filtres['filter_titre'] = $filtre_titre;
@@ -318,6 +335,7 @@ class EvenementsController extends AbstractController
             $parameters[] = $filtre_statut;
         }
 
+        // Ajout de la jointure si filtre sur la table adresse
         if ($filtre_city || $filtre_cp) {
             $query = 'JOIN adresses ON adresses.id_adresse = evenements.id_adresse';
         }
@@ -333,7 +351,7 @@ class EvenementsController extends AbstractController
             $conditions[] = 'adresses.cp_ville LIKE ?';
             $parameters[] = '%'.$filtre_cp."%";
         }
-
+        // Filtrage, si date il faut changer le order
         if ($filtre_order_date) {
             $filtres['order_date'] = $filtre_order_date;
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $filtre_order_date);
@@ -353,6 +371,7 @@ class EvenementsController extends AbstractController
     }
 
     /**
+     * Route pour afficher le formulaire de création d'évenement
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
@@ -365,6 +384,7 @@ class EvenementsController extends AbstractController
     )
     {
         $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
+        // Pour les selects
         $adresses = $adressesRepository->selectAll();
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
@@ -377,37 +397,42 @@ class EvenementsController extends AbstractController
     }
 
     /**
-     * @throws SyntaxError
-     * @throws RuntimeError
-     * @throws LoaderError
-     * @throws \Exception
+     * Ajout de l'evenement en BDD
+     * @throws Exception
      */
     #[Route(path: "/admin/add/evenements", httpMethod: 'POST', name: "admin_add_evenements",)]
     public function addEvenements(EvenementsRepository $evenementsRepository , MediasRepository $mediasRepository,StatutsRepository $statutsRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
         $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
+        // Si pas d'image
         if (!isset($_FILES['imageEvent'])) {
             echo "Erreur : pas d'image";
             return;
         }
 
+        // Récupération de l'image
         $image = $_FILES['imageEvent'];
 
+        // Enregistrement de l'image dans le dossier
         if (
             is_uploaded_file($image['tmp_name']) &&
             move_uploaded_file(
                 $image['tmp_name'],__DIR__ . DIRECTORY_SEPARATOR . '../../public/events/' . basename($image['name'])
             )
         ) {
+            // Ajout du media en BDD
             $media= new Medias();
             $media->setNom(basename($image['name']));
             $media->setPath('events/' . basename($image['name']));
             $media->setType($image['type']);
             $mediasRepository->save($media);
 
-            $idmedia= $mediasRepository->getLastId();
+            // Récupération du dernier média ajouter, donc celui importer dans ceux formulaire
+            $idmedia = $mediasRepository->getLastId();
+            // Statut par défaut de l'événement
             $statut = $statutsRepository->selectOneByLibelle('A venir');
 
+            // Creation de l'evenement en BDDs
             $evenement = new Evenements();
             $evenement->setTitre($_POST['evenementTitle']);
             $evenement->setSousTitre($_POST['evenementSubTitle']);
@@ -433,6 +458,7 @@ class EvenementsController extends AbstractController
     }
 
     /**
+     * Route pour afficher le formulaire d'édition de l'évenement
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
@@ -447,8 +473,11 @@ class EvenementsController extends AbstractController
     )
     {
         $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
+        // Selection de l'évenement à mettre à jour
         $id = $request->query->get('id');
         $evenement = $evenementsRepository->selectOneById($id);
+
+        // Selects
         $adresses = $adressesRepository->selectAll();
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
@@ -465,14 +494,17 @@ class EvenementsController extends AbstractController
 
 
     /**
-     * @throws \Exception
+     * Route pour enregistrer l'evenement dans la BDD
+     * @throws Exception
      */
     #[Route(path: "/admin/update/evenements", httpMethod: 'POST', name: "admin_update_evenements",)]
     public function updateEvenements(EvenementsRepository $evenementsRepository, MediasRepository $mediasRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
         $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
+        // Selection de l'evenement
         $evenement = $evenementsRepository->selectOneById(intval($_POST['id']));
 
+        // Mise à jour de l'évenement
         $evenement->setTitre($_POST['evenementTitle']);
         $evenement->setSousTitre($_POST['evenementSubTitle']);
         $evenement->setDate(new DateTime($_POST['evenementDate']));
@@ -484,6 +516,7 @@ class EvenementsController extends AbstractController
         $evenement->setIdAdresse(intval($_POST['adresseSelect']));
         $evenement->setUpdatedAt(new DateTime());
 
+        // Gestion de l'image
         if (isset($_FILES['imageEvent'])) {
 
             $image = $_FILES['imageEvent'];
@@ -493,6 +526,7 @@ class EvenementsController extends AbstractController
                     $image['tmp_name'],__DIR__ . DIRECTORY_SEPARATOR . '../../public/events/' . basename($image['name'])
                 )
             ) {
+                // Ajout du medias et sauvegarde dans l'evenement
                 $media= new Medias();
                 $media->setNom(basename($image['name']));
                 $media->setPath('events/' . basename($image['name']));
@@ -504,7 +538,7 @@ class EvenementsController extends AbstractController
                 $evenement->setIdMedia($idmedia);
             }
         }
-
+        // Mise à jour BDD
         $evenementsRepository->update($evenement);
 
         header('Location: /admin/evenements');
@@ -512,6 +546,7 @@ class EvenementsController extends AbstractController
 
 
     /**
+     * Route pour la suppresion d'un evenement
      * @throws ReflectionException
      */
     #[Route(path: "/admin/delete/evenements", httpMethod: 'POST', name: "admin_delete_evenements")]
@@ -520,17 +555,26 @@ class EvenementsController extends AbstractController
         $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
         $session->delete('popup');
         $id = intval($_POST['id']);
+        // Vérification des contraintes de l'adresse avant la suppresion
         $utilisateursParticipantEvenement = $evenementsRepository->verifContraintsUtilisateursParticipes($id);
         if ($utilisateursParticipantEvenement !== null) {
-            $rp[0]="participant";$rp[1]=$id;
+            // Pop-up pour informer qu'il y a des utilisateurs qui participe à l'évenement, mais possible de forcer la suppresion
+            $rp[0] = "participant";
+            $rp[1] = $id;
             $session->set('popup',$rp);
         } else {
+            // Suppresion
             $evenementsRepository->delete($id);
         }
         header('Location: /admin/evenements');
     }
 
-
+    /**
+     * Supprimer l'evenements et toutes les participations à l'evenements
+     * @param EvenementsRepository $evenementsRepository
+     * @param UtilisateursRepository $utilisateursRepository
+     * @param Session $session
+     */
     #[Route(path: "/admin/delete/evenements/cascade", httpMethod: 'POST', name: "admin_delete_evenements_cascade")]
     public function deleteEvenementsCascade(EvenementsRepository $evenementsRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
@@ -541,8 +585,8 @@ class EvenementsController extends AbstractController
     }
 
 
-
     /**
+     * Route pour afficher les utilisateurs participant à l'évenement
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
@@ -551,10 +595,12 @@ class EvenementsController extends AbstractController
     public function adminEvenementsListUtilisateurs(Request $request, EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
         $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
+        // Selection de l'evenement
         $id = $request->query->get('id');
         $evenement = $evenementsRepository->selectOneById($id);
         $participes = $participeRepository->selectAll();
 
+        // Récupération des utilisateurs participant à l'évenement
         $arrayParticipeUtilisateurs = $this->_getNbParticipants([], $participes, $id);
         $utilisateurs = [];
         foreach ($arrayParticipeUtilisateurs[$id] as $utilisateurId) {
@@ -568,6 +614,12 @@ class EvenementsController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprimer la participation de l'utilisateur à l'évenement
+     * @param ParticipeRepository $participeRepository
+     * @param UtilisateursRepository $utilisateursRepository
+     * @param Session $session
+     */
     #[Route(path: "/admin/delete/evenement/utilisateur", httpMethod: 'POST', name: "admin_delete_evenement_utilisateur")]
     public function deleteUtilisateur(ParticipeRepository $participeRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
@@ -578,6 +630,15 @@ class EvenementsController extends AbstractController
         header('Location: /admin/evenements');
     }
 
+
+    /**
+     * Récupération du nombre de participant à l'évenement
+     * Tableau avec les id des utilisateurs qui particpe aux evenements avec comme ket l'id evenement
+     * @param array $evenements
+     * @param array $participes
+     * @param int|null $evenementId
+     * @return array
+     */
     private function _getNbParticipants(array $evenements, array $participes, int $evenementId = null): array {
         $arrayParticipeUtilisateurs = [];
         if ($evenementId === null) {
@@ -601,7 +662,14 @@ class EvenementsController extends AbstractController
         return $arrayParticipeUtilisateurs;
     }
 
-    private function _orderEvenementsInCategories(CategoriesRepository $categoriesRepository, $evenements) {
+    /**
+     * Retourne un tableau contenant des évenements avec comme index la catégorie à laquelles les évenements appartiennent
+     * @param CategoriesRepository $categoriesRepository
+     * @param $evenements
+     * @return array
+     */
+    private function _orderEvenementsInCategories(CategoriesRepository $categoriesRepository, $evenements): array
+    {
         $evenementsCategories = [];
         $categories = $categoriesRepository->selectAll();
         foreach ($categories as $category) {
@@ -655,13 +723,16 @@ class EvenementsController extends AbstractController
     }
 
     /**
+     * Récupérer le nombre de participant et le nombre de capacité max de l'évenement
+     * Retourne un Array avec :
+     *      - index 0 : nombre de participant
+     *      - index 1 : capacité max
      * @param int $id
      * @param Evenements $evenement
-     * @param EvenementsRepository $evenementsRepository
      * @param ParticipeRepository $participeRepository
      * @return array
      */
-    private function getNbParticipants(int $id, Evenements $evenement, EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository): array{
+    private function getNbParticipants(int $id, Evenements $evenement,ParticipeRepository $participeRepository): array{
         $participes = $participeRepository->selectAll();
         $nbParticipantMax = $evenement->getNbParticipantsMax();
         $nbParticipantArray = $this->_getNbParticipants([], $participes, $id);

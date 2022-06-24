@@ -84,10 +84,9 @@ class AdresseController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/admin/create/adresse", name: "admin_create_adresses",)]
-    public function createAdresse(AdressesRepository $adressesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
+    public function createAdresse(UtilisateursRepository $utilisateursRepository, Session $session)
     {
         $this->renderDeniedAcces($session, $utilisateursRepository, 'BDE');
-        $adresses = $adressesRepository->selectAll();
         // URL de redirection en fonction de là où on a choisi de créer l'adresse. Redirection vers cette adresse
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $urlRedirection = $_SERVER['HTTP_REFERER'];
@@ -96,7 +95,6 @@ class AdresseController extends AbstractController
         }
 
         echo $this->twig->render('admin/adresses/admin_form_create_adresse.html.twig', [
-            'adresses' => $adresses,
             'urlRedirection' => $urlRedirection
         ]);
     }

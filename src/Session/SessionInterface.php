@@ -2,6 +2,9 @@
 
 namespace App\Session;
 
+/*
+ * Interface de session
+ */
 interface SessionInterface
 {
   public function start(): void;

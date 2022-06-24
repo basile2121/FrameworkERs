@@ -17,6 +17,7 @@ use Twig\Error\SyntaxError;
 class HomeController extends AbstractController
 {
     /**
+     * Route de la page d'accueil
      * @throws SyntaxError
      * @throws ReflectionException
      * @throws RuntimeError
@@ -29,6 +30,7 @@ class HomeController extends AbstractController
         $whiteNavbar = true;
         $evenementsAVenir = $evenementsRepository->getEvenementAVenir();
         $evenementsProchain = $evenementsRepository->getEvenementProchain();
+
         // Résultat permettant de récupérer trois évenèments récemment ajouté
         $conditions = [];
         $conditions[] = "s.libelle_statut != ?";
@@ -37,8 +39,6 @@ class HomeController extends AbstractController
         $evenementsRecentAjoute = $evenementsRepository->filter($conditions, $parameters ,'JOIN statuts as s ON evenements.id_statut = s.id_statut','created_at', 'DESC', 'LIMIT 3');
 
         if(!empty($_SESSION)){
-            $user = $utilisateursRepository->selectOneById($_SESSION["id"]);
-
             echo $this->twig->render('home/home.html.twig', [
                 'sessionSuccess' => $session->get('success'),
                 'sessionId' => $session->get('id'),
@@ -59,11 +59,10 @@ class HomeController extends AbstractController
                 'whiteNavbar' => $whiteNavbar
             ]);
         }
-
-
     }
 
     /**
+     * Route de filtrage sur les nom des evenements en GET
      * @throws SyntaxError
      * @throws ReflectionException
      * @throws RuntimeError
@@ -105,6 +104,7 @@ class HomeController extends AbstractController
     }
 
     /**
+     * Mets à jour le statuts de l'évenement si il est à une date antérieur à la date actuelle
      * @throws ReflectionException
      */
     private function _setPastStatus(EvenementsRepository $evenementsRepository, StatutsRepository $statusRepository)

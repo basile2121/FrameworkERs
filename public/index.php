@@ -87,10 +87,10 @@ $container->set(CategoriesRepository::class, $categoriesRepository);
 $container->set(AdressesRepository::class, $adressesRepository);
 $container->set(PromotionsRepository::class, $promotionsRepository);
 
+// Ajout apres pour avoir accés au repo lors de l'hydration des utilisateurs
 if ($session->get('id') !== null) {
     $twig->addGlobal('libelle_role', $utilisateursRepository->selectOneById($session->get('id'))->getRoles()->getLibelleRole());
 }
-
 
 // Routage
 $router = new Router($container, new ArgumentResolver());
