@@ -9,11 +9,11 @@
         <form class="form-admin" method="POST" action="/admin/add/evenements" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="evenementTitle">Titre</label>
-                <input type="text" name="evenementTitle" class="form-control" id="evenementTitle" placeholder="Titre">
+                <input type="text" maxlength="255" name="evenementTitle" class="form-control" id="evenementTitle" placeholder="Titre" required>
             </div>
             <div class="form-group">
                 <label for="evenementSubTitle">Sous titre</label>
-                <input type="text" name="evenementSubTitle" class="form-control" id="evenementSubTitle" placeholder="Sous titre">
+                <input type="text" maxlength="255" name="evenementSubTitle" class="form-control" id="evenementSubTitle" placeholder="Sous titre" required>
             </div>
             <div class="form-group">
                 <label for="evenementDate">Date de l'événement</label>
@@ -21,15 +21,15 @@
             </div>
             <div class="form-group">
                 <label for="nbParticipantMax">Nombre de participant max</label>
-                <input type="text" name="nbParticipantMax" class="form-control" id="nbParticipantMax" placeholder="Nombre de participants max">
+                <input type="number" maxlength="255" name="nbParticipantMax" class="form-control" id="nbParticipantMax" placeholder="Nombre de participants max" required>
             </div>
             <div class="form-group">
                 <label for="prix">Prix</label>
-                <input type="text" name="prix" class="form-control" id="prix" placeholder="Prix">
+                <input type="number" step="0.01" maxlength="255" name="prix" class="form-control" id="prix" placeholder="Prix" required>
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
-                <textarea name="description" class="form-control" id="description" placeholder="Description"></textarea>
+                <textarea name="description" maxlength="40000" class="form-control" id="description" placeholder="Description" required></textarea>
             </div>
             <div class="form-group">
                 <label for="categorieSelect">Categorie</label>
@@ -39,6 +39,7 @@
                         <option value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
                     {% endfor %}
                 </select>
+                <a href="/admin/create/categorie">Ajouter une categorie</a>
             </div>
             <div class="form-group">
                 <label for="statutSelect">Statut</label>

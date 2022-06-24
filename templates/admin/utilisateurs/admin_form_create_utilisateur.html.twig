@@ -15,26 +15,21 @@
         <form method="POST" action="/admin/add/utilisateurs">
 
             <div class="form-group">
-                <label for="nom">Nom
-                </label>
-                <input type="text" name="nom" class="form-control" id="nom" placeholder="Nom" required>
+                <label for="nom">Nom</label>
+                <input type="text" maxlength="255" name="nom" class="form-control" id="nom" placeholder="Nom" required>
             </div>
 
             <div class="form-group">
-                <label for="prenom">Prénom
-                </label>
-                <input type="text" name="prenom" class="form-control" id="prenom" placeholder="Prénom" required>
+                <label for="prenom">Prénom</label>
+                <input type="text" maxlength="255" name="prenom" class="form-control" id="prenom" placeholder="Prénom" required>
             </div>
             <div class="form-group">
-                <label for="date_naissance">Date de naissance
-                </label>
+                <label for="date_naissance">Date de naissance</label>
                 <input type="date" name="date_naissance" class="form-control" id="date_naissance" placeholder="Nom" required>
             </div>
             <div class="form-group">
-                <label for="telephone">
-                    Téléphone
-                </label>
-                <input type="text" name="telephone" class="form-control" id="telephone" placeholder="Numéro de téléphone" required>
+                <label for="telephone">Téléphone</label>
+                <input type="text" max="10" min="10" name="telephone" class="form-control" id="telephone" placeholder="Numéro de téléphone à 10 chiffres" required>
             </div>
             <div class="form-group">
                 <label for="ecoles">Ecoles</label>
@@ -68,7 +63,7 @@
             <div class="form-group">
                 <label for="email">Email
                 </label>
-                <input type="text" name="email" class="form-control" id="email" placeholder="email@example.com" required>
+                <input type="text" maxlength="255" name="email" class="form-control" id="email" placeholder="email@example.com" required>
             </div>
             {% if errors %}
                 {% if errors['mail_existant'] %}
@@ -87,12 +82,12 @@
             <div class="form-group">
                 <label for="password">Password
                 </label>
-                <input type="password" name="password" class="form-control" id="password" placeholder="Mot de passe" required>
+                <input type="password" maxlength="255" name="password" class="form-control" id="password" placeholder="Mot de passe" required>
             </div>
             <div class="form-group">
                 <label for="password_confirm">Confirmation Password
                 </label>
-                <input type="password" name="password_confirm" class="form-control" id="password_confirm" placeholder="Confirmation mot de passe" required>
+                <input type="password" maxlength="255" name="password_confirm" class="form-control" id="password_confirm" placeholder="Confirmation mot de passe" required>
             </div>
             {% if errors %}
                 {% if errors['password'] %}
@@ -122,8 +117,7 @@
 {% endblock %}
 
 {% block script %}
-    <script defer>
-        console.log('ici');
+    <script>
         let listeEcole = document.getElementById('ecoles');
         let listePromotions = document.querySelector('#promotions');
         function ajaxPromotions(){

@@ -10,7 +10,7 @@
         <form class="form-admin" method="GET" action="/admin/categories/filter">
             <div class="form-group">
                 <label for="filter_libelle">Rechercher une categorie par son nom</label>
-                <input type="text" value="{{ filtres['filter_libelle'] }}" name="filter_libelle" class="form-control" id="filter_libelle" placeholder="Nom de la categorie">
+                <input type="text" maxlength="255" value="{{ filtres['filter_libelle'] }}" name="filter_libelle" class="form-control" id="filter_libelle" placeholder="Nom de la categorie">
             </div>
             <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
             <a href="/admin/categories" class="btn btn-primary">Annuler</a>
@@ -35,8 +35,10 @@
                     </td>
                 </tr>
                 {% include 'utils/pop-up/delete_categorie_model.html.twig'%}
+                
             {% endfor %}
             </tbody>
+            {% include 'utils/pop-up/delete_categorie_withcontraint_model.html.twig'%}
             <tfoot>
                 <tr>
                     {% if categories is not empty %}
@@ -48,4 +50,11 @@
             </tfoot>
         </table>
     </main>
+
+    {% if cateforipop == "cateforipop"  %}
+            <script type="text/javascript">
+               $('#deleteModalwithcontraintcategorie').modal('show');
+            </script>
+    {% endif %}
+    
 {% endblock %}

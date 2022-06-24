@@ -10,7 +10,7 @@
         <form class="form-admin" method="POST" action="/admin/ecoles/filter">
             <div class="form-group">
                 <label for="filtre_name_ecole">Rechercher une école par nom</label>
-                <input type="text" value="{{ filtres['filtre_name_ecole'] }}" name="filtre_name_ecole" class="form-control" id="filtre_name_ecole" placeholder="Nom de l'école">
+                <input type="text" maxlength="255" value="{{ filtres['filtre_name_ecole'] }}" name="filtre_name_ecole" class="form-control" id="filtre_name_ecole" placeholder="Nom de l'école">
             </div>
             <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
             <a href="/admin/ecoles" class="btn btn-primary">Annuler</a>

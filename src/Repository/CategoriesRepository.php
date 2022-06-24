@@ -30,4 +30,19 @@ final class CategoriesRepository extends AbstractRepository
             'idCategorie' => 187
         ]);
     }
+
+     /**
+     * @throws ReflectionException
+     */
+    public function verifContraintsEvenementCategories(int $id): ?array
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM evenements as e WHERE e.id_categorie = :id");
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        if ($results) {
+            return $this->setHydrate($results);
+        }
+        return null;
+    }
 }

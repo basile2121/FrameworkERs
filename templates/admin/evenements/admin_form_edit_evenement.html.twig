@@ -9,11 +9,11 @@
         <form class="form-admin" method="POST" action="/admin/update/evenements" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="evenementTitle">Titre</label>
-                <input type="text" name="evenementTitle" class="form-control" id="evenementTitle" value="{{ evenement.titre }}" placeholder="Titre">
+                <input type="text" maxlength="255" name="evenementTitle" class="form-control" id="evenementTitle" value="{{ evenement.titre }}" placeholder="Titre" required>
             </div>
             <div class="form-group">
                 <label for="evenementSubTitle">Sous titre</label>
-                <input type="text" name="evenementSubTitle" class="form-control" id="evenementSubTitle" value="{{ evenement.sousTitre }}" placeholder="Sous titre">
+                <input type="text" maxlength="255" name="evenementSubTitle" class="form-control" id="evenementSubTitle" value="{{ evenement.sousTitre }}" placeholder="Sous titre" required>
             </div>
             <div class="form-group">
                 <label for="evenementDate">Date de l'événement</label>
@@ -22,15 +22,15 @@
             <p>Nombre de participant : {{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }}</p>
             <div class="form-group">
                 <label for="nbParticipantMax">Nombre de participant max</label>
-                <input type="text" name="nbParticipantMax" class="form-control" id="nbParticipantMax" value="{{ evenement.nbParticipantsMax }}" placeholder="Nombre de participants max">
+                <input type="text" maxlength="255" name="nbParticipantMax" class="form-control" id="nbParticipantMax" value="{{ evenement.nbParticipantsMax }}" placeholder="Nombre de participants max" required>
             </div>
             <div class="form-group">
                 <label for="prix">Prix</label>
-                <input type="text" name="prix" class="form-control" id="prix" value="{{ evenement.prix }}" placeholder="Prix">
+                <input type="number" step="0.01" maxlength="255" name="prix" class="form-control" id="prix" value="{{ evenement.prix }}" placeholder="Prix" required>
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
-                <textarea type="text" name="description" class="form-control" id="description" placeholder="Description">{{ evenement.description }}</textarea>
+                <textarea type="text" maxlength="40000" name="description" class="form-control" id="description" placeholder="Description" required>{{ evenement.description }}</textarea>
             </div>
             <div class="form-group">
                 <label for="categorieSelect">Categorie</label>
@@ -44,6 +44,7 @@
                         {% endif %}
                     {% endfor %}
                 </select>
+                <a href="/admin/create/categorie">Ajouter une categorie</a>
             </div>
             <div class="form-group">
                 <label for="statutSelect">Statut</label>
@@ -68,8 +69,8 @@
                 </select>
                 <a href="/admin/create/adresse">Ajouter une adresse</a>
             </div>
-            <img src="/{{ evenement.medias.path}}" alt="" srcset="">
-             <input type="file" name="imageEvent"/>
+            <img src="/{{ evenement.medias.path }}" alt="" srcset="">
+             <input type="file" required name="imageEvent"/>
             <button type="submit" name="id" class="btn btn-primary" value="{{ evenement.idEvenement }}">Sauvegarder</button>
             <a href="/admin/evenements" class="btn btn-primary">Annuler</a>
         </form>

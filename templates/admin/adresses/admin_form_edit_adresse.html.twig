@@ -9,15 +9,15 @@
         <form class="form-admin" method="POST" action="/admin/update/adresses">
             <div class="form-group">
                 <label for="ville">Ville</label>
-                <input type="text" name="ville" class="form-control" id="ville" value="{{ adresse.villeLibelle }}" placeholder="Nom de la ville">
+                <input type="text" maxlength="255" name="ville" class="form-control" id="ville" value="{{ adresse.villeLibelle }}" placeholder="Nom de la ville" required>
             </div>
             <div class="form-group">
                 <label for="codePostal">Code postal</label>
-                <input type="text" name="codePostal" class="form-control" id="codePostal" value="{{ adresse.cpVille }}" placeholder="Code postal">
+                <input type="number" min="5" max="5" name="codePostal" class="form-control" id="codePostal" value="{{ adresse.cpVille }}" placeholder="Le code postal doit mesurer 5 caractères" required>
             </div>
             <div class="form-group">
                 <label for="adresse">Adresse</label>
-                <input type="text" name="adresse" class="form-control" id="adresse" value="{{ adresse.libelleAdresse }}" placeholder="Adresse">
+                <input type="text" maxlength="255" name="adresse" class="form-control" id="adresse" value="{{ adresse.libelleAdresse }}" placeholder="Adresse" required>
             </div>
             <h3>Position actuel</h3>
             {% include 'maps/maps_show.html.twig' %}

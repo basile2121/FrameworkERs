@@ -9,23 +9,23 @@
         <form class="form-admin" method="POST" action="/admin/update/utilisateurs">
             <div class="form-group">
                 <label for="userName">Nom</label>
-                <input type="text" name="nom" class="form-control" id="userName" value="{{ utilisateur.nom }}" placeholder="Nom">
+                <input type="text" maxlength="255" name="nom" class="form-control" id="userName" value="{{ utilisateur.nom }}" placeholder="Nom" required>
             </div>
             <div class="form-group">
                 <label for="userFirstName">Prenom</label>
-                <input type="text" name="prenom" class="form-control" id="userFirstName" value="{{ utilisateur.prenom }}" placeholder="Prénom">
+                <input type="text" maxlength="255" name="prenom" class="form-control" id="userFirstName" value="{{ utilisateur.prenom }}" placeholder="Prénom" required>
             </div>
             <div class="form-group">
                 <label for="userBirthDate">Date de naissance</label>
-                <input type="date" name="dateNaissance" class="form-control" id="userBirthDate" value="{{ utilisateur.dateNaissance | date('Y-m-d') }}" placeholder="Date de naissance">
+                <input type="date" name="dateNaissance" class="form-control" id="userBirthDate" value="{{ utilisateur.dateNaissance | date('Y-m-d') }}" placeholder="Date de naissance" required>
             </div>
             <div class="form-group">
                 <label for="userMail">Mail</label>
-                <input type="email" name="mail" class="form-control" id="userMail" value="{{ utilisateur.mail }}" placeholder="Adresse mail">
+                <input type="email" maxlength="255" name="mail" class="form-control" id="userMail" value="{{ utilisateur.mail }}" placeholder="Adresse mail" required>
             </div>
             <div class="form-group">
                 <label for="userPhoneNumber">Téléphone</label>
-                <input type="text" name="telephone" class="form-control" id="userPhoneNumber" value="{{ utilisateur.telephone }}" placeholder="Numéro de téléphone">
+                <input type="text" min="10" max="10" name="telephone" class="form-control" id="userPhoneNumber" value="{{ utilisateur.telephone }}" placeholder="Numéro de téléphone à 10 chiffres" required>
             </div>
             <div class="form-group">
                 <label for="promotionSelect">Promotions</label>

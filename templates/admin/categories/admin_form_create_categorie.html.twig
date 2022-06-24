@@ -9,7 +9,7 @@
         <form class="form-admin" method="POST" action="/admin/add/categories">
               <div class="form-group">
                 <label for="categorie">Nom categorie</label>
-                <input type="text" name="categorie" class="form-control" id="categorie" placeholder="Nom de la categorie">
+                <input type="text" maxlength="255" name="categorie" class="form-control" id="categorie" placeholder="Nom de la categorie" required>
             </div>
             <input type="hidden" name="redirect_create_categorie_url" class="form-control" id="redirect_create_categorie_url" value="{{ urlRedirection }}">
             <button type="submit" name="id" class="btn btn-primary">Sauvegarder</button>
