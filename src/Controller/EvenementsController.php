@@ -67,7 +67,8 @@ class EvenementsController extends AbstractController
         $conditions = [];
         $parameters = [];
         $filtres = [];
-        $query = '';
+        $query = 'JOIN statuts as s ON evenements.id_statut = s.id_statut ';
+        $andWhereQuery = "s.libelle_statut != 'Passé'";
 
         // Filtres
         $filtre_titre = $request->query->get('filter_titre');
@@ -96,7 +97,7 @@ class EvenementsController extends AbstractController
         }
 
         if ($filtre_city || $filtre_cp) {
-            $query = 'JOIN adresses ON adresses.id_adresse = evenements.id_adresse';
+            $query .= ' JOIN adresses ON adresses.id_adresse = evenements.id_adresse';
         }
 
         if ($filtre_city) {
@@ -113,10 +114,11 @@ class EvenementsController extends AbstractController
 
         if ($filtre_order_date) {
             $filtres['order_date'] = $filtre_order_date;
-            $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $filtre_order_date);
+            
+            $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $filtre_order_date, '', $andWhereQuery);
         }
         else {
-            $evenements = $evenementsRepository->filter($conditions, $parameters, $query);
+            $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'','','', $andWhereQuery);
         }
 
         $evenementsOrderByCategories = $this->_orderEvenementsInCategories($categoriesRepository, $evenements);

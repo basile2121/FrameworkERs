@@ -69,12 +69,15 @@ abstract class AbstractRepository
      * Filtre en fonction des conditions et parameteres passés
      * @throws ReflectionException
      */
-    public function filter(array $conditions, array $parameters, string $additionalQuery = '', string $orderBy = '', string $direction = 'ASC', string $limit = ''): array
+    public function filter(array $conditions, array $parameters, string $additionalQuery = '', string $orderBy = '', string $direction = 'ASC', string $limit = '', string $andWhereQuery =''): array
     {
         $query = 'SELECT * FROM ' . static::TABLE;
         $query .= ' ' . $additionalQuery;
         if(!empty($parameters) && !empty($conditions)) {
             $query .= " WHERE ".implode(" AND ", $conditions);
+        }
+        if($andWhereQuery){
+            $query.= " AND ". $andWhereQuery;
         }
         if ($orderBy) {
             $query .= ' ORDER BY ' . $orderBy . ' ' . $direction;
