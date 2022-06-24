@@ -8,7 +8,7 @@
     <main>
         <div>
             <p>Titre : {{ evenement.titre }}</p>
-            <p>Date : {{ evenement.date | date('d/m/Y H:i')</p>
+            <p>Date : {{ evenement.date | date('d-m-Y') }}</p>
             <p>Statut : {{ evenement.statuts.libelleStatut }}</p>
             <p>Prix : {{ evenement.prix }} €</p>
             <p>Inscrits : {{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }} / {{ evenement.nbParticipantsMax }}</p>
