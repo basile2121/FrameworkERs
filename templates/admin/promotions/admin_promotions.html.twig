@@ -1,19 +1,34 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/admin.css"/>
 
+{% endblock %}
 {% block title %}Gestions des promotions{% endblock %}
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Promotions</h1>
+    <h1 class=" text-center mt-5">Filtrer les promotions :</h1>
     <main>
+<<<<<<< HEAD
      <a href="/admin/create/promotions" class="btn btn-primary">Ajouter une promotion</a>
         <form class="form-admin" method="GET" action="/admin/promotions/filter">
             <div class="form-group">
                 <label for="filtre_name_promotion">Rechercher une promotion par nom</label>
                 <input type="text" maxlength="255" value="{{ filtres['filtre_name_promotion'] }}" name="filtre_name_promotion" class="form-control" id="filtre_name_promotion" placeholder="Nom de la promotion">
+=======
+     <a href="/admin/create/promotions" class="add btn btn-info">Ajouter une promotion</a>
+     {# Début formulaire des filtres #}
+     <section class="formFiltre">
+        <form class="form-admin" method="POST" action="/admin/promotions/filter">
+        <div id="filtres" class="cardFiltre">
+            <div class="form-group">
+                <label for="filtre_name_promotion">Par nom</label>
+                <input type="text" value="{{ filtres['filtre_name_promotion'] }}" name="filtre_name_promotion" class="form-control" id="filtre_name_promotion" placeholder="Nom de la promotion">
+>>>>>>> page_dashboard_admin
             </div>
                <div class="form-group">
-                <label for="filtre_ecole">Rechercher une école par nom</label>
+                <label for="filtre_ecole">Par nom de l'école</label>
                 <select name="filtre_ecole" id="filtre_ecole">
                     <option value="" disabled selected>Selectionner l'école</option>
                     {% for ecole in ecoles %}
@@ -21,15 +36,20 @@
                     {% endfor %}
                 </select>
             </div>
-           
-            <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
-            <a href="/admin/promotions" class="btn btn-primary">Annuler</a>
+        </div>
+        <div id="bouton"> 
+            <button type="submit" name="filtre" value="true" class="btn btn-success">Rechercher</button>
+            <a href="/admin/promotions" class="btn btn-danger">Annuler</a>
+        </div>
         </form>
-
-        <table class="table table-striped">
-            <thead>
+    </section>
+    {# Fin formulaire des filtres #}
+    <section id="listEvent" class="container-fluid">
+		<h2>Liste des promotions selon l'école :</h2>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-light">
                 <tr>
-                    <th scope="col">Noms promotion</th>
+                    <th scope="col">Nom de la promotion</th>
                     <th scope="col">Ecoles</th>
                     <th scope="col">Actions</th>
                 </tr>
@@ -37,13 +57,19 @@
             <tbody>
             {% for promotion in promotions %}
                 <tr>
-                    <th scope="row">{{ promotion.libellePromotion }}</th>
+                    <td scope="row">{{ promotion.libellePromotion }}</th>
                     <td>{{ promotion.ecoles.nomEcole}}</td>
+<<<<<<< HEAD
                     <td>
                         <form method="GET" action="/admin/edit/promotions" >
                             <button type="submit" name="id" class="btn btn-warning" value="{{promotion.idPromotion}}">Modifier</button>
+=======
+                    <td id="actions">
+                        <form method="POST" action="/admin/edit/promotions" >
+                            <button type="submit" name="id" class="btn btn-warning" value="{{promotion.idPromotion}}"><img src="http://localhost:8000/image/edit.png" alt="edit" ></button>
+>>>>>>> page_dashboard_admin
                         </form>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{promotion.idPromotion  }}">Supprimer</button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{promotion.idPromotion  }}"><img src="http://localhost:8000/image/trash.png" alt="delete" ></button>
                     </td>
                 </tr>
                 {% include 'utils/pop-up/delete_promotion_model.html.twig'%}
@@ -54,13 +80,14 @@
             <tfoot>
                 <tr>
                     {% if promotions is not empty %}
-                        <th>Total promotions {{ promotions | length }}</th>
+                        <th colspan="3">Total promotions {{ promotions | length }}</th>
                     {% else %}
-                        <th>Aucune promotion</th>
+                        <th colspan="3">Aucune promotion</th>
                     {% endif %}
                 </tr>
             </tfoot>
         </table>
+    </section>
     </main> 
 
     {% if promotionpop == "promotionpop"  %}

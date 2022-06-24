@@ -1,13 +1,21 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/admin.css"/>
 
-{% block title %}Créer un évenement{% endblock %}
+{% endblock %}
+{% block title %}Créer un évenement
+{% endblock %}
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Créer un évenement</h1>
-    <main>
-        <form class="form-admin" method="POST" action="/admin/add/evenements" enctype="multipart/form-data">
-            <div class="form-group">
+
+	<h1 class="text-center mt-5">Créer un évènement</h3>
+	<main>
+		<section class="card event col-5 m-auto">
+			<form class="form-admin" method="POST" action="/admin/add/evenements" enctype="multipart/form-data">
+				<div id="createEvent">
+					<div class="form-group">
                 <label for="evenementTitle">Titre</label>
                 <input type="text" maxlength="255" name="evenementTitle" class="form-control" id="evenementTitle" placeholder="Titre" required>
             </div>
@@ -17,7 +25,7 @@
             </div>
             <div class="form-group">
                 <label for="evenementDate">Date de l'événement</label>
-                <input type="datetime-local" name="evenementDate" class="form-control" id="evenementDate" placeholder="Date de l'événement">
+                <input type="datetime-local" name="evenementDate" class="form-control" id="evenementDate" placeholder="Date de l'événement" required>
             </div>
             <div class="form-group">
                 <label for="nbParticipantMax">Nombre de participant max</label>
@@ -60,9 +68,15 @@
                 </select>
                 <a href="/admin/create/adresse">Ajouter une adresse</a>
             </div>
-            <input type="file" name="imageEvent"/>
-            <button type="submit" name="id" class="btn btn-primary">Sauvegarder</button>
-            <a href="/admin/evenements" class="btn btn-primary">Annuler</a>
-        </form>
-    </main>
+					<input type="file" name="imageEvent"/>
+				</div>
+				<div id="bouton">
+					<button type="submit" name="id" class="btn btn-success">Sauvegarder</button>
+					<a href="/admin/evenements" class="btn btn-danger">Retour</a>
+				</div>
+
+
+			</form>
+		</section>
+	</main>
 {% endblock %}

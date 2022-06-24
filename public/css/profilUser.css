@@ -4,6 +4,13 @@
     text-align: center;
     
 }
+.card {
+    box-shadow:0 0 0.5em #9F09AC;
+    border-radius: 30px;
+}
+input, select {
+    text-align: center;
+}
 
 #profil .card img {
     width:350px;
@@ -26,4 +33,29 @@ label {
 #button {
     display: flex;
     justify-content: space-evenly;
+}
+
+#bouton {
+    display: flex;
+    justify-content: center;
+    padding-top: 15px;
+}
+
+#bouton button {
+    margin-right: 15px;
+}
+.btn-success {
+    border-radius: 15px;
+    border-color:#EF1B93!important;
+    background: linear-gradient(90deg, #EF1B93 0%, #8826D1 100%)!important;
+}
+
+.btn-success,.btn-danger {
+    padding: 10px!important;
+    font-size: 15px!important;
+    border-radius: 15px;
+}
+.btn-success:hover,.btn-danger:hover,.btn-warning:hover {
+    transform: translateY(-5px)!important; 
+    cursor: pointer;
 }

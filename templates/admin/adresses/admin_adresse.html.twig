@@ -1,14 +1,23 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/admin.css"/>
 
-{% block title %}Gestions des adresses{% endblock %}
+{% endblock %}
+{% block title %}Gestions des adresses
+{% endblock %}
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Adresses</h1>
-    <main>
-        <a href="/admin/create/adresse">Ajouter une adresse</a>
-        <form class="form-admin" method="GET" action="/admin/adresses/filter">
-            <div class="form-group">
+
+	<h1 class="text-center mt-5">Filtrer les adresses</h1>
+	<main>
+		<a href="/admin/create/adresse" class="add btn btn-info">Ajouter une adresse</a>
+		{# Début formulaire des filtres #}
+		<section class="formFiltre">
+			<form class="form-admin" method="POST" action="/admin/adresses/filter">
+				<div id="filtres" class="cardFiltre">
+					<div class="form-group">
                 <label for="filter_city">Rechercher une adresse par sa ville</label>
                 <input type="text" maxlength="255" value="{{ filtres['filter_city'] }}" name="filter_city" class="form-control" id="filter_city" placeholder="Nom de la ville">
             </div>
@@ -16,55 +25,69 @@
                 <label for="filter_cp">Rechercher une adresse par son code postal</label>
                 <input type="text" minlength="5" maxlength="5" pattern="[0-9]+" value="{{ filtres['filter_cp'] }}" name="filter_cp" class="form-control" id="filter_cp" placeholder="Le code postal doit faire 5 caractères (uniquement des chiffres)">
             </div>
-            <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
-            <a href="/admin/adresses" class="btn btn-primary">Annuler</a>
-        </form>
+				</div>
+				<div id="bouton">
+					<button type="submit" name="filtre" value="true" class="btn btn-success">Rechercher</button>
+					<a href="/admin/adresses" class="btn btn-danger">Annuler</a>
+				</div>
+			</form>
+		</section>
+		{# Fin formulaire des filtres #}
 
-        <h2>Liste des adresses</h2>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th scope="col">Code postal</th>
-                <th scope="col">Ville</th>
-                <th scope="col">Adresse</th>
-                <th scope="col">Longitude</th>
-                <th scope="col">Latitude</th>
-                <th scope="col">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for adresse in adresses %}
-                <tr>
-                    <th scope="row">{{ adresse.cpVille }}</th>
-                    <td>{{ adresse.villeLibelle }}</td>
-                    <td>{{ adresse.libelleAdresse }}</td>
-                    <td>{{ adresse.coordonneeLongitude }}</td>
-                    <td>{{ adresse.coordonneLatitude }}</td>
-                    <td>
-                        <a class="btn btn-warning" href="{{ '/admin/edit/adresses?id=' ~ adresse.idAdresse }}">Modifier</a>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{adresse.idAdresse  }}">Supprimer</button>
-                    </td>
-                </tr>
-                {% include 'utils/pop-up/delete_adresse_model.html.twig'%}
-            {% endfor %}
-            </tbody>
-                {% include 'utils/pop-up/delete_adresse_withcontraint_model.html.twig'%}
+    <section id="listEvent" class="container-fluid">
+		<h2>Liste des adresses :</h2>
+        
+		<table class="table table-bordered table-hover">
+			<thead class="thead-light">
+				<tr>
+					<th scope="col">Code postal</th>
+					<th scope="col">Ville</th>
+					<th scope="col">Adresse</th>
+					<th scope="col">Longitude</th>
+					<th scope="col">Latitude</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for adresse in adresses %}
+					<tr>
+						<td scope="row">{{ adresse.cpVille }}</th>
+						<td>{{ adresse.villeLibelle }}</td>
+						<td>{{ adresse.libelleAdresse }}</td>
+						<td>{{ adresse.coordonneeLongitude }}</td>
+						<td>{{ adresse.coordonneLatitude }}</td>
+						<td id="actions">
+							<form method="GET" action="/admin/edit/adresses">
+								<button type="submit" name="id" class="btn btn-warning" value="{{ adresse.idAdresse }}"><img src="http://localhost:8000/image/edit.png" alt="edit" ></button>
+							</form>
 
-            <tfoot>
-                <tr>
-                    {% if adresses is not empty %}
-                        <th>Total adresses {{ adresses | length }}</th>
-                    {% else %}
-                        <th>Aucune adresse</th>
-                    {% endif %}
-                </tr>
-            </tfoot>
-        </table>
-    </main>
+							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{adresse.idAdresse  }}"><img src="http://localhost:8000/image/trash.png" alt="delete" ></button>
+						</td>
+					</tr>
+					{% include 'utils/pop-up/delete_adresse_model.html.twig'%}
+				{% endfor %}
+			</tbody>
+			{% include 'utils/pop-up/delete_adresse_withcontraint_model.html.twig'%}
 
-          {% if Adressepop == "Adressepop"  %}
-            <script type="text/javascript">
-                $('#deleteModalwithcontraintadres').modal("show")
-            </script>
-        {% endif %}
+
+			<tfoot>
+				<tr>
+					{% if adresses is not empty %}
+						<th colspan="6">Total adresses :
+							{{ adresses | length }}</th>
+					{% else %}
+						<th colspan="6">Aucune adresse</th>
+					{% endif %}
+				</tr>
+			</tfoot>
+		</table>
+    </section>
+	</main>
+
+	{% if Adressepop == "Adressepop"  %}
+		<script type="text/javascript">
+			$('#deleteModalwithcontraintadres').modal("show")
+		</script>
+	{% endif %}
 {% endblock %}
+

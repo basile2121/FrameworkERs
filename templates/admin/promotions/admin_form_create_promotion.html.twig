@@ -1,12 +1,18 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/admin.css"/>
 
+{% endblock %}
 {% block title %}Modifier la promotion{% endblock %}
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Modifier la promotion</h1>
+    <h1 class="text-center mt-5">Modifier la promotion</h1>
     <main>
+    <section class="card event col-5 m-auto">
         <form class="form-admin" method="POST" action="/admin/add/promotions">
+        <div id="createEvent">
             <div class="form-group">
                 <label for="libellePromotion">Nom promotion</label>
                 <input type="text" maxlength="255" name="libellePromotion" class="form-control" id="libellePromotion"  placeholder="Nom de la promotion" required>
@@ -19,11 +25,15 @@
                         <option {% if filtres['filtre_Ecole'] is defined and ecole.idEcole == filtres['filtre_Ecole'] %} selected {% endif %} value="{{ ecole.idEcole }}">{{ ecole.nomEcole }}</option>
                     {% endfor %}
                 </select>
-                <p>La promotion que vous voulez créer n'a pas encore d'école ? <a href="/admin/create/ecoles" class="btn btn-success">Créer une école</a> </p>
+                <p>La promotion que vous voulez créer n'a pas encore d'école ? <a href="/admin/create/ecoles" class="add btn btn-info mt-3" style="color:white">Créer une école</a> </p>
             </div>
+        </div>
+        <div id="bouton">
+             <button type="submit" name="id" class="btn btn-success mt-3" value="{{ promotion.idPromotion }}">Ajouter</button>
+            <a href="/admin/promotions" class="btn btn-danger mt-3">Retour</a>
+        </div> 
            
-            <button type="submit" name="id" class="btn btn-primary" value="{{ promotion.idPromotion }}">Sauvegarder</button>
-            <a href="/admin/promotions" class="btn btn-primary">Annuler</a>
         </form>
+    </section>
     </main>
 {% endblock %}

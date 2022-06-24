@@ -1,12 +1,18 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/admin.css"/>
 
+{% endblock %}
 {% block title %}Modifier l'utilisateur{% endblock %}
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Modifier l'utilisateur</h1>
+    <h1 class="text-center mt-5">Modifier l'utilisateur</h1>
     <main>
+    <section class="card event col-5 m-auto">
         <form class="form-admin" method="POST" action="/admin/update/utilisateurs">
+        <div id="createEvent">
             <div class="form-group">
                 <label for="userName">Nom</label>
                 <input type="text" maxlength="255" name="nom" class="form-control" id="userName" value="{{ utilisateur.nom }}" placeholder="Nom" required>
@@ -45,8 +51,13 @@
                     {% endfor %}
                 </select>
             </div>
-            <button type="submit" name="id" class="btn btn-primary" value="{{ utilisateur.idUtilisateur }}">Sauvegarder</button>
-            <a href="/admin/utilisateurs" class="btn btn-primary">Annuler</a>
+            </div>
+            <div id="bouton">
+                <button type="submit" name="id" class="btn btn-success mt-3" value="{{ utilisateur.idUtilisateur }}">Sauvegarder</button>
+            <a href="/admin/utilisateurs" class="btn btn-danger mt-3">Retour</a>
+            </div>
+            
         </form>
+    </section>
     </main>
 {% endblock %}

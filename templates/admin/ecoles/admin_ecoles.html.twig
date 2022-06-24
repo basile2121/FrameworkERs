@@ -1,58 +1,81 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/admin.css"/>
 
-{% block title %}Gestions des écoles{% endblock %}
+{% endblock %}
+{% block title %}Gestions des écoles
+{% endblock %}
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Ecoles</h1>
-    <main>
-     <a href="/admin/create/ecoles" class="btn btn-primary">Ajouter une école</a>
-        <form class="form-admin" method="GET" action="/admin/ecoles/filter">
-            <div class="form-group">
-                <label for="filtre_name_ecole">Rechercher une école par nom</label>
-                <input type="text" maxlength="255" value="{{ filtres['filtre_name_ecole'] }}" name="filtre_name_ecole" class="form-control" id="filtre_name_ecole" placeholder="Nom de l'école">
-            </div>
-            <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
-            <a href="/admin/ecoles" class="btn btn-primary">Annuler</a>
-        </form>
+	<h1 class="text-center mt-5">Filtrer les écoles</h1>
+	<main>
+		<a href="/admin/create/ecoles" class="add btn btn-info">Ajouter une école</a>
+		{# Début formulaire des filtres #}
+		<section class="formFiltre">
+			<form class="form-admin" method="POST" action="/admin/ecoles/filter">
+				<div id="filtres" class="cardFiltre">
+					<div class="form-group">
+                		<label for="filtre_name_ecole">Rechercher une école par nom</label>
+                		<input type="text" maxlength="255" value="{{ filtres['filtre_name_ecole'] }}" name="filtre_name_ecole" class="form-control" id="filtre_name_ecole" placeholder="Nom de l'école">
+            		</div>
+                    </div>
+                <div id="bouton">
+					<button type="submit" name="filtre" value="true" class="btn btn-success">Rechercher</button>
+					<a href="/admin/ecoles" class="btn btn-danger">Annuler</a>
+				</div>
+			</form>
+		</section>
+		{# Fin formulaire des filtres #}
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Nom école</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for ecole in ecoles %}
-                <tr>
-                    <th scope="row">{{ ecole.nomEcole }}</th>
-                    <td>
-                        <a class="btn btn-warning" href="{{ '/admin/edit/ecoles?id=' ~ ecole.idEcole }}">Modifier</a>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ecole.idEcole }}">Supprimer</button>
-                    </td>
-                </tr>
-                
-                {% include 'utils/pop-up/delete_ecole_model.html.twig'%}
-            {% endfor %}
-             {% include 'utils/pop-up/delete_ecole_withcontraint_model.html.twig'%}
-            </tbody>
-            <tfoot>
-                <tr>
-                    {% if ecoles is not empty %}
-                        <th>Total écoles : {{ ecoles | length }}</th>
-                    {% else %}
-                        <th>Aucune écoles</th>
-                    {% endif %}
-                </tr>
-            </tfoot>
-        </table>
-    </main>
+    <section id="listEvent" class="container-fluid">
+        <h2>Liste des écoles :</h2>
+        <div class="col-5 m-auto">
+		<table class="table table-bordered table-hover">
+			<thead class="thead-light">
+				<tr>
+					<th scope="col">Nom école</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for ecole in ecoles %}
+					<tr>
+						<td scope="row">{{ ecole.nomEcole }}</th>
+						<td id="actions">
+							<form method="POST" action="/admin/edit/ecoles">
+								<button type="submit" name="id" class="btn btn-warning" value="{{ ecole.idEcole }}"><img src="http://localhost:8000/image/edit.png" alt="edit" ></button>
+							</form>
 
-    {% if impossible == "impossible"  %}
-            <script type="text/javascript">
-                $('#deleteModalwithcontraintecole').modal("show")
-            </script>
-        {% endif %}
+							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ecole.idEcole }}"><img src="http://localhost:8000/image/trash.png" alt="delete" ></button>
+						</td>
+					</tr>
+
+					{% include 'utils/pop-up/delete_ecole_model.html.twig'%}
+				{% endfor %}
+				{% include 'utils/pop-up/delete_ecole_withcontraint_model.html.twig'%}
+			</tbody>
+			<tfoot>
+				<tr>
+					{% if ecoles is not empty %}
+						<th colspan="2">Total écoles :
+							{{ ecoles | length }}</th>
+					{% else %}
+						<th colspan="2">Aucune école</th>
+					{% endif %}
+				</tr>
+			</tfoot>
+		</table>
+        </div>
+    </section>
+	</main>
+
+	{% if impossible == "impossible"  %}
+		<script type="text/javascript">
+			$('#deleteModalwithcontraintecole').modal("show")
+		</script>
+	{% endif %}
 
 {% endblock %}
+
