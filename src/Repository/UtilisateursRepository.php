@@ -10,6 +10,11 @@ final class UtilisateursRepository extends AbstractRepository
     protected const TABLE = 'utilisateurs';
     protected const ID = 'id_utilisateur';
 
+    /**
+     * Sauvegarde un utilisateur dans la base de données
+     * @param $utilisateur 
+     * @return bool
+     */
     public function save(Utilisateurs $utilisateurs): bool
     {
         $stmt = $this->pdo->prepare("INSERT INTO utilisateurs (`nom`, prenom, date_naissance, `date_inscription`, mail, telephone, `password`, id_promotion, id_role)
@@ -28,6 +33,11 @@ final class UtilisateursRepository extends AbstractRepository
         ]);
     }
 
+    /**
+     * Met à jour un utilisateur dans la base de données
+     * @param $utilisateur 
+     * @return bool
+     */
     public function update(Utilisateurs $utilisateurs): bool
     {
         $stmt = $this->pdo->prepare("UPDATE utilisateurs SET 
@@ -54,7 +64,9 @@ final class UtilisateursRepository extends AbstractRepository
 
     /**
      * Recuperation d'un seul element via son email (Login)
+     * @param $mail
      * @throws ReflectionException
+     * @return object
      */
     public function selectOneByEmail(string $mail): ?object
     {
@@ -82,9 +94,14 @@ final class UtilisateursRepository extends AbstractRepository
         }
         return null;
     }
-
-    /**
+   /**
+     * Vérifie les contraintes d'un utilisateur via son id
+     * @param $id 
      * @throws ReflectionException
+     * @return array
+     */
+    /**
+   
      */
     public function verifContraintsParticipeEvenement(int $id): ?array
     {
@@ -100,6 +117,7 @@ final class UtilisateursRepository extends AbstractRepository
 
     /**
      * Suppresion d'un utilisateur en cascade via son id
+     * @param $id
      */
     public function deleteCascadeUtilisateur(int $id): void
     {

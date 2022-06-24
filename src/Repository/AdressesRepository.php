@@ -10,6 +10,11 @@ final class AdressesRepository extends AbstractRepository
     protected const TABLE = 'adresses';
     protected const ID = 'id_adresse';
 
+     /**
+     * Sauvegarde d'une adresse dans la base de données
+     * @param $adresse 
+     * @return bool
+     */
     public function save(Adresses $adresses): bool
     {
         $stmt = $this->pdo->prepare("INSERT INTO adresses (`libelle_adresse`, coordonnee_longitude, coordonne_latitude, `ville_libelle`, cp_ville)
@@ -24,6 +29,11 @@ final class AdressesRepository extends AbstractRepository
         ]);
     }
 
+      /**
+     * Met à jour une adresse dans la base de données
+     * @param $adresse 
+     * @return bool
+     */
     public function update(Adresses $adresses): bool
     {
         $stmt = $this->pdo->prepare("UPDATE adresses SET 
@@ -45,8 +55,10 @@ final class AdressesRepository extends AbstractRepository
     }
 
 
-    /**
-     * @throws ReflectionException
+   /**
+     * Vérifie les contraintes d'une adresse via son id
+     * @param $id 
+     * @return array
      */
     public function verifContraintsAdresse(int $id): ?array
     {

@@ -9,6 +9,11 @@ final class RolesRepository extends AbstractRepository
     protected const TABLE = 'roles';
     protected const ID = 'id_role';
 
+    /**
+     * Sauvegarde d'un role dans la base de données
+     * @param $role 
+     * @return bool
+     */
     public function save(Roles $roles): bool
     {
         $stmt = $this->pdo->prepare("INSERT INTO roles (`libelle_role`)
@@ -21,6 +26,8 @@ final class RolesRepository extends AbstractRepository
 
        /**
      * Recuperation de l'id_role en fonction du libellé
+     * @param $libelleRole
+     * @return object
      */
     public function selectOneByLibelle(string $libelleRole): ?object
     {

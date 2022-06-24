@@ -10,6 +10,13 @@ final class CategoriesRepository extends AbstractRepository
     protected const TABLE = 'categories';
     protected const ID = 'id_categorie';
 
+
+    
+     /**
+     * Sauvegarde une catégorie dans la base de données
+     * @param $categories 
+     * @return bool
+     */
     public function save(Categories $categories): bool
     {
         $stmt = $this->pdo->prepare("INSERT INTO categories (`libelle_categorie`)
@@ -19,7 +26,12 @@ final class CategoriesRepository extends AbstractRepository
             'libelleCategorie' => $categories->getLibelleCategorie(),
         ]);
     }
-
+    
+     /**
+     * Met à jour une catégorie dans la base de données
+     * @param $categorie 
+     * @return bool
+     */
     public function update(Categories $categorie): bool
     {
         $stmt = $this->pdo->prepare("UPDATE categories SET 
@@ -31,8 +43,10 @@ final class CategoriesRepository extends AbstractRepository
         ]);
     }
 
-     /**
-     * @throws ReflectionException
+    /**
+     * Vérifie les contraintes d'une catégorie via son id
+     * @param $id 
+     * @return array
      */
     public function verifContraintsEvenementCategories(int $id): ?array
     {

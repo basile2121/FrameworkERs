@@ -9,6 +9,12 @@ final class MediasRepository extends AbstractRepository
     protected const TABLE = 'medias';
     protected const ID = 'id_media';
 
+
+     /**
+     * Sauvegarde un média dans la base de données
+     * @param $medias 
+     * @return bool
+     */
     public function save(Medias $medias): bool
     {
         $stmt = $this->pdo->prepare("INSERT INTO medias (`nom`, path, type)

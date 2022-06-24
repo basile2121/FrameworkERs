@@ -9,6 +9,12 @@ final class EcolesRepository extends AbstractRepository
     protected const TABLE = 'ecoles';
     protected const ID = 'id_ecole';
 
+     
+     /**
+     * Sauvegarde une école dans la base de données
+     * @param $ecoles 
+     * @return bool
+     */
     public function save(Ecoles $ecoles): bool
     {
         $stmt = $this->pdo->prepare("INSERT INTO ecoles (`nom_ecole`)
@@ -19,6 +25,11 @@ final class EcolesRepository extends AbstractRepository
         ]);
     }
 
+    /**
+     * Met à jour une école dans la base de données
+     * @param $ecoles
+     * @return bool
+     */
     public function update(Ecoles $ecoles): bool
     {
         $stmt = $this->pdo->prepare("UPDATE ecoles SET 
@@ -30,6 +41,11 @@ final class EcolesRepository extends AbstractRepository
         ]);
     }
 
+    /**
+     * Vérifie les contraintes d'une école via son id
+     * @param $id
+     * @return bool
+     */
     public function verifContraintsPromotions(int $id): ?array
     {
         $statement = $this->pdo->prepare("SELECT * FROM promotions as p WHERE p.id_ecole = :id");

@@ -9,6 +9,11 @@ final class PromotionsRepository extends AbstractRepository
     protected const TABLE = 'promotions';
     protected const ID = 'id_promotion';
 
+    /**
+     * Sauvegarde d'une promotion dans la base de données
+     * @param $promotion 
+     * @return bool
+     */
     public function save(Promotions $promotions): bool
     {
         $stmt = $this->pdo->prepare("INSERT INTO promotions (`libelle_promotion`, `id_ecole`)
@@ -20,6 +25,12 @@ final class PromotionsRepository extends AbstractRepository
         ]);
     }
 
+    
+    /**
+     * Met à jour d'une promotion dans la base de données
+     * @param $promotion 
+     * @return bool
+     */
     public function update(Promotions $promotions): bool
     {
     
@@ -35,7 +46,13 @@ final class PromotionsRepository extends AbstractRepository
         ]);
     }
 
-    public function findOneById(int $idEcole){
+    /**
+     * Fonction permettant de trouver une promotion via un identifiant d'une école
+     * @param $idEcole 
+     * @return array
+     */
+    public function findOneById(int $idEcole): array
+    {
         $stmt = $this->pdo->prepare("SELECT * FROM " . static::TABLE . " WHERE id_ecole = :idEcole");
         $stmt->bindValue('idEcole', $idEcole, \PDO::PARAM_INT);
         $stmt->execute();
@@ -44,10 +61,13 @@ final class PromotionsRepository extends AbstractRepository
         return $results;
 
     }
-
     /**
+     * Vérifie les contraintes d'une promotion via son id
+     * @param $id 
      * @throws ReflectionException
+     * @return array
      */
+ 
     public function verifContraintsPromotions(int $id): ?array
     {
         $statement = $this->pdo->prepare("SELECT * FROM utilisateurs WHERE id_promotion = :id");

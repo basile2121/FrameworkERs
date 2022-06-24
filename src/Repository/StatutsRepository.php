@@ -10,6 +10,11 @@ final class StatutsRepository extends AbstractRepository
     protected const TABLE = 'statuts';
     protected const ID = 'id_statut';
 
+      /**
+     * Sauvegarde un statut dans la base de données
+     * @param $statut 
+     * @return bool
+     */
     public function save(Statuts $statuts): bool
     {
         $stmt = $this->pdo->prepare("INSERT INTO statuts (`libelle_statut`, couleur_status)
@@ -22,8 +27,10 @@ final class StatutsRepository extends AbstractRepository
     }
 
     /**
-     * Récuperer évenèments dont la date est la plus proche
+     * Récuperer un status via son libelle
+     * @param $libelle
      * @throws ReflectionException
+     * @return array
      */
     public function selectOneByLibelle(string $libelle): array
     {

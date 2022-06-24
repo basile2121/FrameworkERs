@@ -10,6 +10,11 @@ final class EvenementsRepository extends AbstractRepository
     protected const TABLE = 'evenements';
     protected const ID = 'id_evenement';
 
+     /**
+     * Sauvegarde un évènement dans la base de données
+     * @param $evenements 
+     * @return bool
+     */
     public function save(Evenements $evenements): bool
     {
         $stmt = $this->pdo->prepare("INSERT INTO evenements (`titre`, sous_titre, description, `nb_participants_max`, prix, date, created_at, updated_at, id_utilisateur, id_adresse, id_media, id_categorie, id_statut)
@@ -32,7 +37,11 @@ final class EvenementsRepository extends AbstractRepository
         ]);
     }
 
-   
+    /**
+     * Met à jour un évènement dans la base de données
+     * @param $evenements 
+     * @return bool
+     */
     public function update(Evenements $evenements): bool
     {
         $stmt = $this->pdo->prepare("UPDATE evenements SET 
@@ -64,10 +73,16 @@ final class EvenementsRepository extends AbstractRepository
             'idMedia' => $evenements->getIdMedia(),
         ]);
     }
+ /**
+     * Sauvegarde un évènement dans la base de données
+     * @param $evenements 
+     * @return bool
+     */
 
     /**
      * Fonction permettant de récupérer trois évenèments dont la date est la plus proche
      * @throws ReflectionException
+     * @return array
      */
     public function getEvenementAVenir(): array
     {
@@ -81,6 +96,7 @@ final class EvenementsRepository extends AbstractRepository
 
     /**
      * Fonction permettant de récupérer neuf évenèments dont la date est la plus proche
+     * * @return array
      * @throws ReflectionException
      */
     public function getEvenementProchain(): array
@@ -104,7 +120,9 @@ final class EvenementsRepository extends AbstractRepository
     }
 
     /**
+     * Fonction permettant de récupérer le nombre de places disponibles
      * @throws ReflectionException
+     * @return array
      */
     public function getEvenementByParticipation(): array
     {
@@ -125,7 +143,7 @@ final class EvenementsRepository extends AbstractRepository
 
     /**
      * Permet de récupérer les évènements créés par un utilisateur avec le rôle BDE 
-     *
+     * @throws ReflectionException
      * @return Evenements
      */
     public function selectEvenementByUser(int $id): array
@@ -142,7 +160,9 @@ final class EvenementsRepository extends AbstractRepository
 
 
     /**
+     * Fonction permettant de récupérer tout les évènements qui n'ont pas de status passé
      * @throws ReflectionException
+     * @return array
      */
     public function selectAllEvenementNotPast(): array
     {
@@ -156,8 +176,10 @@ final class EvenementsRepository extends AbstractRepository
     }
 
 
-    /**
+    /** Vérifie les contraintes d'une participation à un évènement
+     * @param $id
      * @throws ReflectionException
+     * @return array
      */
     public function verifContraintsUtilisateursParticipes($id): ?array
     {
@@ -173,6 +195,7 @@ final class EvenementsRepository extends AbstractRepository
 
     /**
      * Suppresion d'un evenement en cascade via son id
+     * @param $id
      */
     public function deleteCascadeEvenementParticipe(int $id): void
     {

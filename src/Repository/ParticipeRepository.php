@@ -9,6 +9,12 @@ final class ParticipeRepository extends AbstractRepository
     protected const TABLE = 'participe';
     protected const ID = 'id';
 
+
+    /**
+     * Sauvegarde une participation dans la base de données
+     * @param $participe 
+     * @return bool
+     */
     public function save(Participe $participe): bool
     {
         $stmt = $this->pdo->prepare("INSERT INTO participe (`id_utilisateur`, id_evenement)
@@ -21,7 +27,10 @@ final class ParticipeRepository extends AbstractRepository
     }
 
     /**
-     * Suppresion d'un client dans un evenement
+     * Suppression d'un utilisateur participant à un évènement dans la base de données
+     * @param $idUtilisateur 
+     * @param $idEvenement
+     * @return bool
      */
     public function deleteUtilisateur(int $idUtilisateur, int $idEvenement): bool
     {
@@ -34,6 +43,9 @@ final class ParticipeRepository extends AbstractRepository
 
     /**
      * Suppresion d'un client dans un evenement
+     * @param $idUtilisateur 
+     * @param $idEvenement
+     * @return bool
      */
     public function checkIfAlreadyParticipe(int $idUtilisateur, int $idEvenement): bool
     {
