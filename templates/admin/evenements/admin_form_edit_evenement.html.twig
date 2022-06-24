@@ -1,27 +1,35 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/admin.css"/>
 
-{% block title %}Modifier un évenement{% endblock %}
+{% endblock %}
+{% block title %}Modifier un évènement{% endblock %}
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Modifier un évenement</h1>
+    <h1 class="text-center mt-5">Modifier un évènement</h1>
     <main>
+    <section class="card event col-5 m-auto">
         <form class="form-admin" method="POST" action="/admin/update/evenements" enctype="multipart/form-data">
+         <div id="createEvent">
             <div class="form-group">
                 <label for="evenementTitle">Titre</label>
                 <input type="text" name="evenementTitle" class="form-control" id="evenementTitle" value="{{ evenement.titre }}" placeholder="Titre">
             </div>
             <div class="form-group">
-                <label for="evenementSubTitle">Sous titre</label>
+                <label for="evenementSubTitle">Sous-titre</label>
                 <input type="text" name="evenementSubTitle" class="form-control" id="evenementSubTitle" value="{{ evenement.sousTitre }}" placeholder="Sous titre">
             </div>
             <div class="form-group">
-                <label for="evenementDate">Date de l'événement</label>
+                <label for="evenementDate">Date de l'évènement</label>
                 <input type="date" name="evenementDate" class="form-control" id="evenementDate" value="{{ evenement.date | date('Y-m-d') }}" placeholder="Date de l'événement">
             </div>
-            <p>Nombre de participant : {{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }}</p>
             <div class="form-group">
-                <label for="nbParticipantMax">Nombre de participant max</label>
+            <label style="font-weight: bolder;text-decoration:underline;color:red">Nombre de participants : {{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }}</label>
+            </div>
+            <div class="form-group">
+                <label for="nbParticipantMax">Nombre de participants max</label>
                 <input type="text" name="nbParticipantMax" class="form-control" id="nbParticipantMax" value="{{ evenement.nbParticipantsMax }}" placeholder="Nombre de participants max">
             </div>
             <div class="form-group">
@@ -33,9 +41,9 @@
                 <textarea type="text" name="description" class="form-control" id="description" placeholder="Description">{{ evenement.description }}</textarea>
             </div>
             <div class="form-group">
-                <label for="categorieSelect">Categorie</label>
+                <label for="categorieSelect">Catégorie</label>
                 <select name="categorieSelect" id="categorieSelect">
-                    <option disabled selected>Selectioner une categorie</option>
+                    <option disabled selected>Sélectionner une catégorie</option>
                     {% for categorie in categories %}
                         {% if categorie.idCategorie == evenement.categories.idCategorie %}
                             <option selected value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
@@ -48,7 +56,7 @@
             <div class="form-group">
                 <label for="statutSelect">Statut</label>
                 <select name="statutSelect" id="statutSelect">
-                    <option disabled selected>Selectioner un statut</option>
+                    <option disabled selected>Sélectionner un statut</option>
                     {% for statut in statuts %}
                         {% if statut.idStatut == evenement.statuts.idStatut %}
                             <option selected value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
@@ -61,17 +69,22 @@
             <div class="form-group">
                 <label for="adresseSelect">Adresse</label>
                 <select name="adresseSelect" id="adresseSelect">
-                    <option disabled selected>Selectioner une adresse</option>
+                    <option disabled selected>Sélectionner une adresse</option>
                     {% for adresse in adresses %}
                         <option  {% if adresse.idAdresse == evenement.adresses.idAdresse %} selected {% endif %} value="{{ adresse.idAdresse  }}">{{ adresse.cpVille }} {{ adresse.villeLibelle }} {{ adresse.libelleAdresse }}</option>
                     {% endfor %}
                 </select>
-                <a href="/admin/create/adresse">Ajouter une adresse</a>
+                <a href="/admin/create/adresse" class="add btn btn-info">Ajouter une adresse</a>
             </div>
             <img src="/{{ evenement.medias.path}}" alt="" srcset="">
              <input type="file" name="imageEvent"/>
-            <button type="submit" name="id" class="btn btn-primary" value="{{ evenement.idEvenement }}">Sauvegarder</button>
-            <a href="/admin/evenements" class="btn btn-primary">Annuler</a>
+        </div>
+        <div id="bouton">
+            <button type="submit" name="id" class="btn btn-success mt-3" value="{{ evenement.idEvenement }}">Sauvegarder</button>
+            <a href="/admin/evenements" class="btn btn-danger mt-3">Retour</a>
+        </div>
+            
         </form>
+    </section>
     </main>
 {% endblock %}

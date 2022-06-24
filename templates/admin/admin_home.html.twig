@@ -1,17 +1,42 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/admin.css"/>
 
-{% block title %}Menu d'administration{% endblock %}
+{% endblock %}
+{% block title %}Dashboard - Frameworkers
+{% endblock %}
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Espace administrateur</h1>
-    <main>
-        <a href="/admin/create/evenements">Creer un evenement</a>
-        <a href="/admin/evenements">Gerer les evenements</a>
-        <a href="/admin/utilisateurs">Gerer les utilisateurs</a>
-        <a href="/admin/ecoles">Gerer les ecoles</a>
-        <a href="/admin/adresses">Gerer les adresses</a>
-        <a href="/admin/promotions">Gerer les promotions</a>
-        <a href="/admin/categories">Gerer les categories</a>
-    </main>
+	<h1 class="display-1 text-center mt-5">Espace administration Frameworkers</h1>
+	<main>
+		<section id="menu">
+			<div class="card py-5 bg-success" style="width: 18rem;">
+				<a href="/admin/create/evenements">Créer un évènement</a>
+			</div>
+			<div class="card py-5 bg-primary" style="width: 18rem;">
+				<a href="/admin/evenements">Gestion évènements</a>
+			</div>
+			<div class="card py-5 bg-info" style="width: 18rem;">
+				<a href="/admin/utilisateurs">Gestion utilisateurs</a>
+			</div>
+			<div class="card py-5 bg-warning" style="width: 18rem;">
+				<a href="/admin/ecoles">Gestion écoles</a>
+			</div>
+			<div class="card py-5 bg-secondary" style="width: 18rem;">
+				<a href="/admin/adresses">Gestion adresses</a>
+			</div>
+			<div class="card py-5 bg-danger" style="width: 18rem;">
+				<a href="/admin/promotions">Gestion promotions</a>
+			</div>
+			<div class="card py-5 bg-dark" style="width: 18rem;">
+				<a href="/admin/categories">Gestion catégories</a>
+			</div>
+		</section>
+
+
+	</main>
 {% endblock %}
+
+

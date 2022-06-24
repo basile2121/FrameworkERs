@@ -1,132 +1,152 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/admin.css"/>
 
-{% block title %}Gestions des evenements{% endblock %}
+{% endblock %}
+{% block title %}Gestion des évènements
+{% endblock %}
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Evenements</h1>
-    <main>
-        <form class="form-admin" method="POST" action="/admin/evenements/filter">
-            <div class="form-group">
-                <label for="filter_titre">Rechercher un evenement par son titre</label>
-                <input type="text" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control" id="filter_titre" placeholder="Titre">
-            </div>
-            <div class="form-group">
-                <label for="filtre_categorie">Categories</label>
-                <select name="filtre_categorie" id="filtre_categorie">
-                    <option value='' selected>Selectioner une categorie</option>
-                    {% for categorie in categories %}
-                        <option {% if filtres['filtre_categorie'] is defined and categorie.idCategorie == filtres['filtre_categorie'] %} selected {% endif %} value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="filtre_statut">Statuts</label>
-                <select name="filtre_statut" id="filtre_statut">
-                    <option value='' selected>Selectioner un statut</option>
-                    {% for statut in statuts %}
-                        <option {% if filtres['filtre_statut'] is defined and statut.idStatut == filtres['filtre_statut'] %} selected {% endif %} value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="filtre_city">Ville</label>
-                <input type="text" value="{{ filtres['filtre_city'] }}" name="filtre_city" class="form-control" id="filtre_city" placeholder="Ville">
-            </div>
-            <div class="form-group">
-                <label for="filtre_cp">Code postale</label>
-                <input type="text" value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control" id="filtre_cp" placeholder="Code postale">
-            </div>
-            <div class="form-group">
-                <label for="order_date">Date</label>
-                <select class="form-select" name="order_date" id="order_date">
-                    <option value ='' selected>Selectioner un ordre d'affichage</option>
-                    <option value="ASC">Croissant</option>
-                    <option value="DESC">Décroissant</option>
-                </select>
-            </div>
-            
-            <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
-            
-            <a href="/admin/evenements/bde" class="btn btn-primary">Annuler</a>
-            
-            
-            
-        </form>
-
-        <h2>Liste des evenements</h2>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th scope="col">Titre</th>
-                <th scope="col">Sous titre</th>
-                <th scope="col">Prix</th>
-                <th scope="col">Date</th>
-                <th scope="col">Capacité</th>
-                <th scope="col">Statut</th>
-                <th scope="col">Categorie</th>
-                <th scope="col">Ville</th>
-                <th scope="col">Adresse</th>
-                <th scope="col">Acceder à l'evenement</th>
-                <th scope="col">Gérer les utilisateurs</th>
-                <th scope="col">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-                {% for evenement in evenements %}
-                    <tr>
-                        <th scope="row">{{ evenement.titre }}</th>
-                        <td>{{ evenement.sousTitre }}</td>
-                        <td>{{ evenement.prix }} €</td>
-                        <td>{{ evenement.date | date('d-m-Y') }}</td>
-                        <td>{{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }} / {{ evenement.nbParticipantsMax }}</td>
-                        <td>{{ evenement.statuts.libelleStatut }}</td>
-                        <td>{{ evenement.categories.libelleCategorie }}</td>
-                        <td>{{ evenement.adresses.cpVille }} {{ evenement.adresses.villeLibelle }}</td>
-                        <td>{{ evenement.adresses.libelleAdresse }}</td>
-                        <td>
-                            <form method="POST" action="/evenement" >
-                                <button type="submit" name="id" class="btn btn-primary" value="{{ evenement.idEvenement }}">Acceder</button>
-                            </form>
-                        </td>
-                        <td>
-                            <form method="POST" action="/admin/evenements/list/utilisateurs" >
-                                <button type="submit" name="id" class="btn btn-primary" value="{{ evenement.idEvenement }}">Acceder</button>
-                            </form>
-                        </td>
-                        <td>
-                            <form method="POST" action="/admin/edit/evenements" >
-                                <button type="submit" name="id" class="btn btn-warning" value="{{ evenement.idEvenement }}">Modifier</button>
-                            </form>
-
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{evenement.idEvenement }}">Supprimer</button>
-
-                        </td>
-                    </tr>
-
-                     {% include 'utils/pop-up/delete_evenement_withcontraint_model.html.twig'%}
-                     {% include 'utils/pop-up/delete_evenement_model.html.twig'%}
-
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    {% if evenements is not empty %}
-                        <th>Total evenements {{ evenements | length }}</th>
-                    {% else %}
-                        <th>Aucun evenement</th>
-                    {% endif %}
-                </tr>
-            </tfoot>
-        </table>
-    </main>
+	<h1 class=" text-center mt-5">Filtrer les évènements :</h1>
+	<main>
+	<a href="/admin/create/evenements" class="add btn btn-info">Ajouter un évènement</a>
+    <section class="formFiltre">
+		{# Début formulaire des filtres #}
+		<form class="form-admin" method="POST" action="/admin/evenements/filter">
         
-        {% if popup[0] == "participant"  %}
-           <input id='popup' type="hidden" value={{ popup[1]}} >
-            <script type="text/javascript">
-              let id = document.querySelector("#popup").value
-                $('#deleteModalwithcontraint'+parseInt(id)).modal("show")
-            </script>
-        {% endif %}
+			<div id="filtres" class="cardFiltre">
+            
+				<div class="form-group">
+					<label for="filter_titre">Titre :</label>
+					<input type="text" value="{{ filtres['filter_titre'] }}" name="filter_titre" class="form-control" id="filter_titre" placeholder="Titre">
+				</div>
+				<div class="form-group">
+					<label for="filtre_categorie">Catégorie :</label>
+					<select name="filtre_categorie" id="filtre_categorie">
+						<option value='' selected>Selectioner une categorie</option>
+						{% for categorie in categories %}
+							<option {% if filtres['filtre_categorie'] is defined and categorie.idCategorie == filtres['filtre_categorie'] %} selected {% endif %} value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="filtre_statut">Statut :</label>
+					<select name="filtre_statut" id="filtre_statut">
+						<option value='' selected>Selectioner un statut</option>
+						{% for statut in statuts %}
+							<option {% if filtres['filtre_statut'] is defined and statut.idStatut == filtres['filtre_statut'] %} selected {% endif %} value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="filtre_city">Ville :</label>
+					<input type="text" value="{{ filtres['filtre_city'] }}" name="filtre_city" class="form-control" id="filtre_city" placeholder="Ville">
+				</div>
+				<div class="form-group">
+					<label for="filtre_cp">Code postale :</label>
+					<input type="text" value="{{ filtres['filtre_cp'] }}" name="filtre_cp" class="form-control" id="filtre_cp" placeholder="Code postale">
+				</div>
+				<div class="form-group">
+					<label for="order_date">Date :</label>
+					<select class="form-select" name="order_date" id="order_date">
+						<option value='' selected>Selectioner un ordre d'affichage</option>
+						<option value="ASC">Croissant</option>
+						<option value="DESC">Décroissant</option>
+					</select>
+				</div>
+			</div>
+            <div id="bouton">
+			<button type="submit" name="filtre" value="true" class="btn btn-success">Rechercher</button>
+
+			<a href="/admin/evenements" class="btn btn-danger">Annuler</a>
+            </div>
+		</form>
+    </section>
+		{# Fin formulaire des filtres #}
+
+    <section id="listEvent" class="container-fluid">
+		<h2>Liste des évènements :</h2>
+		<table class="table table-bordered table-hover table-responsive ">
+			<thead class="thead-light">
+				<tr>
+					<th scope="col">Titre</th>
+					<th scope="col">Sous-titre</th>
+					<th scope="col">Prix</th>
+					<th scope="col">Date</th>
+					<th scope="col">Capacité</th>
+					<th scope="col">Statut</th>
+					<th scope="col">Catégorie</th>
+					<th scope="col">Ville</th>
+					<th scope="col">Adresse</th>
+					<th scope="col" style="width:10px">Accéder à l'évènement</th>
+					<th scope="col" style="width:10px">Gérer les utilisateurs</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for evenement in evenements %}
+					<tr>
+						<td style="font-weight: bolder">{{ evenement.titre }}</th>
+						<td >{{ evenement.sousTitre }}</td>
+						<td>{{ evenement.prix }}
+							€</td>
+						<td>{{ evenement.date | date('d-m-Y') }}</td>
+						<td>{{ arrayParticipeUtilisateurs[evenement.idEvenement] | length }}
+							/
+							{{ evenement.nbParticipantsMax }}</td>
+						<td >{{ evenement.statuts.libelleStatut }}</td>
+						<td>{{ evenement.categories.libelleCategorie }}</td>
+						<td>{{ evenement.adresses.cpVille }}
+							{{ evenement.adresses.villeLibelle }}</td>
+						<td>{{ evenement.adresses.libelleAdresse }}</td>
+						<td>
+							<form method="POST" action="/evenement">
+								<button type="submit" name="id" class="btn btn-info" value="{{ evenement.idEvenement }}">Acceder</button>
+							</form>
+						</td>
+						<td>
+							<form method="POST" action="/admin/evenements/list/utilisateurs">
+								<button type="submit" name="id" class="btn btn-info" value="{{ evenement.idEvenement }}">Acceder</button>
+							</form>
+						</td>
+						<td id="actions">
+							<form method="POST" action="/admin/edit/evenements">
+								<button type="submit" name="id" class="btn btn-warning" value="{{ evenement.idEvenement }}"><img src="http://localhost:8000/image/edit.png" alt="edit" ></button>
+							</form>
+
+							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{evenement.idEvenement }}"><img src="http://localhost:8000/image/trash.png" alt="delete" ></button>
+
+						</td>
+					</tr>
+
+					{% include 'utils/pop-up/delete_evenement_withcontraint_model.html.twig'%}
+					{% include 'utils/pop-up/delete_evenement_model.html.twig'%}
+
+				{% endfor %}
+			</tbody>
+			<tfoot>
+				<tr >
+					{% if evenements is not empty %}
+						<th colspan="12">Total évènements :
+							{{ evenements | length }}</th>
+					{% else %}
+						<th colspan="12">Aucun évènement</th>
+					{% endif %}
+				</tr>
+			</tfoot>
+		</table>
+    </section>
+	</main>
+
+	{% if popup[0] == "participant"  %}
+		<input id='popup' type="hidden" value={{ popup[1]}}>
+		<script type="text/javascript">
+			let id = document.querySelector("#popup").value
+$('#deleteModalwithcontraint' + parseInt(id)).modal("show")
+		</script>
+	{% endif %}
 
 {% endblock %}
+

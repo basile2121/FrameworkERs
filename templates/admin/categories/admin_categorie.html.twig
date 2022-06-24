@@ -1,51 +1,67 @@
 {% extends "base.html.twig" %}
+{% block head %}
+	{{ parent() }}
+	<link rel="stylesheet" href="/css/admin.css"/>
 
-{% block title %}Gestions des categories{% endblock %}
+{% endblock %}
+{% block title %}Gestions des categories
+{% endblock %}
 
 
 {% block content %}
-    <h1 class="display-1 text-center mt-5">Categories</h1>
-    <main>
-        <a href="/admin/create/categorie">Ajouter une categorie</a>
-        <form class="form-admin" method="GET" action="/admin/categories/filter">
-            <div class="form-group">
-                <label for="filter_libelle">Rechercher une categorie par son nom</label>
-                <input type="text" value="{{ filtres['filter_libelle'] }}" name="filter_libelle" class="form-control" id="filter_libelle" placeholder="Nom de la categorie">
+	<h1 class="text-center mt-5">Filtrer par catégorie:</h1>
+	<main>
+		<a href="/admin/create/categorie" class="add btn btn-info">Ajouter une catégorie</a>
+		{# Début formulaire des filtres #}
+		<section class="formFiltre">
+			<form class="form-admin" method="GET" action="/admin/categories/filter">
+				<div id="filtres" class="cardFiltre">
+					<div class="form-group">
+						<label for="filter_libelle">Rechercher une catégorie par son nom</label>
+						<input type="text" value="{{ filtres['filter_libelle'] }}" name="filter_libelle" class="form-control" id="filter_libelle" placeholder="Nom de la categorie">
+					</div>
+				</div>
+            <div id="bouton">
+				<button type="submit" name="filtre" value="true" class="btn btn-success">Rechercher</button>
+				<a href="/admin/categories" class="btn btn-danger">Annuler</a>
             </div>
-            <button type="submit" name="filtre" value="true" class="btn btn-primary">Rechercher</button>
-            <a href="/admin/categories" class="btn btn-primary">Annuler</a>
-        </form>
-
-        <h2>Liste des categories</h2>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Nom de la categorie</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for categorie in categories %}
-                <tr>
-                    <th>{{ categorie.libelleCategorie }}</th>
-                    <td>
-                        <form method="GET" action="/admin/edit/categories" >
-                            <button type="submit" name="id" class="btn btn-warning" value="{{ categorie.idCategorie }}">Modifier</button>
-                        </form>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ categorie.idCategorie }}">Supprimer</button>
-                    </td>
-                </tr>
-                {% include 'utils/pop-up/delete_categorie_model.html.twig'%}
-            {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    {% if categories is not empty %}
-                        <th>Total categories {{ categories | length }}</th>
-                    {% else %}
-                        <th>Aucune categorie</th>
-                    {% endif %}
-                </tr>
-            </tfoot>
-        </table>
-    </main>
+			</form>
+		</section>
+        {# Fin formulaire des filtres #}*
+        <section id="listEvent" class="container-fluid">
+		<h2>Liste des catégories</h2>
+		<table class="table table-bordered table-hover">
+			<thead class="thead-light">
+				<tr>
+					<th>Nom de la categorie</th>
+                    <th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for categorie in categories %}
+					<tr>
+						<td>{{ categorie.libelleCategorie }}</th>
+						<td id="actions">
+							<form method="GET" action="/admin/edit/categories">
+								<button type="submit" name="id" class="btn btn-warning" value="{{ categorie.idCategorie }}"><img src="http://localhost:8000/image/edit.png" alt="edit" ></button>
+							</form>
+							<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ categorie.idCategorie }}"><img src="http://localhost:8000/image/trash.png" alt="delete" ></button>
+						</td>
+					</tr>
+					{% include 'utils/pop-up/delete_categorie_model.html.twig'%}
+				{% endfor %}
+			</tbody>
+			<tfoot>
+				<tr>
+					{% if categories is not empty %}
+						<th colspan="2">Total catégories :
+							{{ categories | length }}</th>
+					{% else %}
+						<th colspan="2">Aucune catégorie</th>
+					{% endif %}
+				</tr>
+			</tfoot>
+		</table>
+        </section>
+	</main>
 {% endblock %}
