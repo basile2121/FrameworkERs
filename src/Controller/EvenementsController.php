@@ -113,7 +113,7 @@ class EvenementsController extends AbstractController
 
         if ($filtre_order_date) {
             $filtres['order_date'] = $filtre_order_date;
-            
+
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $filtre_order_date, '', $andWhereQuery);
         }
         else {
@@ -159,13 +159,13 @@ class EvenementsController extends AbstractController
             $noConnectedMessage = 'Vous devez vous connecter pour vous inscrire à un évènement';
         }
 
-        if ($nbParticipant +1 >= $nbParticipantMax) {
+        if ($nbParticipant  >= $nbParticipantMax) {
             $completEvent = "complet";
         }
-          
-    
 
-        
+
+
+
 
         echo $this->twig->render('evenements/evenement.html.twig', [
             'evenement' => $evenement,
@@ -207,7 +207,7 @@ class EvenementsController extends AbstractController
         } else {
             $session->set('errorParticiper', 'Evenement complet impossible d\'y participer');
         }
-        
+
         header("Location: /evenement?id=" . $id );
     }
 
@@ -225,8 +225,8 @@ class EvenementsController extends AbstractController
         // Récuperation du nombre de participant actuel et le nombre de participant maximum accepté
         $arrayParticipe = $this->getNbParticipants($idEvent, $evenement, $evenementsRepository, $participeRepository);
         // Mise à jour du statut
-        $this->_changeStatutEvenement($arrayParticipe[0] - 1, $arrayParticipe[1], $evenement, $statutsRepository, $evenementsRepository);
-        
+        $this->_changeStatutEvenement($arrayParticipe[0], $arrayParticipe[1], $evenement, $statutsRepository, $evenementsRepository);
+
         $session->set('desinscription', 'Vous êtes bien désinscrit de l\'évènement');
         header("Location: /evenement?id=" . $idEvent );
     }
@@ -274,11 +274,11 @@ class EvenementsController extends AbstractController
      */
     #[Route(path: "/admin/evenements/filter", httpMethod: 'GET', name: "admin_evenements_filter",)]
     public function adminEvenementsFilter(EvenementsRepository $evenementsRepository,
-                                     CategoriesRepository $categoriesRepository,
-                                     StatutsRepository $statutsRepository,
-                                     AdressesRepository $adressesRepository,
-                                     ParticipeRepository $participeRepository,
-                                     Request $request, UtilisateursRepository $utilisateursRepository, Session $session
+                                          CategoriesRepository $categoriesRepository,
+                                          StatutsRepository $statutsRepository,
+                                          AdressesRepository $adressesRepository,
+                                          ParticipeRepository $participeRepository,
+                                          Request $request, UtilisateursRepository $utilisateursRepository, Session $session
     )
     {
         $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
@@ -298,7 +298,7 @@ class EvenementsController extends AbstractController
         $filtre_cp = $request->query->get('filtre_cp');
         $filtre_categorie = $request->query->get('filtre_categorie');
         $filtre_order_date = $request->query->get('order_date');
-        
+
 
         if ($filtre_titre) {
             $filtres['filter_titre'] = $filtre_titre;
@@ -337,7 +337,7 @@ class EvenementsController extends AbstractController
         if ($filtre_order_date) {
             $filtres['order_date'] = $filtre_order_date;
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $filtre_order_date);
-        } 
+        }
         else {
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query);
         }
@@ -359,9 +359,9 @@ class EvenementsController extends AbstractController
      */
     #[Route(path: "/admin/create/evenements", name: "admin_create_evenements",)]
     public function createEvenements(CategoriesRepository $categoriesRepository,
-                                   StatutsRepository $statutsRepository,
-                                   AdressesRepository $adressesRepository,
-                                    UtilisateursRepository $utilisateursRepository, Session $session
+                                     StatutsRepository $statutsRepository,
+                                     AdressesRepository $adressesRepository,
+                                     UtilisateursRepository $utilisateursRepository, Session $session
     )
     {
         $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
@@ -389,16 +389,16 @@ class EvenementsController extends AbstractController
         if (!isset($_FILES['imageEvent'])) {
             echo "Erreur : pas d'image";
             return;
-          }
-      
-          $image = $_FILES['imageEvent'];
-      
-          if (
+        }
+
+        $image = $_FILES['imageEvent'];
+
+        if (
             is_uploaded_file($image['tmp_name']) &&
             move_uploaded_file(
-              $image['tmp_name'],__DIR__ . DIRECTORY_SEPARATOR . '../../public/events/' . basename($image['name'])
+                $image['tmp_name'],__DIR__ . DIRECTORY_SEPARATOR . '../../public/events/' . basename($image['name'])
             )
-          ) {
+        ) {
             $media= new Medias();
             $media->setNom(basename($image['name']));
             $media->setPath('events/' . basename($image['name']));
@@ -426,10 +426,10 @@ class EvenementsController extends AbstractController
             $evenementsRepository->save($evenement);
 
             header('Location: /admin/evenements');
-          } else {
+        } else {
             echo "Erreur lors de l'upload";
-          }
-          
+        }
+
     }
 
     /**
@@ -485,24 +485,24 @@ class EvenementsController extends AbstractController
         $evenement->setUpdatedAt(new DateTime());
 
         if (isset($_FILES['imageEvent'])) {
-           
+
             $image = $_FILES['imageEvent'];
             if (
                 is_uploaded_file($image['tmp_name']) &&
                 move_uploaded_file(
-                  $image['tmp_name'],__DIR__ . DIRECTORY_SEPARATOR . '../../public/events/' . basename($image['name'])
+                    $image['tmp_name'],__DIR__ . DIRECTORY_SEPARATOR . '../../public/events/' . basename($image['name'])
                 )
-              ) {
+            ) {
                 $media= new Medias();
                 $media->setNom(basename($image['name']));
                 $media->setPath('events/' . basename($image['name']));
                 $media->setType($image['type']);
                 $mediasRepository->save($media);
-    
+
                 $idmedia= $mediasRepository->getLastId();
-                
+
                 $evenement->setIdMedia($idmedia);
-              }
+            }
         }
 
         $evenementsRepository->update($evenement);
@@ -640,10 +640,13 @@ class EvenementsController extends AbstractController
      */
     private function _changeStatutEvenement(int $nbParticipant, int $nbParticipantMax, Evenements $evenement, StatutsRepository $statutsRepository, EvenementsRepository $evenementsRepository) {
         $pourcent = ($nbParticipant / $nbParticipantMax) * 100;
+
+
         if ($pourcent >= 0 && $pourcent < 80) {
+
             $statut = $statutsRepository->selectOneByLibelle('A venir');
             $evenement->setIdStatut($statut[0]->getIdStatut());
-        } else if ($pourcent > 80 && $pourcent < 100) {
+        } else if ($pourcent >= 80 && $pourcent < 100) {
             $statut = $statutsRepository->selectOneByLibelle('Presque complet');
             $evenement->setIdStatut($statut[0]->getIdStatut());
         } else if ($pourcent === 100) {
@@ -668,5 +671,4 @@ class EvenementsController extends AbstractController
 
         return [$nbParticipant,$nbParticipantMax];
     }
-   
 }

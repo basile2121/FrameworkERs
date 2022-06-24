@@ -80,7 +80,7 @@ class AdresseController extends AbstractController
     #[Route(path: "/admin/create/adresse", name: "admin_create_adresses",)]
     public function createAdresses(AdressesRepository $adressesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
-        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'BDE');
         $adresses = $adressesRepository->selectAll();
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $urlRedirection = $_SERVER['HTTP_REFERER'];
@@ -102,7 +102,7 @@ class AdresseController extends AbstractController
     #[Route(path: "/admin/add/adresses", httpMethod: 'POST', name: "admin_add_adresses",)]
     public function addAdresses(AdressesRepository $adressesRepository, UtilisateursRepository $utilisateursRepository, Session $session)
     {
-        $this->renderDeniedAcces($session, $utilisateursRepository, 'ADMIN');
+        $this->renderDeniedAcces($session, $utilisateursRepository, 'BDE');
         $adresse = new Adresses();
         $adresse->setLibelleAdresse($_POST['adresse']);
         $adresse->setCpVille($_POST['codePostal']);
