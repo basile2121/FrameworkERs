@@ -41,26 +41,23 @@
                     <a class="nav-link btn-connect px-4 py-3 text-white" href="/login">Se connecter</a>
                 </li>
             {% else %}
-                <li class="nav-item p-2 ">
-                    <a class="nav-link text-white" href="/admin">Dashboard</a>
-                </li>
                  <li class="nav-item p-2 ">
-                        <div class="dropdown show">
+                                    <div class="btn-group">
+                    <a href="/admin" class="nav-link text-white">Administration</a>
+                    <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" style="background-color:#000000!important;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item py-3 text-dropdown" href="/admin/create/evenements">Creer un evenement</a>
+                        <a class="dropdown-item py-3 text-dropdown" href="/admin/evenements">Gerer les evenements</a>
+                        <a class="dropdown-item py-3 text-dropdown" href="/admin/utilisateurs">Gerer les utilisateurs</a>
+                        <a class="dropdown-item py-3 text-dropdown" href="/admin/ecoles">Gerer les ecoles</a>
+                        <a class="dropdown-item py-3 text-dropdown" href="/admin/adresses">Gerer les adresses</a>
+                        <a class="dropdown-item py-3 text-dropdown" href="/admin/promotions">Gerer les promotions</a>
+                        <a  class="dropdown-item py-3 text-dropdown" href="/admin/categories">Gerer les categories</a>
+                    </div>
+                    </div>
                       
-            <a class="btn text-light dropdown-toggle text-dropdown" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-               Administration
-            </a>
-
-            <div class="dropdown-menu px-2" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item py-3 text-dropdown" href="/admin/create/evenements">Creer un evenement</a>
-                <a class="dropdown-item py-3 text-dropdown" href="/admin/evenements">Gerer les evenements</a>
-                <a class="dropdown-item py-3 text-dropdown" href="/admin/utilisateurs">Gerer les utilisateurs</a>
-                <a class="dropdown-item py-3 text-dropdown" href="/admin/ecoles">Gerer les ecoles</a>
-                <a class="dropdown-item py-3 text-dropdown" href="/admin/adresses">Gerer les adresses</a>
-                <a class="dropdown-item py-3 text-dropdown" href="/admin/promotions">Gerer les promotions</a>
-                <a  class="dropdown-item py-3 text-dropdown" href="/admin/categories">Gerer les categories</a>
-            </div>
-        </div>
                     
                 </li>
 
