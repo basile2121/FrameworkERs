@@ -110,12 +110,19 @@ class IndexController extends AbstractController
     private function _setPastStatus(EvenementsRepository $evenementsRepository, StatutsRepository $statusRepository)
     {
         $statut = $statusRepository->selectOneByLibelle("Passé");
+        
         $date = new DateTime();
-        var_dump($date);
+        // var_dump("Voici l'objet Date :" );
+        // var_dump( $date);
         $evenements = $evenementsRepository->selectAll();
         foreach($evenements as $event){
-            if($event->getDate() <= $date && $event->getStatuts() != $statut){
-                $event->setStatuts($statut[0]);
+            if($event->getDate() <= $date && $event->getStatuts()->getIdStatut() !== $statut[0]->getIdStatut()){
+                // var_dump($event);
+                $event->setIdStatut($statut[0]->getIdStatut());
+            
+                $evenementsRepository->update($event);
+ 
+                
             }
         }
     }
