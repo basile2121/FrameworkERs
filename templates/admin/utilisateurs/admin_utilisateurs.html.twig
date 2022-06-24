@@ -7,7 +7,7 @@
     <h1 class="display-1 text-center mt-5">Utilisateurs</h1>
     <main>
         <a href="/admin/create/utilisateurs">Ajouter un utilisateur</a>
-        <form class="form-admin" method="POST" action="/admin/utilisateurs/filter">
+        <form class="form-admin" method="GET" action="/admin/utilisateurs/filter">
             <div class="form-group">
                 <label for="searchUserLastName">Rechercher un utilisateur par nom</label>
                 <input type="text" maxlength="255" value="{{ filtres['filtre_lastName'] }}" name="filtre_lastName" class="form-control" id="searchUserLastName" placeholder="Nom de l'utilisateur">
@@ -73,7 +73,7 @@
 
 
                     <td>
-                        <form method="POST" action="/admin/edit/utilisateurs" >
+                        <form method="GET" action="/admin/edit/utilisateurs" >
                             <button type="submit" name="id" class="btn btn-warning" value="{{ utilisateur.idUtilisateur}}">Modifier</button>
                         </form>
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{utilisateur.idUtilisateur }}">Supprimer</button>

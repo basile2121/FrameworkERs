@@ -2,15 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Utilisateurs;
-use App\Repository\EcolesRepository;
-use App\Repository\PromotionsRepository;
-use App\Repository\RolesRepository;
-use App\Repository\UserRepository;
-use App\Repository\UtilisateursRepository;
 use App\Routing\Attribute\Route;
-use DateTime;
-use Symfony\Component\HttpFoundation\Request;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;

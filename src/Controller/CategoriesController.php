@@ -134,15 +134,10 @@ class CategoriesController extends AbstractController
         $evenementsWithCategorie = $categoriesRepository->verifContraintsEvenementCategories($id);
        
         if ($evenementsWithCategorie !== null) {
-            // TODO POP UP
-            // Message pop-up Impossible de supprimer la caregorie appartient 
-            
             $session->set("cateforipop","cateforipop");
-            header('Location: /admin/categories');
-            
-        } else {   
+        } else {
             $categoriesRepository->delete($id);
-            header('Location: /admin/categories');
         }
+        header('Location: /admin/categories');
     }
 }

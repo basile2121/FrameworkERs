@@ -38,8 +38,8 @@
             </div>
             <div class="form-group">
                 <label for="rolesSelect">Roles</label>
-                <select name="role" id="rolesSelect">
-                    <option disabled selected>Selectioner un role</option>
+                <select name="role" id="rolesSelect" required>
+                    <option value="" disabled selected>Selectioner un role</option>
                     {% for role in roles %}
                         <option  {% if role.idRole == utilisateur.roles.idRole %} selected {% endif %} value="{{ role.idRole }}">{{ role.libelleRole }}</option>
                     {% endfor %}

@@ -9,6 +9,7 @@ use App\Routing\Attribute\Route;
 use App\Session\Session;
 use DateTime;
 use ReflectionException;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -67,17 +68,14 @@ class IndexController extends AbstractController
 
     }
 
-
-    //   //Fonction permettant de récupérer trois évenèments dont la date est la plus proche dont le nombre de participants est le plus élevé
-    //   #[Route(path: "/accueil/recentAjoutee", name: "recentAjoute")]
-    // public function EvenementsProchainParticipant(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository)
-    // { 
-       
-    //     $evenements = $evenementsRepository->getEvenementByParticipation();
-        
-    // }
-    #[Route(path: "/evenements/filter", name: "filtre_evenement_accueil", httpMethod:"POST")]
-    public function evenementFilter(EvenementsRepository $evenementsRepository,StatutsRepository $statusRepository)
+    /**
+     * @throws SyntaxError
+     * @throws ReflectionException
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
+    #[Route(path: "/home/evenements/filter", httpMethod: "GET", name: "filtre_evenement_accueil")]
+    public function evenementFilter(EvenementsRepository $evenementsRepository, Request $request)
     {
         $this->_setPastStatus($evenementsRepository, $statusRepository);
         $evenementError= "";
@@ -86,18 +84,23 @@ class IndexController extends AbstractController
         $filtres = [];
         $whiteNavbar = true;
 
-        if (!empty($_POST['filter_titre'])) {
-            $filtres['filter_titre'] = $_POST['filter_titre'];
+        $filtre_titre = $request->query->get('filter_titre');
+
+        if ($filtre_titre) {
+            $filtres['filter_titre'] = $filtre_titre;
             $conditions[] = 'titre LIKE ?';
-            $parameters[] = '%'.$_POST['filter_titre']."%";
+            $parameters[] = '%'.$filtre_titre."%";
         } else {
-            header('Location: http://localhost:8000/');
+            header('Location: /');
         }
+
         $evenements = $evenementsRepository->filter($conditions, $parameters);
         $evenementsAVenir = $evenementsRepository->getEvenementAVenir();
-    if(count($evenements) == 0){
-        $evenementError = "Aucun résultat ne correspond à votre recherche";
-    }
+
+        if(count($evenements) == 0) {
+            $evenementError = "Aucun résultat ne correspond à votre recherche";
+        }
+
         echo $this->twig->render('home/home.html.twig', [
             'evenementsFiltered' => $evenements,
             'filtres' => $filtres,
@@ -122,7 +125,7 @@ class IndexController extends AbstractController
             
                 $evenementsRepository->update($event);
  
-                
+
             }
         }
     }

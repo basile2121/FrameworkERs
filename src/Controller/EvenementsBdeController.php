@@ -3,18 +3,22 @@
 namespace App\Controller;
 
 use App\Entity\Evenements;
+use App\Entity\Medias;
 use App\Entity\Participe;
 use App\Repository\AdressesRepository;
 use App\Repository\CategoriesRepository;
 use App\Repository\EcolesRepository;
 use App\Repository\EvenementsRepository;
+use App\Repository\MediasRepository;
 use App\Repository\ParticipeRepository;
 use App\Repository\RolesRepository;
 use App\Repository\StatutsRepository;
 use App\Repository\UtilisateursRepository;
 use App\Routing\Attribute\Route;
+use App\Session\Session;
 use DateTime;
 use ReflectionException;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -32,12 +36,12 @@ class EvenementsBdeController extends AbstractController
                                     CategoriesRepository $categoriesRepository,
                                     StatutsRepository $statutsRepository,
                                     AdressesRepository $adressesRepository,
-                                    ParticipeRepository $participeRepository
+                                    ParticipeRepository $participeRepository,
+                                    Session $session,
     )
     {
         $id = $_SESSION["id"];
         $evenements = $evenementsRepository->selectEvenementByUser($id);
-        // $evenements = $evenementsRepository->selectAll('date', 'DESC');
         $categories = $categoriesRepository->selectAll();
         $statuts = $statutsRepository->selectAll();
         $adresses = $adressesRepository->selectAll();
@@ -49,8 +53,10 @@ class EvenementsBdeController extends AbstractController
             'categories' => $categories,
             'statuts' => $statuts,
             'adresses' => $adresses,
+            'popup' => $session->get('popup'),
             'arrayParticipeUtilisateurs' => $this->_getNbParticipants($evenements, $participes)
         ]);
+        $session->delete('popup');
     }
 
     /**
@@ -59,12 +65,13 @@ class EvenementsBdeController extends AbstractController
      * @throws LoaderError
      * @throws ReflectionException
      */
-    #[Route(path: "/bde/evenements/filter", httpMethod: 'POST', name: "bde_evenements_filter",)]
+    #[Route(path: "/bde/evenements/filter", httpMethod: 'GET', name: "bde_evenements_filter",)]
     public function evenementsFilter(EvenementsRepository $evenementsRepository,
                                      CategoriesRepository $categoriesRepository,
                                      StatutsRepository $statutsRepository,
                                      AdressesRepository $adressesRepository,
-                                     ParticipeRepository $participeRepository
+                                     ParticipeRepository $participeRepository,
+                                     Request $request,
     )
     {
         $categories = $categoriesRepository->selectAll();
@@ -77,53 +84,57 @@ class EvenementsBdeController extends AbstractController
         $filtres = [];
         $query = '';
 
+        $filter_titre = $request->query->get('filter_titre');
+        $filtre_categorie = $request->query->get('filtre_categorie');
+        $filtre_statut = $request->query->get('filtre_statut');
+        $filtre_city = $request->query->get('filtre_city');
+        $filtre_cp = $request->query->get('filtre_cp');
+        $order_date = $request->query->get('order_date');
+
         //Utilisateur BDE 
         $id = $_SESSION["id"];
         $conditions[] = 'evenements.id_utilisateur = ?';
         $parameters[] = $_SESSION["id"];
 
-        if (!empty($_POST['filter_titre'])) {
-            $filtres['filter_titre'] = $_POST['filter_titre'];
+        if ($filter_titre) {
+            $filtres['filter_titre'] = $filter_titre;
             $conditions[] = 'titre LIKE ?';
-            $parameters[] = '%'.$_POST['filter_titre']."%";
+            $parameters[] = '%'.$filter_titre."%";
         }
-        if (!empty($_POST['filtre_categorie'])) {
-            $filtres['filtre_categorie'] = intval($_POST['filtre_categorie']);
+        if ($filtre_categorie) {
+            $filtres['filtre_categorie'] = $filtre_categorie;
             $conditions[] = 'id_categorie = ?';
-            $parameters[] = intval($_POST['filtre_categorie']);
+            $parameters[] = $filtre_categorie;
         }
 
-        if (!empty($_POST['filtre_statut'])) {
-            $filtres['filtre_statut'] = intval($_POST['filtre_statut']);
+        if ($filtre_statut) {
+            $filtres['filtre_statut'] = $filtre_statut;
             $conditions[] = 'id_statut = ?';
-            $parameters[] = intval($_POST['filtre_statut']);
+            $parameters[] = $filtre_statut;
         }
 
-        if (!empty($_POST['filtre_city']) || !empty($_POST['filtre_cp'])) {
+        if ($filtre_city || $filtre_cp) {
             $query = 'JOIN adresses ON adresses.id_adresse = evenements.id_adresse';
         }
 
-        if (!empty($_POST['filtre_city'])) {
-            $filtres['filtre_city'] = $_POST['filtre_city'];
+        if ($filtre_city) {
+            $filtres['filtre_city'] = $filtre_city;
             $conditions[] = 'adresses.ville_libelle LIKE ?';
-            $parameters[] = '%'.$_POST['filtre_city']."%";
+            $parameters[] = '%'.$filtre_city."%";
         }
 
-        if (!empty($_POST['filtre_cp'])) {
-            $filtres['filtre_cp'] = $_POST['filtre_cp'];
+        if ($filtre_cp) {
+            $filtres['filtre_cp'] = $filtre_cp;
             $conditions[] = 'adresses.cp_ville LIKE ?';
-            $parameters[] = '%'.$_POST['filtre_cp']."%";
+            $parameters[] = '%'.$filtre_cp."%";
         }
-        if (!empty($_POST['order_date'])) {
-            $filtres['order_date'] = $_POST['order_date'];
-            $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $_POST['order_date']);
+        if ($order_date) {
+            $filtres['order_date'] = $order_date;
+            $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $order_date);
         } 
          else {
-            
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query);
         }
-        
-       
 
         echo $this->twig->render('bde/evenements/bde_evenements.html.twig', [
             'evenements' => $evenements,
@@ -145,7 +156,6 @@ class EvenementsBdeController extends AbstractController
     public function createEvenements(CategoriesRepository $categoriesRepository,
                                    StatutsRepository $statutsRepository,
                                    AdressesRepository $adressesRepository,
-                                   ParticipeRepository $participeRepository
     )
     {
         $adresses = $adressesRepository->selectAll();
@@ -163,29 +173,53 @@ class EvenementsBdeController extends AbstractController
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
+     * @throws \Exception
      */
-    #[Route(path: "/bde/add/evenements/", httpMethod: 'POST', name: "bde_add_evenements",)]
-    public function addEvenements(EvenementsRepository $evenementsRepository)
+    #[Route(path: "/bde/add/evenements", httpMethod: 'POST', name: "bde_add_evenements",)]
+    public function addEvenements(EvenementsRepository $evenementsRepository, MediasRepository $mediasRepository)
     {
-        $evenement = new Evenements();
-        $evenement->setTitre($_POST['evenementTitle']);
-        $evenement->setSousTitre($_POST['evenementSubTitle']);
-        $evenement->setDate(new DateTime($_POST['evenementDate']));
-        $evenement->setNbParticipantsMax($_POST['nbParticipantMax']);
-        $evenement->setPrix($_POST['prix']);
-        $evenement->setDescription($_POST['description']);
-        $evenement->setIdCategorie(($_POST['categorieSelect']));
-        $evenement->setIdStatut(intval($_POST['statutSelect']));
-        $evenement->setIdAdresse(intval($_POST['adresseSelect']));
-        $evenement->setCreatedAt(new DateTime());
-        $evenement->setUpdatedAt(new DateTime());
-        $evenement->setIdUtilisateur(intval($_SESSION['id']));
-        // TODO WALID FILE UPLOAD
-        $evenement->setIdMedia(1);
+        if (!isset($_FILES['imageEvent'])) {
+            echo "Erreur : pas d'image";
+            return;
+        }
 
-        $evenementsRepository->save($evenement);
+        $image = $_FILES['imageEvent'];
 
-        header('Location: /bde/evenements');
+        if (
+            is_uploaded_file($image['tmp_name']) &&
+            move_uploaded_file(
+                $image['tmp_name'],__DIR__ . DIRECTORY_SEPARATOR . '../../public/events/' . basename($image['name'])
+            )
+        ) {
+            $media = new Medias();
+            $media->setNom(basename($image['name']));
+            $media->setPath('events/' . basename($image['name']));
+            $media->setType($image['type']);
+            $mediasRepository->save($media);
+
+            $idmedia = $mediasRepository->getLastId();
+
+            $evenement = new Evenements();
+            $evenement->setTitre($_POST['evenementTitle']);
+            $evenement->setSousTitre($_POST['evenementSubTitle']);
+            $evenement->setDate(new DateTime($_POST['evenementDate']));
+            $evenement->setNbParticipantsMax($_POST['nbParticipantMax']);
+            $evenement->setPrix($_POST['prix']);
+            $evenement->setDescription($_POST['description']);
+            $evenement->setIdCategorie(($_POST['categorieSelect']));
+            $evenement->setIdStatut(intval($_POST['statutSelect']));
+            $evenement->setIdAdresse(intval($_POST['adresseSelect']));
+            $evenement->setCreatedAt(new DateTime());
+            $evenement->setUpdatedAt(new DateTime());
+            $evenement->setIdUtilisateur(intval($_SESSION['id']));
+            $evenement->setIdMedia($idmedia);
+
+            $evenementsRepository->save($evenement);
+
+            header('Location: /bde/evenements');
+        } else {
+            echo "Erreur lors de l'upload";
+        }
     }
 
     /**
@@ -193,15 +227,17 @@ class EvenementsBdeController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/bde/edit/evenements", httpMethod: 'POST', name: "bde_edit_evenements",)]
+    #[Route(path: "/bde/edit/evenements", httpMethod: 'GET', name: "bde_edit_evenements",)]
     public function editEvenements(EvenementsRepository $evenementsRepository,
                                    CategoriesRepository $categoriesRepository,
                                    StatutsRepository $statutsRepository,
                                    AdressesRepository $adressesRepository,
-                                   ParticipeRepository $participeRepository
+                                   ParticipeRepository $participeRepository,
+                                   Request $request
     )
     {
-        $id = intval($_POST['id']);
+        $id = $request->query->get('id');
+
         $evenement = $evenementsRepository->selectOneById($id);
         $adresses = $adressesRepository->selectAll();
         $categories = $categoriesRepository->selectAll();
@@ -222,7 +258,7 @@ class EvenementsBdeController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: "/bde/update/evenements", httpMethod: 'POST', name: "bde_update_evenements",)]
-    public function updateEvenements(EvenementsRepository $evenementsRepository)
+    public function updateEvenements(EvenementsRepository $evenementsRepository, MediasRepository $mediasRepository)
     {
         $evenement = $evenementsRepository->selectOneById(intval($_POST['id']));
 
@@ -237,17 +273,56 @@ class EvenementsBdeController extends AbstractController
         $evenement->setIdAdresse(intval($_POST['adresseSelect']));
         $evenement->setUpdatedAt(new DateTime());
 
+        if (isset($_FILES['imageEvent'])) {
+
+            $image = $_FILES['imageEvent'];
+            if (
+                is_uploaded_file($image['tmp_name']) &&
+                move_uploaded_file(
+                    $image['tmp_name'],__DIR__ . DIRECTORY_SEPARATOR . '../../public/events/' . basename($image['name'])
+                )
+            ) {
+                $media= new Medias();
+                $media->setNom(basename($image['name']));
+                $media->setPath('events/' . basename($image['name']));
+                $media->setType($image['type']);
+                $mediasRepository->save($media);
+
+                $idmedia= $mediasRepository->getLastId();
+
+                $evenement->setIdMedia($idmedia);
+            }
+        }
+
         $evenementsRepository->update($evenement);
 
         header('Location: /bde/evenements');
     }
 
 
+    /**
+     * @throws ReflectionException
+     */
     #[Route(path: "/bde/delete/evenements", httpMethod: 'POST', name: "bde_delete_evenements")]
-    public function deleteEvenements( EvenementsRepository $evenementsRepository)
+    public function deleteEvenements( EvenementsRepository $evenementsRepository, Session $session)
     {
         $id = intval($_POST['id']);
-        $evenementsRepository->delete($id);
+        $utilisateursParticipantEvenement = $evenementsRepository->verifContraintsUtilisateursParticipes($id);
+        if ($utilisateursParticipantEvenement !== null) {
+            $rp[0]= "participantBde";
+            $rp[1]= $id;
+            $session->set('popup', $rp);
+        } else {
+            $evenementsRepository->delete($id);
+        }
+        header('Location: /bde/evenements');
+    }
+
+    #[Route(path: "/bde/delete/evenements/cascade", httpMethod: 'POST', name: "bde_delete_evenements_cascade")]
+    public function deleteEvenementsCascade(EvenementsRepository $evenementsRepository)
+    {
+        $id = intval($_POST['id']);
+        $evenementsRepository->deleteCascadeEvenementParticipe($id);
         header('Location: /bde/evenements');
     }
 
@@ -258,10 +333,10 @@ class EvenementsBdeController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/bde/evenements/list/utilisateurs", httpMethod: 'POST', name: "bde_evenements_list_utilisateurs",)]
-    public function adminEvenementsListUtilisateurs(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, UtilisateursRepository $utilisateursRepository)
+    #[Route(path: "/bde/evenements/list/utilisateurs", httpMethod: 'GET', name: "bde_evenements_list_utilisateurs",)]
+    public function adminEvenementsListUtilisateurs(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository, UtilisateursRepository $utilisateursRepository, Request $request)
     {
-        $id = intval($_POST['id']);
+        $id = $request->query->get('id');
         $evenement = $evenementsRepository->selectOneById($id);
         $participes = $participeRepository->selectAll();
 
@@ -278,7 +353,7 @@ class EvenementsBdeController extends AbstractController
         ]);
     }
 
-    #[Route(path: "bde/delete/evenement/utilisateur", httpMethod: 'POST', name: "bde_delete_evenement_utilisateur")]
+    #[Route(path: "/bde/delete/evenement/utilisateur", httpMethod: 'POST', name: "bde_delete_evenement_utilisateur")]
     public function deleteUtilisateur(ParticipeRepository $participeRepository)
     {
         $idUtilisateur = intval($_POST['idUtilisateur']);
@@ -288,42 +363,6 @@ class EvenementsBdeController extends AbstractController
 
         header('Location: /bde/evenements');
     }
-
-    //  /**
-    //  * Permet d'afficher les evenements que l'utilisateur connecté à créer 
-    //  * S'il a le rôle : /bde 
-    //  *
-    //  * @param EvenementsRepository $evenementsRepository
-    //  * @param CategoriesRepository $categoriesRepository
-    //  * @param StatutsRepository $statutsRepository
-    //  * @param AdressesRepository $adressesRepository
-    //  * @param ParticipeRepository $participeRepository
-    //  * @return void
-    //  */
-    // #[Route(path: "/admin/evenements/utilisateurBde", httpMethod: 'GET', name: "admin_evenement_utilisateur_bde")]
-    // public function gestionEvenementByCreateur(EvenementsRepository $evenementsRepository,
-    // CategoriesRepository $categoriesRepository,
-    // StatutsRepository $statutsRepository,
-    // AdressesRepository $adressesRepository,
-    // ParticipeRepository $participeRepository)
-    // {
-    //     $id = $_SESSION["id"];
-    //     $evenements = $evenementsRepository->selectEvenementByUser($id);
-    //     $categories = $categoriesRepository->selectAll();
-    //     $statuts = $statutsRepository->selectAll();
-    //     $adresses = $adressesRepository->selectAll();
-    //     $participes = $participeRepository->selectAll();
-
-
-    //     echo $this->twig->render('admin/evenements/admin_evenements.html.twig', [
-    //         'evenements' => $evenements,
-    //         'categories' => $categories,
-    //         'statuts' => $statuts,
-    //         'user/bde' => $id,
-    //         'adresses' => $adresses,
-    //         'arrayParticipeUtilisateurs' => $this->_getNbParticipants($evenements, $participes)
-    //     ]);
-    // }
 
 
     private function _getNbParticipants(array $evenements, array $participes, int $evenementId = null): array {

@@ -9,6 +9,7 @@ use App\Routing\Attribute\Route;
 use App\Session\Session;
 use PHPUnit\Util\Exception;
 use ReflectionException;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -41,20 +42,21 @@ class EcoleController extends AbstractController
      * @throws LoaderError
      * @throws ReflectionException
      */
-    #[Route(path: "/admin/ecoles/filter", httpMethod: 'POST', name: "admin_ecoles_filter",)]
-    public function ecolesFilter(PromotionsRepository $promotionsRepository,EcolesRepository $ecolesRepository)
+    #[Route(path: "/admin/ecoles/filter", httpMethod: 'GET', name: "admin_ecoles_filter",)]
+    public function ecolesFilter(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository, Request $request)
     {
-        $ecoles = $ecolesRepository->selectAll();
         $promotions = $promotionsRepository->selectAll();
 
         $conditions = [];
         $parameters = [];
         $filtres = [];
 
-        if (!empty($_POST['filtre_name_ecole'])) {
-            $filtres['filtre_name_ecole'] = $_POST['filtre_name_ecole'];
+        $filtre_name_ecole = $request->query->get('filtre_name_ecole');
+
+        if ($filtre_name_ecole) {
+            $filtres['filtre_name_ecole'] = $filtre_name_ecole;
             $conditions[] = 'nom_ecole LIKE ?';
-            $parameters[] = '%'.$_POST['filtre_name_ecole']."%";
+            $parameters[] = '%'.$filtre_name_ecole."%";
         }
 
         $ecoles = $ecolesRepository->filter($conditions, $parameters);
@@ -104,10 +106,11 @@ class EcoleController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/admin/edit/ecoles", httpMethod: 'POST', name: "admin_edit_ecoles",)]
-    public function editEcoles(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository)
+    #[Route(path: "/admin/edit/ecoles", httpMethod: 'GET', name: "admin_edit_ecoles",)]
+    public function editEcoles(PromotionsRepository $promotionsRepository, EcolesRepository $ecolesRepository, Request $request)
     {
-        $id = intval($_POST['id']);
+        $id = $request->query->get('id');
+
         $ecole = $ecolesRepository->selectOneById($id);
         $promotions = $promotionsRepository->selectAll();
 
@@ -139,13 +142,10 @@ class EcoleController extends AbstractController
         $id = intval($_POST['id']);
         $promotions = $ecolesRepository->verifContraintsPromotions($id);
         if ($promotions !== null) {
-            // TODO POP UP
             $session->set('impossible',"impossible");
-            header('Location: /admin/ecoles');
-            // Message pop-up Impossible de supprimer l'ecole car une promotion associer à l'ecole existe
         } else {
             $ecolesRepository->delete($id);
-            header('Location: /admin/ecoles');
         }
+        header('Location: /admin/ecoles');
     }
 }

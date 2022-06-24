@@ -21,7 +21,7 @@
             </div>
             <div class="form-group">
                 <label for="nbParticipantMax">Nombre de participant max</label>
-                <input type="number" maxlength="255" name="nbParticipantMax" class="form-control" id="nbParticipantMax" placeholder="Nombre de participants max" required>
+                <input type="text" maxlength="255" pattern="[0-9]+" name="nbParticipantMax" class="form-control" id="nbParticipantMax" placeholder="Nombre de participants max" required>
             </div>
             <div class="form-group">
                 <label for="prix">Prix</label>
@@ -33,8 +33,8 @@
             </div>
             <div class="form-group">
                 <label for="categorieSelect">Categorie</label>
-                <select name="categorieSelect" id="categorieSelect">
-                    <option disabled selected>Selectioner une categorie</option>
+                <select name="categorieSelect" id="categorieSelect" required>
+                    <option value="" disabled selected>Selectioner une categorie</option>
                     {% for categorie in categories %}
                         <option value="{{ categorie.idCategorie }}">{{ categorie.libelleCategorie }}</option>
                     {% endfor %}
@@ -43,8 +43,8 @@
             </div>
             <div class="form-group">
                 <label for="statutSelect">Statut</label>
-                <select name="statutSelect" id="statutSelect">
-                    <option disabled selected>Selectioner un statut</option>
+                <select name="statutSelect" id="statutSelect" required>
+                    <option value="" disabled selected>Selectioner un statut</option>
                     {% for statut in statuts %}
                         <option value="{{ statut.idStatut }}">{{ statut.libelleStatut }}</option>
                     {% endfor %}
@@ -52,8 +52,8 @@
             </div>
             <div class="form-group">
                 <label for="adresseSelect">Adresse</label>
-                <select name="adresseSelect" id="adresseSelect">
-                    <option disabled selected>Selectioner une adresse</option>
+                <select name="adresseSelect" id="adresseSelect" required>
+                    <option value="" disabled selected>Selectioner une adresse</option>
                     {% for adresse in adresses %}
                         <option value="{{ adresse.idAdresse }}">{{ adresse.cpVille }} {{ adresse.villeLibelle }} {{ adresse.libelleAdresse }}</option>
                     {% endfor %}

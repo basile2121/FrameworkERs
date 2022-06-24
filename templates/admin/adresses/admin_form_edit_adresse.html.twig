@@ -13,7 +13,7 @@
             </div>
             <div class="form-group">
                 <label for="codePostal">Code postal</label>
-                <input type="number" min="5" max="5" name="codePostal" class="form-control" id="codePostal" value="{{ adresse.cpVille }}" placeholder="Le code postal doit mesurer 5 caractères" required>
+                <input type="text" minlength="5" maxlength="5" pattern="[0-9]+" class="form-control" id="codePostal" value="{{ adresse.cpVille }}" placeholder="Le code postal doit faire 5 caractères (uniquement des chiffres)" required>
             </div>
             <div class="form-group">
                 <label for="adresse">Adresse</label>

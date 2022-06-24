@@ -70,7 +70,6 @@ class EvenementsController extends AbstractController
         $query = '';
 
         // Filtres
-        $request->query->get('id');
         $filtre_titre = $request->query->get('filter_titre');
         $filtre_statut = $request->query->get('filtre_statut');
         $filtre_city = $request->query->get('filtre_city');
@@ -214,7 +213,7 @@ class EvenementsController extends AbstractController
      * @throws LoaderError
      */
     #[Route(path: "/evenement/desincription", name: "evenement_ne_plus_participe")]
-    public function deleteParticipation(EvenementsRepository $evenementsRepository, ParticipeRepository $participeRepository ,Session $session, Request $request, StatutsRepository $statutsRepository)
+    public function deleteParticipation(ParticipeRepository $participeRepository , Session $session, Request $request)
     {
         $idUser = $_SESSION['id'];
         $idEvent= $request->query->get('idEvenement');
@@ -264,12 +263,13 @@ class EvenementsController extends AbstractController
      * @throws LoaderError
      * @throws ReflectionException
      */
-    #[Route(path: "/admin/evenements/filter", httpMethod: 'POST', name: "admin_evenements_filter",)]
+    #[Route(path: "/admin/evenements/filter", httpMethod: 'GET', name: "admin_evenements_filter",)]
     public function adminEvenementsFilter(EvenementsRepository $evenementsRepository,
                                      CategoriesRepository $categoriesRepository,
                                      StatutsRepository $statutsRepository,
                                      AdressesRepository $adressesRepository,
-                                     ParticipeRepository $participeRepository
+                                     ParticipeRepository $participeRepository,
+                                     Request $request,
     )
     {
         $categories = $categoriesRepository->selectAll();
@@ -281,44 +281,52 @@ class EvenementsController extends AbstractController
         $parameters = [];
         $filtres = [];
         $query = '';
+
+        $filtre_titre = $request->query->get('filter_titre');
+        $filtre_statut = $request->query->get('filtre_statut');
+        $filtre_city = $request->query->get('filtre_city');
+        $filtre_cp = $request->query->get('filtre_cp');
+        $filtre_categorie = $request->query->get('filtre_categorie');
+        $filtre_order_date = $request->query->get('order_date');
         
 
-        if (!empty($_POST['filter_titre'])) {
-            $filtres['filter_titre'] = $_POST['filter_titre'];
+        if ($filtre_titre) {
+            $filtres['filter_titre'] = $filtre_titre;
             $conditions[] = 'titre LIKE ?';
-            $parameters[] = '%'.$_POST['filter_titre']."%";
+            $parameters[] = '%'.$filtre_titre."%";
         }
-        if (!empty($_POST['filtre_categorie'])) {
-            $filtres['filtre_categorie'] = intval($_POST['filtre_categorie']);
+
+        if ($filtre_categorie) {
+            $filtres['filtre_categorie'] = $filtre_categorie;
             $conditions[] = 'id_categorie = ?';
-            $parameters[] = intval($_POST['filtre_categorie']);
+            $parameters[] = $filtre_categorie;
         }
 
-        if (!empty($_POST['filtre_statut'])) {
-            $filtres['filtre_statut'] = intval($_POST['filtre_statut']);
+        if ($filtre_statut) {
+            $filtres['filtre_statut'] = $filtre_statut;
             $conditions[] = 'id_statut = ?';
-            $parameters[] = intval($_POST['filtre_statut']);
+            $parameters[] = $filtre_statut;
         }
 
-        if (!empty($_POST['filtre_city']) || !empty($_POST['filtre_cp'])) {
+        if ($filtre_city || $filtre_cp) {
             $query = 'JOIN adresses ON adresses.id_adresse = evenements.id_adresse';
         }
 
-        if (!empty($_POST['filtre_city'])) {
-            $filtres['filtre_city'] = $_POST['filtre_city'];
+        if ($filtre_city) {
+            $filtres['filtre_city'] = $filtre_city;
             $conditions[] = 'adresses.ville_libelle LIKE ?';
-            $parameters[] = '%'.$_POST['filtre_city']."%";
+            $parameters[] = '%'.$filtre_city."%";
         }
 
-        if (!empty($_POST['filtre_cp'])) {
-            $filtres['filtre_cp'] = $_POST['filtre_cp'];
+        if ($filtre_cp) {
+            $filtres['filtre_cp'] = $filtre_cp;
             $conditions[] = 'adresses.cp_ville LIKE ?';
-            $parameters[] = '%'.$_POST['filtre_cp']."%";
+            $parameters[] = '%'.$filtre_cp."%";
         }
 
-        if (!empty($_POST['order_date'])) {
-            $filtres['order_date'] = $_POST['order_date'];
-            $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $_POST['order_date']);
+        if ($filtre_order_date) {
+            $filtres['order_date'] = $filtre_order_date;
+            $evenements = $evenementsRepository->filter($conditions, $parameters, $query,'date' , $filtre_order_date);
         } 
         else {
             $evenements = $evenementsRepository->filter($conditions, $parameters, $query);
@@ -361,20 +369,17 @@ class EvenementsController extends AbstractController
      * @throws SyntaxError
      * @throws RuntimeError
      * @throws LoaderError
+     * @throws \Exception
      */
     #[Route(path: "/admin/add/evenements", httpMethod: 'POST', name: "admin_add_evenements",)]
     public function addEvenements(EvenementsRepository $evenementsRepository , MediasRepository $mediasRepository)
     {
-       
-       
-        // TODO WALID FILE UPLOAD
         if (!isset($_FILES['imageEvent'])) {
             echo "Erreur : pas d'image";
             return;
           }
       
           $image = $_FILES['imageEvent'];
-          
       
           if (
             is_uploaded_file($image['tmp_name']) &&
@@ -390,24 +395,24 @@ class EvenementsController extends AbstractController
 
             $idmedia= $mediasRepository->getLastId();
 
-          $evenement = new Evenements();
-          $evenement->setTitre($_POST['evenementTitle']);
-          $evenement->setSousTitre($_POST['evenementSubTitle']);
-          $evenement->setDate(new DateTime($_POST['evenementDate']));
-          $evenement->setNbParticipantsMax($_POST['nbParticipantMax']);
-          $evenement->setPrix($_POST['prix']);
-          $evenement->setDescription($_POST['description']);
-          $evenement->setIdCategorie(($_POST['categorieSelect']));
-          $evenement->setIdStatut(intval($_POST['statutSelect']));
-          $evenement->setIdAdresse(intval($_POST['adresseSelect']));
-          $evenement->setCreatedAt(new DateTime());
-          $evenement->setUpdatedAt(new DateTime());
-          $evenement->setIdUtilisateur(intval($_SESSION['id']));
-          $evenement->setIdMedia($idmedia);
+            $evenement = new Evenements();
+            $evenement->setTitre($_POST['evenementTitle']);
+            $evenement->setSousTitre($_POST['evenementSubTitle']);
+            $evenement->setDate(new DateTime($_POST['evenementDate']));
+            $evenement->setNbParticipantsMax($_POST['nbParticipantMax']);
+            $evenement->setPrix($_POST['prix']);
+            $evenement->setDescription($_POST['description']);
+            $evenement->setIdCategorie(($_POST['categorieSelect']));
+            $evenement->setIdStatut(intval($_POST['statutSelect']));
+            $evenement->setIdAdresse(intval($_POST['adresseSelect']));
+            $evenement->setCreatedAt(new DateTime());
+            $evenement->setUpdatedAt(new DateTime());
+            $evenement->setIdUtilisateur(intval($_SESSION['id']));
+            $evenement->setIdMedia($idmedia);
 
-        $evenementsRepository->save($evenement);
+            $evenementsRepository->save($evenement);
 
-        header('Location: /admin/evenements');
+            header('Location: /admin/evenements');
           } else {
             echo "Erreur lors de l'upload";
           }
@@ -419,15 +424,16 @@ class EvenementsController extends AbstractController
      * @throws RuntimeError
      * @throws LoaderError
      */
-    #[Route(path: "/admin/edit/evenements", httpMethod: 'POST', name: "admin_edit_evenements",)]
+    #[Route(path: "/admin/edit/evenements", httpMethod: 'GET', name: "admin_edit_evenements",)]
     public function editEvenements(EvenementsRepository $evenementsRepository,
                                    CategoriesRepository $categoriesRepository,
                                    StatutsRepository $statutsRepository,
                                    AdressesRepository $adressesRepository,
-                                   ParticipeRepository $participeRepository
+                                   ParticipeRepository $participeRepository,
+                                   Request $request,
     )
     {
-        $id = intval($_POST['id']);
+        $id = $request->query->get('id');
         $evenement = $evenementsRepository->selectOneById($id);
         $adresses = $adressesRepository->selectAll();
         $categories = $categoriesRepository->selectAll();
@@ -482,8 +488,6 @@ class EvenementsController extends AbstractController
                 
                 $evenement->setIdMedia($idmedia);
               }
-
-
         }
 
         $evenementsRepository->update($evenement);
@@ -502,15 +506,12 @@ class EvenementsController extends AbstractController
         $id = intval($_POST['id']);
         $utilisateursParticipantEvenement = $evenementsRepository->verifContraintsUtilisateursParticipes($id);
         if ($utilisateursParticipantEvenement !== null) {
-            // TODO POP UP
-            // Message pop-up Impossible de l'eveneemnt car des utilisateurs y sont inscrits afficher les mails utilisateurs
             $rp[0]="participant";$rp[1]=$id;
             $session->set('popup',$rp);
-            header('Location: /admin/evenements');
         } else {
             $evenementsRepository->delete($id);
-            header('Location: /admin/evenements');
         }
+        header('Location: /admin/evenements');
     }
 
 
@@ -554,13 +555,7 @@ class EvenementsController extends AbstractController
     {
         $idUtilisateur = intval($_POST['idUtilisateur']);
         $idEvenement = intval($_POST['idEvenement']);
-
-        try {
-            $participeRepository->deleteUtilisateur($idUtilisateur, $idEvenement);
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
-
+        $participeRepository->deleteUtilisateur($idUtilisateur, $idEvenement);
         header('Location: /admin/evenements');
     }
 
