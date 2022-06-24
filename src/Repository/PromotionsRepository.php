@@ -11,7 +11,7 @@ final class PromotionsRepository extends AbstractRepository
 
     /**
      * Sauvegarde d'une promotion dans la base de données
-     * @param $promotion 
+     * @param Promotions $promotions
      * @return bool
      */
     public function save(Promotions $promotions): bool

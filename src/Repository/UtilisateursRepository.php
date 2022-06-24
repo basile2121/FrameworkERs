@@ -12,7 +12,7 @@ final class UtilisateursRepository extends AbstractRepository
 
     /**
      * Sauvegarde un utilisateur dans la base de données
-     * @param $utilisateur 
+     * @param Utilisateurs $utilisateurs
      * @return bool
      */
     public function save(Utilisateurs $utilisateurs): bool
@@ -35,7 +35,7 @@ final class UtilisateursRepository extends AbstractRepository
 
     /**
      * Met à jour un utilisateur dans la base de données
-     * @param $utilisateur 
+     * @param Utilisateurs $utilisateurs
      * @return bool
      */
     public function update(Utilisateurs $utilisateurs): bool
@@ -64,9 +64,9 @@ final class UtilisateursRepository extends AbstractRepository
 
     /**
      * Recuperation d'un seul element via son email (Login)
-     * @param $mail
+     * @param string $mail
+     * @return object|null
      * @throws ReflectionException
-     * @return object
      */
     public function selectOneByEmail(string $mail): ?object
     {
@@ -94,14 +94,12 @@ final class UtilisateursRepository extends AbstractRepository
         }
         return null;
     }
-   /**
-     * Vérifie les contraintes d'un utilisateur via son id
-     * @param $id 
-     * @throws ReflectionException
-     * @return array
-     */
+
     /**
-   
+     * Vérifie les contraintes d'un utilisateur via son id
+     * @param int $id
+     * @return array|null
+     * @throws ReflectionException
      */
     public function verifContraintsParticipeEvenement(int $id): ?array
     {
@@ -117,7 +115,7 @@ final class UtilisateursRepository extends AbstractRepository
 
     /**
      * Suppresion d'un utilisateur en cascade via son id
-     * @param $id
+     * @param int $id
      */
     public function deleteCascadeUtilisateur(int $id): void
     {

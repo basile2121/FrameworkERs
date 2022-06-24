@@ -12,7 +12,7 @@ final class ParticipeRepository extends AbstractRepository
 
     /**
      * Sauvegarde une participation dans la base de données
-     * @param $participe 
+     * @param Participe $participe
      * @return bool
      */
     public function save(Participe $participe): bool
@@ -28,8 +28,8 @@ final class ParticipeRepository extends AbstractRepository
 
     /**
      * Suppression d'un utilisateur participant à un évènement dans la base de données
-     * @param $idUtilisateur 
-     * @param $idEvenement
+     * @param int $idUtilisateur
+     * @param int $idEvenement
      * @return bool
      */
     public function deleteUtilisateur(int $idUtilisateur, int $idEvenement): bool
@@ -43,8 +43,8 @@ final class ParticipeRepository extends AbstractRepository
 
     /**
      * Suppresion d'un client dans un evenement
-     * @param $idUtilisateur 
-     * @param $idEvenement
+     * @param int $idUtilisateur
+     * @param int $idEvenement
      * @return bool
      */
     public function checkIfAlreadyParticipe(int $idUtilisateur, int $idEvenement): bool

@@ -3,16 +3,17 @@
 namespace App\Repository;
 
 use App\Entity\Ecoles;
+use ReflectionException;
 
 final class EcolesRepository extends AbstractRepository
 {
     protected const TABLE = 'ecoles';
     protected const ID = 'id_ecole';
 
-     
-     /**
+
+    /**
      * Sauvegarde une école dans la base de données
-     * @param $ecoles 
+     * @param Ecoles $ecoles
      * @return bool
      */
     public function save(Ecoles $ecoles): bool
@@ -27,7 +28,7 @@ final class EcolesRepository extends AbstractRepository
 
     /**
      * Met à jour une école dans la base de données
-     * @param $ecoles
+     * @param Ecoles $ecoles
      * @return bool
      */
     public function update(Ecoles $ecoles): bool
@@ -43,8 +44,9 @@ final class EcolesRepository extends AbstractRepository
 
     /**
      * Vérifie les contraintes d'une école via son id
-     * @param $id
-     * @return bool
+     * @param int $id
+     * @return array|null
+     * @throws ReflectionException
      */
     public function verifContraintsPromotions(int $id): ?array
     {

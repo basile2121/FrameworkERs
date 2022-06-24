@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Utils\Hydrator;
+use Exception;
 use PDO;
 use ReflectionException;
 
@@ -21,6 +22,7 @@ abstract class AbstractRepository
 
     /**
      * Recuperation de toutes les données.
+     * @throws ReflectionException
      */
     public function selectAll(string $orderBy = '', string $direction = 'ASC'): array
     {
@@ -33,6 +35,7 @@ abstract class AbstractRepository
 
     /**
      * Recuperation d'un seul element via son id
+     * @throws ReflectionException
      */
     public function selectOneById(int $id): ?object
     {
@@ -109,6 +112,7 @@ abstract class AbstractRepository
      * @param array $data
      * @return Object
      * @throws ReflectionException
+     * @throws Exception
      */
     public function setHydrateOne(array $data): Object
     {

@@ -2,8 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\Adresses;
 use App\Entity\Categories;
+use ReflectionException;
 
 final class CategoriesRepository extends AbstractRepository
 {
@@ -11,10 +11,9 @@ final class CategoriesRepository extends AbstractRepository
     protected const ID = 'id_categorie';
 
 
-    
-     /**
+    /**
      * Sauvegarde une catégorie dans la base de données
-     * @param $categories 
+     * @param Categories $categories
      * @return bool
      */
     public function save(Categories $categories): bool
@@ -26,10 +25,10 @@ final class CategoriesRepository extends AbstractRepository
             'libelleCategorie' => $categories->getLibelleCategorie(),
         ]);
     }
-    
-     /**
+
+    /**
      * Met à jour une catégorie dans la base de données
-     * @param $categorie 
+     * @param Categories $categorie
      * @return bool
      */
     public function update(Categories $categorie): bool
@@ -45,8 +44,9 @@ final class CategoriesRepository extends AbstractRepository
 
     /**
      * Vérifie les contraintes d'une catégorie via son id
-     * @param $id 
-     * @return array
+     * @param int $id
+     * @return array|null
+     * @throws ReflectionException
      */
     public function verifContraintsEvenementCategories(int $id): ?array
     {

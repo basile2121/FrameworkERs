@@ -10,9 +10,9 @@ final class EvenementsRepository extends AbstractRepository
     protected const TABLE = 'evenements';
     protected const ID = 'id_evenement';
 
-     /**
+    /**
      * Sauvegarde un évènement dans la base de données
-     * @param $evenements 
+     * @param Evenements $evenements
      * @return bool
      */
     public function save(Evenements $evenements): bool
@@ -39,7 +39,7 @@ final class EvenementsRepository extends AbstractRepository
 
     /**
      * Met à jour un évènement dans la base de données
-     * @param $evenements 
+     * @param Evenements $evenements
      * @return bool
      */
     public function update(Evenements $evenements): bool
@@ -73,11 +73,6 @@ final class EvenementsRepository extends AbstractRepository
             'idMedia' => $evenements->getIdMedia(),
         ]);
     }
- /**
-     * Sauvegarde un évènement dans la base de données
-     * @param $evenements 
-     * @return bool
-     */
 
     /**
      * Fonction permettant de récupérer trois évenèments dont la date est la plus proche
@@ -96,7 +91,7 @@ final class EvenementsRepository extends AbstractRepository
 
     /**
      * Fonction permettant de récupérer neuf évenèments dont la date est la plus proche
-     * * @return array
+     * @return array
      * @throws ReflectionException
      */
     public function getEvenementProchain(): array
@@ -142,9 +137,10 @@ final class EvenementsRepository extends AbstractRepository
     }
 
     /**
-     * Permet de récupérer les évènements créés par un utilisateur avec le rôle BDE 
+     * Permet de récupérer les évènements créés par un utilisateur avec le rôle BDE
+     * @param int $id
+     * @return array
      * @throws ReflectionException
-     * @return Evenements
      */
     public function selectEvenementByUser(int $id): array
     {
@@ -178,8 +174,8 @@ final class EvenementsRepository extends AbstractRepository
 
     /** Vérifie les contraintes d'une participation à un évènement
      * @param $id
+     * @return array|null
      * @throws ReflectionException
-     * @return array
      */
     public function verifContraintsUtilisateursParticipes($id): ?array
     {
@@ -195,7 +191,7 @@ final class EvenementsRepository extends AbstractRepository
 
     /**
      * Suppresion d'un evenement en cascade via son id
-     * @param $id
+     * @param int $id
      */
     public function deleteCascadeEvenementParticipe(int $id): void
     {

@@ -10,9 +10,9 @@ final class StatutsRepository extends AbstractRepository
     protected const TABLE = 'statuts';
     protected const ID = 'id_statut';
 
-      /**
+    /**
      * Sauvegarde un statut dans la base de données
-     * @param $statut 
+     * @param Statuts $statuts
      * @return bool
      */
     public function save(Statuts $statuts): bool
@@ -28,9 +28,9 @@ final class StatutsRepository extends AbstractRepository
 
     /**
      * Récuperer un status via son libelle
-     * @param $libelle
-     * @throws ReflectionException
+     * @param string $libelle
      * @return array
+     * @throws ReflectionException
      */
     public function selectOneByLibelle(string $libelle): array
     {

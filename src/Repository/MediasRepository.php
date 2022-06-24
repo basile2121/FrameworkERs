@@ -10,9 +10,9 @@ final class MediasRepository extends AbstractRepository
     protected const ID = 'id_media';
 
 
-     /**
+    /**
      * Sauvegarde un média dans la base de données
-     * @param $medias 
+     * @param Medias $medias
      * @return bool
      */
     public function save(Medias $medias): bool

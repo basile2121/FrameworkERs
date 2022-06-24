@@ -3,16 +3,16 @@
 namespace App\Repository;
 
 use App\Entity\Adresses;
-use App\Entity\Evenements;
+use ReflectionException;
 
 final class AdressesRepository extends AbstractRepository
 {
     protected const TABLE = 'adresses';
     protected const ID = 'id_adresse';
 
-     /**
+    /**
      * Sauvegarde d'une adresse dans la base de données
-     * @param $adresse 
+     * @param Adresses $adresses
      * @return bool
      */
     public function save(Adresses $adresses): bool
@@ -29,9 +29,9 @@ final class AdressesRepository extends AbstractRepository
         ]);
     }
 
-      /**
+    /**
      * Met à jour une adresse dans la base de données
-     * @param $adresse 
+     * @param Adresses $adresses
      * @return bool
      */
     public function update(Adresses $adresses): bool
@@ -55,10 +55,11 @@ final class AdressesRepository extends AbstractRepository
     }
 
 
-   /**
+    /**
      * Vérifie les contraintes d'une adresse via son id
-     * @param $id 
-     * @return array
+     * @param int $id
+     * @return array|null
+     * @throws ReflectionException
      */
     public function verifContraintsAdresse(int $id): ?array
     {

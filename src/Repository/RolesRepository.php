@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Roles;
+use ReflectionException;
 
 final class RolesRepository extends AbstractRepository
 {
@@ -11,7 +12,7 @@ final class RolesRepository extends AbstractRepository
 
     /**
      * Sauvegarde d'un role dans la base de données
-     * @param $role 
+     * @param Roles $roles
      * @return bool
      */
     public function save(Roles $roles): bool
@@ -24,10 +25,11 @@ final class RolesRepository extends AbstractRepository
         ]);
     }
 
-       /**
+    /**
      * Recuperation de l'id_role en fonction du libellé
-     * @param $libelleRole
-     * @return object
+     * @param string $libelleRole
+     * @return object|null
+     * @throws ReflectionException
      */
     public function selectOneByLibelle(string $libelleRole): ?object
     {
